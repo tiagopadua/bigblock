@@ -1,0 +1,5 @@
+# vim swap files
+*.swp
+
+# node installed modules
+node_modules
