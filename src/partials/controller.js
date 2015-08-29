@@ -45,7 +45,20 @@
         if (typeof(axis) !== 'number') {
             return 0;
         }
-        return axis;
+        if (axis > 0) {
+            // Dead zone
+            if (axis < PRIVATE.controllerZero) {
+                return 0;
+            }
+            return (axis - PRIVATE.controllerZero) / (1 - PRIVATE.controllerZero);
+        } else {
+            // Dead zone
+            if (axis > -PRIVATE.controllerZero) {
+                return 0;
+            }
+            return (axis + PRIVATE.controllerZero) / (1 - PRIVATE.controllerZero);
+        }
+        return 0;
     };
 
 }());

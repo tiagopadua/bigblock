@@ -1,17 +1,33 @@
+/* global requestAnimFrame */
+
 // This is intended to be a singleton - only 1 engine per page
 (function(cls) {
     "use strict";
 
     // Just create an object to hold variables we do not want to share
     var PRIVATE = {
-        FPS: 60, // the framerate which the engine will run
-        walkAxisX: 1,
-        walkAxisY: 0,
+        FOV: 75, // Field of view for the camera
+        scene: null,
+        camera: null,
+        renderer: null,
+        controllerZero: 0.1, // Minimum movement detection (because the physical controller cannot be at perfect zero)
+        walkAxisX: 0,
+        walkAxisY: 1,
         cameraAxisX: 3,
-        cameraAxisY: 2,
+        cameraAxisY: 4,
         mainLoopIntervalId: null,
-        loaded: false
+        loaded: false,
+        running: false,
+        player: null
     };
+
+    // Shim layer with setTimeout fallback
+    window.requestAnimFrame = window.requestAnimationFrame       ||
+                              window.webkitRequestAnimationFrame ||
+                              window.mozRequestAnimationFrame    ||
+                              function(callback) {
+                                  window.setTimeout(callback, 1000 / 60); // 60 fps
+                              };
 
 
     /*
@@ -20,19 +36,39 @@
      */
 
     // !include partials/controller.js
-    // !include partials/webgl.js
+    // !include partials/player.js
+    // !include partials/level.js
+    // !include partials/setup.js
 
 
     // Loads all necessary data to start the loop
     cls.load = function(container) {
-         // TODO
+        if (!(container instanceof HTMLElement)) {
+            console.error('Container must be a DOM element');
+        }
 
-         if (!(container instanceof HTMLElement)) {
-             console.error('Container must be a DOM element');
-         }
-         
-         // Mark things as loaded
-         PRIVATE.loaded = true;
+        // Create three.js objects
+        setupThreeJS(container);
+
+        // Create a player object
+        PRIVATE.player = new Player();
+        PRIVATE.scene.add(PRIVATE.player.mesh);
+
+        // Load a level
+        // TODO: select levels
+        var level = new Level();
+        PRIVATE.scene.add(level.mesh);
+
+        // set camera initial position
+        PRIVATE.camera.position.z = 4;
+        PRIVATE.camera.position.y = 4;
+        PRIVATE.camera.lookAt(PRIVATE.player.getPosition());
+
+        // Render first frame
+        PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
+
+        // Mark things as loaded
+        PRIVATE.loaded = true;
     };
 
     // Starts the main game engine loop
@@ -45,49 +81,69 @@
             console.warn('Engine already started. Aborting');
             return;
         }
-        var loopUpdateTime = 1000 / PRIVATE.FPS;
-        PRIVATE.lastLoopTime = (new Date()).getTime();
-        PRIVATE.mainLoopIntervalId = setInterval(PRIVATE.mainLoop, loopUpdateTime);
+        PRIVATE.running = true;
+        PRIVATE.lastLoopTime = window.performance.now();
+        requestAnimFrame(PRIVATE.mainLoop);
     };
 
     // Stops the main game engine loop
     cls.stop = function() {
-        if (!PRIVATE.mainLoopIntervalId) {
-            console.warn('Unable to stop. The interval ID was not found');
+        if (!PRIVATE.running) {
+            console.warn('Engine is not running - can\'t stop');
             return;
         }
-        clearInterval(PRIVATE.mainLoopIntervalId);
-        PRIVATE.mainLoopIntervalId = null;
+        PRIVATE.running = false;
     };
 
     // Returns the state of the engine (true: running; false: stopped)
     cls.running = function() {
-        return (PRIVATE.mainLoopIntervalId !== null);
+        return PRIVATE.running;
     };
 
     // This is a user function - intended to be overwritten
     cls.loop = function(movement) {
-        // override to custom actions
+        // override to do custom actions
     };
 
     // The most important function, here we call everything that happens inside the game
     PRIVATE.mainLoop = function() {
-        var currentTime = (new Date()).getTime();
+        if (!PRIVATE.running) {
+            return;
+        }
+
+        // First thing: request next frame to try to maintain consistent fps
+        requestAnimFrame(PRIVATE.mainLoop);
+
+        var currentTime = window.performance.now();
         var elapsedTime = currentTime - PRIVATE.lastLoopTime; // Save the time (milliseconds) since the last loop
         PRIVATE.lastLoopTime = currentTime;
 
-        // Save the character current movement
+        // Save the character's current movement
         var movement = {
             x: PRIVATE.axisState(PRIVATE.walkAxisX),
-            y: PRIVATE.axisState(PRIVATE.walkAxisY)
+            y: -PRIVATE.axisState(PRIVATE.walkAxisY)
         };
+        // Save the camera's current movement 
+        var cameraMovement = {
+            x: PRIVATE.axisState(PRIVATE.cameraAxisX),
+            y: -PRIVATE.axisState(PRIVATE.cameraAxisY)
+        };
+
+        // Process player's movements
+        PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
+
+        // Always point camera at player
+        PRIVATE.camera.lookAt(PRIVATE.player.getPosition());
 
         // Call user's function
         try {
-            cls.loop(movement);
+            cls.loop(elapsedTime, movement, cameraMovement);
         } catch (e) {
             // Ok; just ignore user exceptions
         }
+
+        // At last, render the scene
+        PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
     };
 
 }(window.BigBlock = window.BigBlock || {}));
