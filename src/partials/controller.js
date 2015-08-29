@@ -8,7 +8,7 @@
     function onControllerConnect(event) {
         selectedController = event.gamepad;
         console.log('Controller connected', selectedController.id);
-    };
+    }
 
     function onControllerDisconnect(event) {
         if (selectedController === null) {
@@ -34,7 +34,7 @@
             return false;
         }
         return button.pressed;
-    }
+    };
 
     // Returns the state of an axis
     PRIVATE.axisState = function(axisIndex) {
@@ -46,6 +46,6 @@
             return 0;
         }
         return axis;
-    }
+    };
 
 }());
