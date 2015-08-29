@@ -5,17 +5,35 @@
         <title>Controller test</title>
     </head>
     <body>
+        <input type="button" onclick="engineStart()" value="Start"></input>
+        <input type="button" onclick="engineStop()" value="Stop"></input>
+        <br/>
         x: <div id="x"></div><br/>
         y: <div id="y"></div><br/>
-        <script src="../build/bigblock.min.js" type="text/javascript"></script>
+        <canvas id="canvas" style="width: 500px; height: 500px"></canvas>
+
+        <script src="http://threejs.org/build/three.min.js"></script>
+        <script src="../build/bigblock.min.js"></script>
 <script type="text/javascript">
-var x = document.getElementById('x');
-var y = document.getElementById('y');
+
+function engineStart() {
+    BigBlock.start();
+}
+function engineStop() {
+    BigBlock.stop();
+}
+
+var canvas = document.getElementById('canvas'); 
+
+var xDom = document.getElementById('x');
+var yDom = document.getElementById('y');
 
 BigBlock.loop = function(movement) {
-    x.innerHTML = movement.x.toString();
-    y.innerHTML = movement.y.toString();
+    xDom.innerHTML = movement.x.toString();
+    yDom.innerHTML = movement.y.toString();
 }
+
+BigBlock.load(canvas);
 
 </script>
     </body>

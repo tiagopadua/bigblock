@@ -9,18 +9,40 @@
         walkAxisY: 0,
         cameraAxisX: 3,
         cameraAxisY: 2,
-        mainLoopIntervalId: null
+        mainLoopIntervalId: null,
+        loaded: false
     };
 
+
+    /*
+     * Include other parts of the code
+     * This is processed in build time before uglyfication
+     */
+
+    // !include partials/controller.js
+    // !include partials/webgl.js
+
+
     // Loads all necessary data to start the loop
-    cls.load = function() {
+    cls.load = function(container) {
          // TODO
+
+         if (!(container instanceof HTMLElement)) {
+             console.error('Container must be a DOM element');
+         }
+         
+         // Mark things as loaded
+         PRIVATE.loaded = true;
     };
 
     // Starts the main game engine loop
     cls.start = function() {
+        if (!PRIVATE.loaded) {
+            console.warn('Cannot start loop without loading things before');
+            return;
+        }
         if (PRIVATE.started || PRIVATE.mainLoopIntervalId) {
-            console.error('Engine already started. Aborting');
+            console.warn('Engine already started. Aborting');
             return;
         }
         var loopUpdateTime = 1000 / PRIVATE.FPS;
@@ -67,7 +89,5 @@
             // Ok; just ignore user exceptions
         }
     };
-
-    // !include partials/controller.js
 
 }(window.BigBlock = window.BigBlock || {}));
