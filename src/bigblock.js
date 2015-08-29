@@ -2,6 +2,16 @@
 (function(cls) {
     "use strict";
 
+    // Just create an object to hold variables we do not want to share
+    var PRIVATE = {
+        FPS: 60, // the framerate which the engine will run
+        walkAxisX: 1,
+        walkAxisY: 0,
+        cameraAxisX: 3,
+        cameraAxisY: 2,
+        mainLoopIntervalId: null
+    };
+
     // Loads all necessary data to start the loop
     cls.load = function() {
          // TODO
@@ -15,7 +25,7 @@
         }
         var loopUpdateTime = 1000 / PRIVATE.FPS;
         PRIVATE.lastLoopTime = (new Date()).getTime();
-        PRIVATE.mainLoopIntervalId = setInterval(this.mainLoop, loopUpdateTime);
+        PRIVATE.mainLoopIntervalId = setInterval(PRIVATE.mainLoop, loopUpdateTime);
     };
 
     // Stops the main game engine loop
@@ -33,28 +43,29 @@
         return (PRIVATE.mainLoopIntervalId !== null);
     };
 
-    var x = document.getElementById('x');
-    var y = document.getElementById('y');
+    // This is a user function - intended to be overwritten
+    cls.loop = function(movement) {
+        // override to custom actions
+    };
+
     // The most important function, here we call everything that happens inside the game
-    cls.mainLoop = function() {
+    PRIVATE.mainLoop = function() {
         var currentTime = (new Date()).getTime();
         var elapsedTime = currentTime - PRIVATE.lastLoopTime; // Save the time (milliseconds) since the last loop
         PRIVATE.lastLoopTime = currentTime;
 
-        x.innerHTML = PRIVATE.axisState(PRIVATE.walkAxisX).toString();
-        y.innerHTML = PRIVATE.axisState(PRIVATE.walkAxisY).toString();
-        //var el = document.getElementById('container');
-        //el.innerHTML = PRIVATE.isButtonPressed(0).toString() + " " + elapsedTime.toString();
-    };
+        // Save the character current movement
+        var movement = {
+            x: PRIVATE.axisState(PRIVATE.walkAxisX),
+            y: PRIVATE.axisState(PRIVATE.walkAxisY)
+        };
 
-    // Just create an object to hold variables we do not want to share
-    var PRIVATE = {
-        FPS: 60, // the framerate which the engine will run
-        walkAxisX: 1,
-        walkAxisY: 0,
-        cameraAxisX: 3,
-        cameraAxisY: 2,
-        mainLoopIntervalId: null
+        // Call user's function
+        try {
+            cls.loop(movement);
+        } catch (e) {
+            // Ok; just ignore user exceptions
+        }
     };
 
     // !include partials/controller.js

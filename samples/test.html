@@ -9,7 +9,14 @@
         y: <div id="y"></div><br/>
         <script src="../build/bigblock.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-//Engine.start()
+var x = document.getElementById('x');
+var y = document.getElementById('y');
+
+BigBlock.loop = function(movement) {
+    x.innerHTML = movement.x.toString();
+    y.innerHTML = movement.y.toString();
+}
+
 </script>
     </body>
 </html>
