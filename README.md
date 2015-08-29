@@ -1,2 +1,0 @@
-# bigblock
-Javascript game engine
