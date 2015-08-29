@@ -1,4 +1,7 @@
-# Engine.js
+# Big Block
 
-This is a javascript engine for browser games, using WebGL.
+This is an engine written in JavaScript, for web browser games, using WebGL.
 
+## Examples
+
+Try it here: [http://bigblock.tiagopadua.com/samples](http://bigblock.tiagopadua.com/samples)
