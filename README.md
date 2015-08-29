@@ -6,10 +6,14 @@ This is an engine written in JavaScript, for web browser games, using WebGL.
 
 Try it here: [http://bigblock.tiagopadua.com/samples](http://bigblock.tiagopadua.com/samples)
 
-# Building
+## Building
+Requirements:
+* git
+* npm
 
-Just install dev dependencies and run grunt
-
-   cd bigblock/
-   npm install
-   grunt
+After cloning the repository, just install dev dependencies and run grunt
+```
+cd bigblock/
+npm install
+grunt
+```
