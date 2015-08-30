@@ -37,7 +37,7 @@
     };
 
     // Returns the state of an axis
-    PRIVATE.axisState = function(axisIndex) {
+    PRIVATE.getControllerAxis = function(axisIndex) {
         if (selectedController === null) {
             return 0;
         }

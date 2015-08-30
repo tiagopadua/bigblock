@@ -9,10 +9,12 @@
         FOV: 75, // Field of view for the camera
         scene: null,
         camera: null,
+        cameraOffset: new THREE.Vector3(0, 3, 3), // Values must be tuned
         renderer: null,
-        controllerZero: 0.1, // Minimum movement detection (because the physical controller cannot be at perfect zero)
+        controllerZero: 0.12, // Minimum movement detection (because the physical controller cannot be at perfect zero)
         walkAxisX: 0,
         walkAxisY: 1,
+        runButton: 11,
         cameraAxisX: 3,
         cameraAxisY: 4,
         mainLoopIntervalId: null,
@@ -39,6 +41,7 @@
     // !include partials/player.js
     // !include partials/level.js
     // !include partials/setup.js
+    // !include partials/camera.js
 
 
     // Loads all necessary data to start the loop
@@ -51,7 +54,7 @@
         setupThreeJS(container);
 
         // Create a player object
-        PRIVATE.player = new Player();
+        cls.player = PRIVATE.player = new Player();
         PRIVATE.scene.add(PRIVATE.player.mesh);
 
         // Load a level
@@ -60,9 +63,8 @@
         PRIVATE.scene.add(level.mesh);
 
         // set camera initial position
-        PRIVATE.camera.position.z = 4;
-        PRIVATE.camera.position.y = 4;
-        PRIVATE.camera.lookAt(PRIVATE.player.getPosition());
+        cls.camera = PRIVATE.camera; // TODO remover
+        followObjectWithCamera(PRIVATE.player.mesh, PRIVATE.cameraOffset);
 
         // Render first frame
         PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
@@ -120,20 +122,22 @@
 
         // Save the character's current movement
         var movement = {
-            x: PRIVATE.axisState(PRIVATE.walkAxisX),
-            y: -PRIVATE.axisState(PRIVATE.walkAxisY)
+            x: PRIVATE.getControllerAxis(PRIVATE.walkAxisX),
+            y: PRIVATE.getControllerAxis(PRIVATE.walkAxisY),
+            angle: PRIVATE.camera.rotation._z,
+            run: PRIVATE.isButtonPressed(PRIVATE.runButton)
         };
         // Save the camera's current movement 
         var cameraMovement = {
-            x: PRIVATE.axisState(PRIVATE.cameraAxisX),
-            y: -PRIVATE.axisState(PRIVATE.cameraAxisY)
+            x: PRIVATE.getControllerAxis(PRIVATE.cameraAxisX),
+            y: PRIVATE.getControllerAxis(PRIVATE.cameraAxisY)
         };
 
         // Process player's movements
         PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
 
-        // Always point camera at player
-        PRIVATE.camera.lookAt(PRIVATE.player.getPosition());
+        // Position camera
+        followObjectWithCamera(PRIVATE.player.mesh, new THREE.Vector3(0, 3, 3));//PRIVATE.cameraOffset);
 
         // Call user's function
         try {
