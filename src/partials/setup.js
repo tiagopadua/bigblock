@@ -7,7 +7,7 @@ function setupThreeJS(container) {
         0.1, // Min drawing distance
         1000 // Max drawing distance
     );
-    PRIVATE.renderer = new THREE.WebGLRenderer();
+    PRIVATE.renderer = new THREE.WebGLRenderer( { antialias: true } );
     PRIVATE.renderer.setSize(container.offsetWidth, container.offsetHeight);
 
     // Append renderer element to the container dom element
