@@ -1,7 +1,7 @@
 /* global requestAnimFrame */
 
 // This is intended to be a singleton - only 1 engine per page
-(function(cls) {
+(function(PUBLIC) {
     "use strict";
 
     // Just create an object to hold variables we do not want to share
@@ -9,7 +9,7 @@
         FOV: 75, // Field of view for the camera
         scene: null,
         camera: null,
-        cameraOffset: new THREE.Vector3(0, 3, 3), // Values must be tuned
+        cameraOffset: new THREE.Vector3(0, 2.5, 3), // Values must be tuned
         renderer: null,
         controllerZero: 0.12, // Minimum movement detection (because the physical controller cannot be at perfect zero)
         walkAxisX: 0,
@@ -20,7 +20,8 @@
         mainLoopIntervalId: null,
         loaded: false,
         running: false,
-        player: null
+        player: null,
+        level: null
     };
 
     // Shim layer with setTimeout fallback
@@ -45,7 +46,7 @@
 
 
     // Loads all necessary data to start the loop
-    cls.load = function(container) {
+    PUBLIC.load = function(container) {
         if (!(container instanceof HTMLElement)) {
             console.error('Container must be a DOM element');
         }
@@ -54,27 +55,28 @@
         setupThreeJS(container);
 
         // Create a player object
-        cls.player = PRIVATE.player = new Player();
+        PUBLIC.player = PRIVATE.player = new Player();
         PRIVATE.scene.add(PRIVATE.player.mesh);
 
         // Load a level
         // TODO: select levels
-        var level = new Level();
-        level.addComponentsToScene(PRIVATE.scene);
+        PRIVATE.level = new Level(PRIVATE.player);
+        PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
         // set camera initial position
-        cls.camera = PRIVATE.camera; // TODO remover
-        followObjectWithCamera(PRIVATE.player.mesh, PRIVATE.cameraOffset);
+        PUBLIC.camera = PRIVATE.camera; // TODO remover
+        PRIVATE.followObjectWithCamera(16, PRIVATE.player.mesh, PRIVATE.cameraOffset);
 
         // Render first frame
         PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
+        //PRIVATE.mainLoop();
 
         // Mark things as loaded
         PRIVATE.loaded = true;
     };
 
     // Starts the main game engine loop
-    cls.start = function() {
+    PUBLIC.start = function() {
         if (!PRIVATE.loaded) {
             console.warn('Cannot start loop without loading things before');
             return;
@@ -89,7 +91,7 @@
     };
 
     // Stops the main game engine loop
-    cls.stop = function() {
+    PUBLIC.stop = function() {
         if (!PRIVATE.running) {
             console.warn('Engine is not running - can\'t stop');
             return;
@@ -98,23 +100,21 @@
     };
 
     // Returns the state of the engine (true: running; false: stopped)
-    cls.running = function() {
+    PUBLIC.running = function() {
         return PRIVATE.running;
     };
 
     // This is a user function - intended to be overwritten
-    cls.loop = function(movement) {
+    PUBLIC.loop = function(movement) {
         // override to do custom actions
     };
 
     // The most important function, here we call everything that happens inside the game
     PRIVATE.mainLoop = function() {
-        if (!PRIVATE.running) {
-            return;
+        if (PRIVATE.running) {
+            // First thing: request next frame to try to maintain consistent fps
+            requestAnimFrame(PRIVATE.mainLoop);
         }
-
-        // First thing: request next frame to try to maintain consistent fps
-        requestAnimFrame(PRIVATE.mainLoop);
 
         var currentTime = window.performance.now();
         var elapsedTime = currentTime - PRIVATE.lastLoopTime; // Save the time (milliseconds) since the last loop
@@ -136,11 +136,14 @@
         PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
 
         // Position camera
-        followObjectWithCamera(PRIVATE.player.mesh, PRIVATE.cameraOffset);
+        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.mesh, PRIVATE.cameraOffset, cameraMovement);
+        
+        // Process scenario stuff
+        PRIVATE.level.animate(elapsedTime, PRIVATE.player);
 
         // Call user's function
         try {
-            cls.loop(elapsedTime, movement, cameraMovement);
+            PUBLIC.loop(elapsedTime, movement, cameraMovement);
         } catch (e) {
             // Ok; just ignore user exceptions
         }
