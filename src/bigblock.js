@@ -137,7 +137,7 @@
         PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
 
         // Position camera
-        followObjectWithCamera(PRIVATE.player.mesh, new THREE.Vector3(0, 3, 3));//PRIVATE.cameraOffset);
+        followObjectWithCamera(PRIVATE.player.mesh, PRIVATE.cameraOffset);
 
         // Call user's function
         try {
