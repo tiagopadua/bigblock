@@ -8,6 +8,8 @@ function setupThreeJS(container) {
         1000 // Max drawing distance
     );
     PRIVATE.renderer = new THREE.WebGLRenderer( { antialias: true } );
+    PRIVATE.renderer.shadowMapEnabled = true;
+    PRIVATE.renderer.shadowMapType = THREE.PCFSoftShadowMap;
     PRIVATE.renderer.setSize(container.offsetWidth, container.offsetHeight);
 
     // Append renderer element to the container dom element
