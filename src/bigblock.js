@@ -60,7 +60,7 @@
         // Load a level
         // TODO: select levels
         var level = new Level();
-        PRIVATE.scene.add(level.mesh);
+        level.addComponentsToScene(PRIVATE.scene);
 
         // set camera initial position
         cls.camera = PRIVATE.camera; // TODO remover
@@ -124,7 +124,6 @@
         var movement = {
             x: PRIVATE.getControllerAxis(PRIVATE.walkAxisX),
             y: PRIVATE.getControllerAxis(PRIVATE.walkAxisY),
-            angle: PRIVATE.camera.rotation._z,
             run: PRIVATE.isButtonPressed(PRIVATE.runButton)
         };
         // Save the camera's current movement 

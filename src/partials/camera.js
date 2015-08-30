@@ -8,7 +8,7 @@ function followObjectWithCamera(target, targetOffset) {
     PRIVATE.camera.position.x = cameraOffset.x;
     PRIVATE.camera.position.y = cameraOffset.y;
     PRIVATE.camera.position.z = cameraOffset.z;
+
     // Point camera at player
     PRIVATE.camera.lookAt(target.position);
-
 }
