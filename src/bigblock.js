@@ -14,7 +14,7 @@
         controllerZero: 0.12, // Minimum movement detection (because the physical controller cannot be at perfect zero)
         walkAxisX: 0,
         walkAxisY: 1,
-        runButton: 11,
+        runButton: 12,
         cameraAxisX: 3,
         cameraAxisY: 4,
         mainLoopIntervalId: null,
@@ -65,11 +65,12 @@
 
         // set camera initial position
         PUBLIC.camera = PRIVATE.camera; // TODO remover
-        PRIVATE.followObjectWithCamera(16, PRIVATE.player.mesh, PRIVATE.cameraOffset);
+        //PRIVATE.followObjectWithCamera(16, PRIVATE.player.mesh, PRIVATE.cameraOffset);
 
         // Render first frame
-        PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
-        //PRIVATE.mainLoop();
+        //PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
+        PRIVATE.lastLoopTime = window.performance.now() - 16;
+        PRIVATE.mainLoop();
 
         // Mark things as loaded
         PRIVATE.loaded = true;
@@ -137,7 +138,7 @@
 
         // Position camera
         PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.mesh, PRIVATE.cameraOffset, cameraMovement);
-        
+
         // Process scenario stuff
         PRIVATE.level.animate(elapsedTime, PRIVATE.player);
 
