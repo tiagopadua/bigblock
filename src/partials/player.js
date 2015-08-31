@@ -6,7 +6,7 @@ function Player() {
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.position.set(0, 0.5, 0);
     this.mesh.castShadow = true;
-    this.turnSpeed = 0.002; // radians/time - This must be tuned
+    this.turnSpeed = 0.003; // radians/time - This must be tuned
     this.walkSpeed = 0.003; // pixels/time - This must be tuned
     this.runSpeedRatio = 2;
 }
