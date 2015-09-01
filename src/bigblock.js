@@ -65,12 +65,10 @@
 
         // set camera initial position
         PUBLIC.camera = PRIVATE.camera; // TODO remover
-        //PRIVATE.followObjectWithCamera(16, PRIVATE.player.mesh, PRIVATE.cameraOffset);
-
+ 
         // Render first frame
-        //PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
-        PRIVATE.lastLoopTime = window.performance.now() - 16;
-        PRIVATE.mainLoop();
+        PRIVATE.lastLoopTime = window.performance.now();
+        requestAnimFrame(PRIVATE.mainLoop);
 
         // Mark things as loaded
         PRIVATE.loaded = true;
@@ -82,7 +80,7 @@
             console.warn('Cannot start loop without loading things before');
             return;
         }
-        if (PRIVATE.started || PRIVATE.mainLoopIntervalId) {
+        if (PRIVATE.running) {
             console.warn('Engine already started. Aborting');
             return;
         }
