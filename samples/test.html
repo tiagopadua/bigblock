@@ -2,47 +2,76 @@
 <html>
     <meta charset="utf-8">
     <head>
-        <title>Controller test</title>
+        <title>THREE.js test</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
     </head>
     <body>
-        <input type="button" onclick="engineStart()" value="Start"></input>
-        <input type="button" onclick="engineStop()" value="Stop"></input>
-        <br/>
-        time: <div id="time"></div><br/>
-        x: <div id="x"></div><br/>
-        y: <div id="y"></div><br/>
-        Camera x: <div id="cx"></div><br/>
-        Camera y: <div id="cy"></div><br/>
-        <canvas id="canvas" style="width: 500px; height: 500px"></canvas>
-
         <script src="http://threejs.org/build/three.min.js"></script>
         <script src="../build/bigblock.min.js"></script>
 <script type="text/javascript">
 
-function engineStart() {
-    BigBlock.start();
-}
-function engineStop() {
-    BigBlock.stop();
-}
+var width = window.innerWidth,
+    height = window.innerHeight,
+    clock = new THREE.Clock(),
+    scene,
+    camera,
+    renderer,
+    ambientLight,
+    directionalLight,
+    loader,
+    obj = new THREE.Object3D();
+   
+scene = new THREE.Scene();
 
-var canvas = document.getElementById('canvas'); 
+camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
+camera.position.set(0, 1, 5);
 
-var timeDom = document.getElementById('time');
-var xDom = document.getElementById('x');
-var yDom = document.getElementById('y');
-var cxDom = document.getElementById('cx');
-var cyDom = document.getElementById('cy');
+renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(width, height);
 
-BigBlock.loop = function(time, movement, cameraMovement) {
-    timeDom.innerHTML = time.toString();
-    xDom.innerHTML = movement.x.toString();
-    yDom.innerHTML = movement.y.toString();
-    cxDom.innerHTML = cameraMovement.x.toString();
-    cyDom.innerHTML = cameraMovement.y.toString();
-}
+document.body.appendChild(renderer.domElement);
 
-BigBlock.load(canvas);
+ambientLight = new THREE.AmbientLight(0xffffff);
+scene.add(ambientLight);
+
+directionalLight = new THREE.DirectionalLight(0xffffff);
+directionalLight.position.set(0, 1, 0);
+scene.add(directionalLight);
+
+scene.add(new THREE.GridHelper(10, 1));
+
+loader = new THREE.JSONLoader();
+loader.load('models/untitled.json', function(geometry, materials) {
+    window.x = geometry;
+    
+    materials.forEach(function(mat) {
+        mat.skinning = true;
+    });
+
+    cube = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+    var anim = new THREE.Animation(cube, geometry.animations[0], THREE.AnimationHandler.CATMULLROM);
+    scene.add(cube);
+    anim.play();
+    
+
+    (function renderLoop() {
+        //requestAnimationFrame(renderLoop);
+        var delta = clock.getDelta();
+        THREE.AnimationHandler.update(delta);
+        renderer.render(scene, camera);
+    })();
+});
+
+/*
+var geometry = new THREE.BoxGeometry(1, 1, 1);
+var material = new THREE.MeshLambertMaterial( { color: 0xcccccc } );
+var cubeMesh = new THREE.Mesh(geometry, material);
+scene.add(cubeMesh);
+*/
 
 </script>
     </body>
