@@ -151,4 +151,4 @@
         PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
     };
 
-}(window.BigBlock = window.BigBlock || {}));
+})(window.BigBlock = window.BigBlock || {});
