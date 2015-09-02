@@ -1,6 +1,12 @@
 # vim swap files
 *.swp
 
+# OSX trash
+.DS_Store
+
+# Blender temporary
+*.blend1
+
 # node installed modules
 node_modules
 # build directory
