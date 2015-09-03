@@ -26,4 +26,4 @@
         // Point camera at player
         PRIVATE.camera.lookAt(target.position);
     };
-}());
+})();
