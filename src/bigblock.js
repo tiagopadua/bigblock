@@ -38,7 +38,7 @@
      * This is processed in build time before uglyfication
      */
 
-    // !include partials/controller.js
+    // !include partials/control.js
     // !include partials/player.js
     // !include partials/level.js
     // !include partials/setup.js
