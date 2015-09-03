@@ -9,6 +9,11 @@ function Player() {
     this.turnSpeed = 0.003; // radians/time - This must be tuned
     this.walkSpeed = 0.003; // pixels/time - This must be tuned
     this.runSpeedRatio = 2;
+
+    // Set up initial stats
+    this.strength  = 5;
+    this.dexterity = 5;
+    this.stamina   = 5; 
 }
 
 Player.prototype.animate = function(time, move, cameraMove) {
