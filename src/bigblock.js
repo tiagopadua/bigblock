@@ -57,6 +57,7 @@
         // Create a player object
         PUBLIC.player = PRIVATE.player = new Player();
         PRIVATE.scene.add(PRIVATE.player.mesh);
+        PRIVATE.scene.add(PRIVATE.player.moveTarget);
 
         // Load a level
         // TODO: select levels
@@ -64,6 +65,7 @@
         PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
         // set camera initial position
+        PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
         PUBLIC.camera = PRIVATE.camera; // TODO remover
  
         // Render first frame
@@ -135,7 +137,7 @@
         PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
 
         // Position camera
-        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.mesh, PRIVATE.cameraOffset, cameraMovement);
+        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget, cameraMovement);
 
         // Process scenario stuff
         PRIVATE.level.animate(elapsedTime, PRIVATE.player);
