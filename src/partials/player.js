@@ -16,6 +16,7 @@ function Player() {
     this.turnSpeed = 0.003; // radians/time - This must be tuned
     this.walkSpeed = 0.003; // pixels/time - This must be tuned
     this.runSpeedRatio = 2;
+    this.turnInfuenceOnCamera = 0.3; // The walk/turn for the camera to follow the character
 
     // Set up initial stats
     this.strength  = 5;
@@ -32,7 +33,7 @@ Player.prototype.animate = function(time, move, cameraMove) {
     }
 
     // Make rotation - always to the camera
-    this.moveTarget.rotateY(-frameTurnSpeed * cameraMove.x);
+    this.moveTarget.rotateY(-frameTurnSpeed * (cameraMove.x + move.x * this.turnInfuenceOnCamera));
     
     // If we don't have movement, just ignore calculations
     if (move.x === 0 && move.y === 0) {

@@ -11,12 +11,7 @@
         camera: null,
         cameraOffset: new THREE.Vector3(0, 2.5, 3), // Values must be tuned
         renderer: null,
-        controllerZero: 0.12, // Minimum movement detection (because the physical controller cannot be at perfect zero)
-        walkAxisX: 0,
-        walkAxisY: 1,
-        runButton: 12,
-        cameraAxisX: 3,
-        cameraAxisY: 4,
+        control: null,
         mainLoopIntervalId: null,
         loaded: false,
         running: false,
@@ -53,6 +48,9 @@
 
         // Create three.js objects
         setupThreeJS(container);
+
+        // Setup controls
+        PRIVATE.control = new PRIVATE.PlayerControl();
 
         // Create a player object
         PUBLIC.player = PRIVATE.player = new Player();
@@ -122,16 +120,10 @@
         PRIVATE.lastLoopTime = currentTime;
 
         // Save the character's current movement
-        var movement = {
-            x: PRIVATE.getControllerAxis(PRIVATE.walkAxisX),
-            y: PRIVATE.getControllerAxis(PRIVATE.walkAxisY),
-            run: PRIVATE.isButtonPressed(PRIVATE.runButton)
-        };
+        var movement = PRIVATE.control.getPlayerMovement();
+
         // Save the camera's current movement 
-        var cameraMovement = {
-            x: PRIVATE.getControllerAxis(PRIVATE.cameraAxisX),
-            y: PRIVATE.getControllerAxis(PRIVATE.cameraAxisY)
-        };
+        var cameraMovement = PRIVATE.control.getCameraMovement();
 
         // Process player's movements
         PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
