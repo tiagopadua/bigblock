@@ -1,4 +1,4 @@
-/* global THREEx */
+/* global PUBLIC */
 /* global PRIVATE */
 
 // !include partials/keyboard.js
@@ -29,10 +29,10 @@
                 cameraMovementRight: PUBLIC.keyboard.RIGHT,
                 cameraMovementUp: PUBLIC.keyboard.UP,
                 cameraMovementDown: PUBLIC.keyboard.DOWN,
-                run: 'shift',
-                jump: 'space',
+                run: PUBLIC.keyboard.SHIFT,
+                jump: PUBLIC.keyboard.SPACE,
                 glitch: 'r', // We call "glitching" the equivalent of "rolling" on Dark Souls
-                focus: 'tab',
+                focus: PUBLIC.keyboard.TAB,
                 attackLeft: 'q',
                 attackRight: 'e',
                 attackLeftStrong: '1',
@@ -40,12 +40,12 @@
                 interact: 'f',
         
                 // Menu and other controls
-                pause: 'esc',
-                resume: 'esc',
-                up: 'up',
-                down: 'down',
-                left: 'left',
-                right: 'right'
+                pause: PUBLIC.keyboard.ESC,
+                resume: PUBLIC.keyboard.ESC,
+                up: PUBLIC.keyboard.UP,
+                down: PUBLIC.keyboard.DOWN,
+                left: PUBLIC.keyboard.LEFT,
+                right: PUBLIC.keyboard.RIGHT
             },
             gamepad: {
                 // Dead zone for axis
