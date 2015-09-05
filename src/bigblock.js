@@ -9,7 +9,7 @@
         FOV: 75, // Field of view for the camera
         scene: null,
         camera: null,
-        cameraOffset: new THREE.Vector3(0, 2.5, 3), // Values must be tuned
+        cameraOffset: new THREE.Vector3(0, 8, 11), // Values must be tuned
         renderer: null,
         control: null,
         mainLoopIntervalId: null,
@@ -33,6 +33,7 @@
      * This is processed in build time before uglyfication
      */
 
+    // !include partials/helpers.js
     // !include partials/control.js
     // !include partials/player.js
     // !include partials/level.js
@@ -54,8 +55,10 @@
 
         // Create a player object
         PUBLIC.player = PRIVATE.player = new Player();
-        PRIVATE.scene.add(PRIVATE.player.mesh);
         PRIVATE.scene.add(PRIVATE.player.moveTarget);
+        PRIVATE.player.load(function(mesh) {
+            PRIVATE.scene.add(mesh);
+        });
 
         // Load a level
         // TODO: select levels
