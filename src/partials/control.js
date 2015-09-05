@@ -109,9 +109,10 @@
     // Checks if player should be running
     PRIVATE.PlayerControl.prototype.isRunning = function() {
         // Just call default function with correct keys
+        return false;/*
         return getButtonState(this.gamepad,
                               this.input.gamepad.run,
-                              this.input.keyboard.run);
+                              this.input.keyboard.run);*/
     };
 
     // Helper function to simulate a 'dead zone' on the center of the axis of controller
