@@ -3,9 +3,9 @@
 //  relativeCameraOffset: THREE.Vector3
 (function() {
     var cameraY = PRIVATE.cameraOffset.y;
-    var cameraHeightSpeed = 0.004;
-    var MIN_CAMERA_HEIGHT = 0.5;
-    var MAX_CAMERA_HEIGHT = 6;
+    var cameraHeightSpeed = 0.02;
+    var MIN_CAMERA_HEIGHT = 2;
+    var MAX_CAMERA_HEIGHT = 20;
 
     PRIVATE.followObjectWithCamera = function(time, target, cameraMove) {
         // Calculate input movement
@@ -22,6 +22,8 @@
         PRIVATE.camera.position.z = cameraOffset.z;
 
         // Point camera at player
-        PRIVATE.camera.lookAt(target.position);
+        var cameraTarget = target.position.clone();
+        cameraTarget.setY(2);
+        PRIVATE.camera.lookAt(cameraTarget);
     };
 })();
