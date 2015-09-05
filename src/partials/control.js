@@ -109,38 +109,26 @@
     // Checks if player should be running
     PRIVATE.PlayerControl.prototype.isRunning = function() {
         // Just call default function with correct keys
-        return false;/*
         return getButtonState(this.gamepad,
                               this.input.gamepad.run,
-                              this.input.keyboard.run);*/
+                              this.input.keyboard.run);
     };
 
     // Helper function to simulate a 'dead zone' on the center of the axis of controller
     function applyDeadZone(originalValue, deadZoneAmount) {
         return Math.abs(originalValue) < deadZoneAmount ? 0 : originalValue;
-        /*
-        if (originalValue > 0) {
-            if (originalValue < deadZoneAmount) {
-                return 0;
-            }
-            return (originalValue - deadZoneAmount) / (1 - deadZoneAmount); 
-        }
-        // originalValue <= 0
-        if (originalValue > -deadZoneAmount) {
-            return 0;
-        }
-        return (originalValue + deadZoneAmount) / (1 - deadZoneAmount);
-        */
     }
 
     // Get object with X and Y values for player movement 
     PRIVATE.PlayerControl.prototype.getPlayerMovement = function() {
         // Default value is stopped
-        var movement = {
+        /*var movement = {
             x: 0,
             y: 0,
             run: this.isRunning()
-        };
+        };*/
+        var movement = new THREE.Vector2();
+        movement.run = this.isRunning();
 
         // First check gamepad
         if (this.gamepad && this.gamepad.connected) {
@@ -155,6 +143,12 @@
                 } else if (movement.y === 0) {
                     movement.y = axisY;
                 }
+                // Normalize if it is bigger than unit vector
+                if (movement.length() > 1) {
+                    movement.normalize();
+                }
+                // Set the length considering dead zone
+                movement.deadLength = movement.length() - this.input.gamepad.deadZone;
                 // If there is movement with the gamepad, use it
                 return movement;
             }
