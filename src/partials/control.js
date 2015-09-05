@@ -116,6 +116,8 @@
 
     // Helper function to simulate a 'dead zone' on the center of the axis of controller
     function applyDeadZone(originalValue, deadZoneAmount) {
+        return Math.abs(originalValue) < deadZoneAmount ? 0 : originalValue;
+        /*
         if (originalValue > 0) {
             if (originalValue < deadZoneAmount) {
                 return 0;
@@ -127,6 +129,7 @@
             return 0;
         }
         return (originalValue + deadZoneAmount) / (1 - deadZoneAmount);
+        */
     }
 
     // Get object with X and Y values for player movement 
@@ -140,9 +143,17 @@
 
         // First check gamepad
         if (this.gamepad && this.gamepad.connected) {
-            movement.x = applyDeadZone(this.gamepad.axes[this.input.gamepad.movementX], this.input.gamepad.deadZone);
-            movement.y = applyDeadZone(this.gamepad.axes[this.input.gamepad.movementY], this.input.gamepad.deadZone);
+            var axisX = this.gamepad.axes[this.input.gamepad.movementX];
+            var axisY = this.gamepad.axes[this.input.gamepad.movementY];
+            movement.x = applyDeadZone(axisX, this.input.gamepad.deadZone);
+            movement.y = applyDeadZone(axisY, this.input.gamepad.deadZone);
             if (movement.x !== 0 || movement.y !== 0) {
+                // Soften movements near axis, if is already moving
+                if (movement.x === 0) {
+                    movement.x = axisX;
+                } else if (movement.y === 0) {
+                    movement.y = axisY;
+                }
                 // If there is movement with the gamepad, use it
                 return movement;
             }
