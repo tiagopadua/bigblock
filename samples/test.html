@@ -46,33 +46,25 @@ scene.add(new THREE.GridHelper(10, 1));
 
 loader = new THREE.JSONLoader();
 loader.load('models/player.json', function(geometry, materials) {
-    window.x = geometry;
-
     materials.forEach(function(mat) {
         mat.skinning = true;
     });
 
     cube = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-    //var anim = new THREE.Animation(cube, geometry.animations[0], THREE.AnimationHandler.CATMULLROM);
+    var anim = new THREE.Animation(cube, geometry.animations[1], THREE.AnimationHandler.CATMULLROM);
+    window.x = anim;
     scene.add(cube);
-    //anim.play();
+    anim.play();
 
     camera.lookAt(new THREE.Vector3(0, 2, 0));
 
     (function renderLoop() {
-        //requestAnimationFrame(renderLoop);
+        requestAnimationFrame(renderLoop);
         var delta = clock.getDelta();
-        //THREE.AnimationHandler.update(delta);
+        THREE.AnimationHandler.update(delta);
         renderer.render(scene, camera);
     })();
 });
-
-/*
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshLambertMaterial( { color: 0xcccccc } );
-var cubeMesh = new THREE.Mesh(geometry, material);
-scene.add(cubeMesh);
-*/
 
 </script>
     </body>
