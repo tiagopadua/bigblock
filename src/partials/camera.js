@@ -23,7 +23,7 @@
 
         // Point camera at player
         var cameraTarget = target.position.clone();
-        cameraTarget.setY(2);
+        cameraTarget.y += 2;
         PRIVATE.camera.lookAt(cameraTarget);
     };
 })();
