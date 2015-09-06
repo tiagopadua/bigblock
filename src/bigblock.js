@@ -27,7 +27,6 @@
                                   window.setTimeout(callback, 1000 / 60); // 60 fps
                               };
 
-
     /*
      * Include other parts of the code
      * This is processed in build time before uglyfication
@@ -56,25 +55,29 @@
         // Create a player object
         PUBLIC.player = PRIVATE.player = new Player();
         PRIVATE.scene.add(PRIVATE.player.moveTarget);
-        PRIVATE.player.load(function(mesh) {
+        // Load player ASYNC
+        PRIVATE.player.load().then(function(mesh) {
             PRIVATE.scene.add(mesh);
+
+            // Load a level
+            // TODO: select levels
+            PRIVATE.level = new Level(PRIVATE.player);
+            PRIVATE.level.addComponentsToScene(PRIVATE.scene);
+
+            // set camera initial position
+            PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
+            PUBLIC.camera = PRIVATE.camera; // TODO remover
+
+            // Render first frame
+            requestAnimFrame(PRIVATE.mainLoop);
+
+            // Mark things as loaded
+            PRIVATE.loaded = true;
+            
+            console.info("Finished loading BigBlock");
+        }).catch(function(reason) {
+            console.error('Could not load BigBlock', reason);
         });
-
-        // Load a level
-        // TODO: select levels
-        PRIVATE.level = new Level(PRIVATE.player);
-        PRIVATE.level.addComponentsToScene(PRIVATE.scene);
-
-        // set camera initial position
-        PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
-        PUBLIC.camera = PRIVATE.camera; // TODO remover
- 
-        // Render first frame
-        PRIVATE.lastLoopTime = window.performance.now();
-        requestAnimFrame(PRIVATE.mainLoop);
-
-        // Mark things as loaded
-        PRIVATE.loaded = true;
     };
 
     // Starts the main game engine loop
@@ -118,9 +121,7 @@
             requestAnimFrame(PRIVATE.mainLoop);
         }
 
-        var currentTime = window.performance.now();
-        var elapsedTime = currentTime - PRIVATE.lastLoopTime; // Save the time (milliseconds) since the last loop
-        PRIVATE.lastLoopTime = currentTime;
+        var elapsedTime = clock.getDelta(); // Seconds since last call
 
         // Save the character's current movement
         var movement = PRIVATE.control.getPlayerMovement();
@@ -128,8 +129,11 @@
         // Save the camera's current movement 
         var cameraMovement = PRIVATE.control.getCameraMovement();
 
+        // Animate objects
+        THREE.AnimationHandler.update(elapsedTime);
+
         // Process player's movements
-        PRIVATE.player.animate(elapsedTime, movement, cameraMovement);
+        PRIVATE.player.update(elapsedTime, movement, cameraMovement);
 
         // Position camera
         PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget, cameraMovement);
