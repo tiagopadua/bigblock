@@ -3,7 +3,7 @@
 //  relativeCameraOffset: THREE.Vector3
 (function() {
     var cameraY = PRIVATE.cameraOffset.y;
-    var cameraHeightSpeed = 0.02;
+    var cameraHeightSpeed = 20;
     var MIN_CAMERA_HEIGHT = 2;
     var MAX_CAMERA_HEIGHT = 20;
 
