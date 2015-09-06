@@ -119,6 +119,18 @@
         return Math.abs(originalValue) < deadZoneAmount ? 0 : originalValue;
     }
 
+    // Normalize the movement and set variables
+    function normalizeMovement(movement, deadZone) {
+        // Only normalize if it is bigger than unit vector
+        if (movement.length() > 1) {
+            movement.normalize();
+        }
+        // Set the length considering dead zone
+        movement.deadLength = movement.length() - (deadZone || 0);
+
+        return movement;
+    }
+
     // Get object with X and Y values for player movement 
     PRIVATE.PlayerControl.prototype.getPlayerMovement = function() {
         // Default value is stopped
@@ -131,11 +143,14 @@
         movement.run = this.isRunning();
 
         // First check gamepad
+        var checkKeyboard = true;
         if (this.gamepad && this.gamepad.connected) {
             var axisX = this.gamepad.axes[this.input.gamepad.movementX];
             var axisY = this.gamepad.axes[this.input.gamepad.movementY];
             movement.x = applyDeadZone(axisX, this.input.gamepad.deadZone);
             movement.y = applyDeadZone(axisY, this.input.gamepad.deadZone);
+
+            // If there is movement with the gamepad, use it
             if (movement.x !== 0 || movement.y !== 0) {
                 // Soften movements near axis, if is already moving
                 if (movement.x === 0) {
@@ -143,18 +158,11 @@
                 } else if (movement.y === 0) {
                     movement.y = axisY;
                 }
-                // Normalize if it is bigger than unit vector
-                if (movement.length() > 1) {
-                    movement.normalize();
-                }
-                // Set the length considering dead zone
-                movement.deadLength = movement.length() - this.input.gamepad.deadZone;
-                // If there is movement with the gamepad, use it
-                return movement;
+                checkKeyboard = false;
             }
         }
         // Then check keyboard
-        if (PUBLIC.keyboard) {
+        if (checkKeyboard && PUBLIC.keyboard) {
             if (PUBLIC.keyboard.pressed(this.input.keyboard.movementLeft)) {
                 movement.x -= 1;
             }
@@ -167,13 +175,11 @@
             if (PUBLIC.keyboard.pressed(this.input.keyboard.movementBackward)) {
                 movement.y += 1;
             }
-            // normalize speed
-            if (movement.x !== 0 && movement.y !== 0) {
-                movement.x *= Math.SIN45;
-                movement.y *= Math.COS45;
-            }
         }
-        return movement;
+
+        // Normalize, save and return
+        this.lastMovement = normalizeMovement(movement, checkKeyboard ? 0 : this.input.gamepad.deadZone);
+        return this.lastMovement;
     };
 
     // Get object with X and Y values for player movement 
@@ -206,11 +212,6 @@
             }
             if (PUBLIC.keyboard.pressed(this.input.keyboard.cameraMovementDown)) {
                 movement.y += 1;
-            }
-            // normalize speed
-            if (movement.x !== 0 && movement.y !== 0) {
-                movement.x *= Math.SIN45;
-                movement.y *= Math.COS45;
             }
         }
         return movement;
