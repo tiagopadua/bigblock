@@ -17,18 +17,18 @@ function Level(player) {
     // Create lights
     this.lights = [
         new THREE.DirectionalLight(0xffffff, 1),
-        new THREE.AmbientLight(0x404040),
-        new THREE.SpotLight(0xff5555, 10, 80, Math.PI / 2),
-        new THREE.SpotLight(0xffff55, 10, 80, Math.PI / 2),
-        new THREE.SpotLight(0x55ff55, 10, 80, Math.PI / 2),
-        new THREE.SpotLight(0x5555ff, 10, 80, Math.PI / 2)
+        new THREE.AmbientLight(0x505050),
+        new THREE.SpotLight(0xff0000, 20, 60, Math.PI / 2),
+        new THREE.SpotLight(0xffff00, 20, 60, Math.PI / 2),
+        new THREE.SpotLight(0x00ff00, 20, 60, Math.PI / 2),
+        new THREE.SpotLight(0x0000ff, 20, 60, Math.PI / 2)
     ];
 
     this.lights[0].position.set(100, 200, 100);
-    this.lights[1].position.set( 60, 15,  60);
-    this.lights[2].position.set( 60, 15, -60);
-    this.lights[3].position.set(-60, 15, -60);
-    this.lights[4].position.set(-60, 15,  60);
+    this.lights[2].position.set( 60, 15,  60);
+    this.lights[3].position.set( 60, 15, -60);
+    this.lights[4].position.set(-60, 15, -60);
+    this.lights[5].position.set(-60, 15,  60);
 
     this.lights[0].shadowMapWidth = 4096;
     this.lights[0].shadowMapHeight = 4096;

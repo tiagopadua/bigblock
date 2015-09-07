@@ -1,3 +1,4 @@
+/* global PRIVATE */
 /* global Promise */
 /* global THREE */
 
@@ -122,7 +123,7 @@ Player.prototype.load = function() {
             // Create the mesh
             _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
             _this.mesh.castShadow = true;
-            _this.mesh.receiveShadow = true;
+            //_this.mesh.receiveShadow = true;
 
             // Set up bones
             assignBones(_this.mesh.skeleton.bones);
