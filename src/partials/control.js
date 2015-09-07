@@ -31,8 +31,8 @@
         this.right = setDefaultToggleValues(3, PUBLIC.keyboard.RIGHT);
         this.run   = setDefaultToggleValues(12, PUBLIC.keyboard.SHIFT);
 
-        this.yes = setDefaultToggleValues(9, 'y');
-        this.no  = setDefaultToggleValues(8, 'n');
+        this.leftAttack = setDefaultToggleValues(8, 'q');
+        this.rightAttack = setDefaultToggleValues(9, 'e');
 
         // Save the current gamepad
         this.gamepad = (function() {
@@ -74,7 +74,7 @@
             },
             gamepad: {
                 // Dead zone for axis
-                deadZone: 0.15, // TODO: adjust this value
+                deadZone: 0.27, // TODO: adjust this value
 
                 // In-game player actions
                 movementX: 0, // index of axis
@@ -165,8 +165,8 @@
         this.updateButtonState(this.left);
         this.updateButtonState(this.right);
 
-        this.updateButtonState(this.yes);
-        this.updateButtonState(this.no);
+        this.updateButtonState(this.leftAttack);
+        this.updateButtonState(this.rightAttack);
     };
 
     // Get object with X and Y values for player movement 

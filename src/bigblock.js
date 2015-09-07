@@ -9,7 +9,7 @@
         FOV: 75, // Field of view for the camera
         scene: null,
         camera: null,
-        cameraOffset: new THREE.Vector3(0, 8, 11), // Values must be tuned
+        cameraOffset: new THREE.Vector3(0, 6, 11), // Values must be tuned
         renderer: null,
         control: null,
         mainLoopIntervalId: null,
@@ -35,6 +35,7 @@
     // !include partials/helpers.js
     // !include partials/control.js
     // !include partials/player.js
+    // !include partials/weapon.js
     // !include partials/level.js
     // !include partials/setup.js
     // !include partials/camera.js
@@ -64,9 +65,16 @@
             PRIVATE.scene.add(mesh);
 
             // Load a level
-            // TODO: select levels
+            // TODO: select levels from save file or new game
             PRIVATE.level = new Level(PRIVATE.player);
             PRIVATE.level.addComponentsToScene(PRIVATE.scene);
+
+            // Load weapon
+            // TODO: loading default; must read save file or new game option
+            var weaponTest = new BigSwordTest();
+            weaponTest.load(function(weapon) {
+                PRIVATE.player.attachWeaponRight(weapon);
+            });
 
             // set camera initial position
             PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
@@ -78,7 +86,7 @@
             // Render first frame
             requestAnimFrame(PRIVATE.mainLoop);
             console.info("Finished loading BigBlock");
-            
+
             if (autoStart) {
                 PUBLIC.start();
             }

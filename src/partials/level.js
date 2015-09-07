@@ -17,10 +17,11 @@ function Level(player) {
     // Create lights
     this.lights = [
         new THREE.DirectionalLight(0xffffff, 1),
-        new THREE.SpotLight(0xff5555, 7, 150, Math.PI / 2),
-        new THREE.SpotLight(0xffff55, 7, 150, Math.PI / 2),
-        new THREE.SpotLight(0x55ff55, 7, 150, Math.PI / 2),
-        new THREE.SpotLight(0x5555ff, 7, 150, Math.PI / 2)
+        new THREE.AmbientLight(0x404040),
+        new THREE.SpotLight(0xff5555, 10, 80, Math.PI / 2),
+        new THREE.SpotLight(0xffff55, 10, 80, Math.PI / 2),
+        new THREE.SpotLight(0x55ff55, 10, 80, Math.PI / 2),
+        new THREE.SpotLight(0x5555ff, 10, 80, Math.PI / 2)
     ];
 
     this.lights[0].position.set(100, 200, 100);
@@ -40,7 +41,7 @@ function Level(player) {
     this.lights[0].shadowCameraBottom = -50;//-2;
   
     this.lights[0].castShadow = true;
-    this.lights[0].onlyShadow = true;
+    //this.lights[0].onlyShadow = true;
     this.lights[0].shadowDarkness = 0.8;
 
     this.lights[0].target = PRIVATE.player.mesh;

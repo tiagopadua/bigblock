@@ -3,7 +3,7 @@
 
 function Player() {
     // Path to model file
-    this.model = 'models/player.json';
+    this.modelFile = 'models/player.json';
 
     // Helper object to make movement
     this.moveTarget = new THREE.Object3D();
@@ -20,6 +20,10 @@ function Player() {
     this.strength  = 5;
     this.dexterity = 5;
     this.stamina   = 5;
+
+    // Initial weapons
+    this.weaponRight = null;
+    this.weaponLeft = null;
 
     // Just create bones variables
     this.bones = {
@@ -109,7 +113,7 @@ Player.prototype.load = function() {
 
         // Load model
         var loader = new THREE.JSONLoader();
-        loader.load(_this.model, function(geometry, materials) {
+        loader.load(_this.modelFile, function(geometry, materials) {
             // Set material flag to follow bones
             materials.forEach(function(mat) {
                 mat.skinning = true;
@@ -118,6 +122,7 @@ Player.prototype.load = function() {
             // Create the mesh
             _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
             _this.mesh.castShadow = true;
+            _this.mesh.receiveShadow = true;
 
             // Set up bones
             assignBones(_this.mesh.skeleton.bones);
@@ -129,16 +134,36 @@ Player.prototype.load = function() {
     });
 };
 
+// Simply attach weapon to RIGHT hand
+Player.prototype.attachWeaponRight = function(weapon) {
+    if (!weapon || !this.bones.rightHand) {
+        return;
+    }
+
+    this.bones.rightHand.add(weapon.mesh);
+    this.rightHandWeapon = weapon;
+};
+
+// Simply attach weapon to LEFT hand
+Player.prototype.attachWeaponLeft = function(weapon) {
+    if (!weapon || !this.bones.rightHand) {
+        return;
+    }
+
+    this.bones.leftHand.add(weapon.mesh);
+    this.leftHandWeapon = weapon;
+};
+
 Player.prototype.update = function(time) {
     // Check generic animations
     // "No"
-    if (PRIVATE.control.no.pressed && PRIVATE.control.no.changed) {
+    if (PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) {
         if (this.animations.no && !this.animations.no.isPlaying) {
             this.animations.no.play();
         }
     }
     // "Yes"
-    if (PRIVATE.control.yes.pressed && PRIVATE.control.yes.changed) {
+    if (PRIVATE.control.rightAttack.pressed && PRIVATE.control.rightAttack.changed) {
         if (this.animations.yes && !this.animations.yes.isPlaying) {
             this.animations.yes.play();
         }
@@ -161,7 +186,6 @@ Player.prototype.update = function(time) {
     // If we don't have movement, just ignore calculations
     if (PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) {
         this.bones.base.rotation.x = Math.HALFPI;
-        //this.bones.base.rotation.y = 0;
         this.bones.top.rotation.x = 0;
         return;
     }
