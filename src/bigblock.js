@@ -41,9 +41,13 @@
 
 
     // Loads all necessary data to start the loop
-    PUBLIC.load = function(container) {
+    PUBLIC.load = function(container, autoStart) {
         if (!(container instanceof HTMLElement)) {
             console.error('Container must be a DOM element');
+        }
+
+        if (typeof(autoStart) !== 'boolean') {
+            autoStart = true; // Default is start automatically
         }
 
         // Create three.js objects
@@ -73,8 +77,11 @@
 
             // Render first frame
             requestAnimFrame(PRIVATE.mainLoop);
-
             console.info("Finished loading BigBlock");
+            
+            if (autoStart) {
+                PUBLIC.start();
+            }
         }).catch(function(reason) {
             console.error('Could not load BigBlock', reason);
         });

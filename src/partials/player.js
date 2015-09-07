@@ -15,7 +15,6 @@ function Player() {
     this.turnInfluenceOnCamera = 0.3; // The walk/turn for the camera to follow the character
 
     this.moveTiltFactor = 0.15;
-    //this.turnTiltFactor = 2;
 
     // Set up initial stats
     this.strength  = 5;
@@ -39,9 +38,6 @@ function Player() {
         yes: null,
         no: null
     };
-
-    // Save last direction pointed
-    //this.lastDirection = 0;
 }
 
 Player.prototype.load = function() {
@@ -132,24 +128,7 @@ Player.prototype.load = function() {
         });
     });
 };
-/*
-Player.prototype.getDeltaDirection = function(currentDirection) {
-    var dx = this.moveTarget.position.x - this.mesh.position.x;
-    var dz = this.moveTarget.position.z - this.mesh.position.z;
 
-    var angle = Math.atan2(dz, dx);
-    var dAngle = angle - this.lastDirection;
-    this.lastDirection = angle;
-
-    if (dAngle > Math.TWOPI) {
-        dAngle -= Math.TWOPI;
-    } else if (dAngle < -Math.TWOPI) {
-        dAngle += Math.TWOPI;
-    }
-
-    return dAngle;
-};
-*/
 Player.prototype.update = function(time) {
     // Check generic animations
     // "No"
@@ -195,8 +174,6 @@ Player.prototype.update = function(time) {
     this.mesh.lookAt(this.moveTarget.position);
 
     // Add tilt movement
-    //var turnTiltAngle = this.getDeltaDirection() * this.turnTiltFactor;
-    //this.bones.base.rotation.y = turnTiltAngle;
     this.bones.base.rotation.x = Math.HALFPI + moveTiltAngle;
     this.bones.top.rotation.x = -moveTiltAngle/2;
 
