@@ -11,6 +11,37 @@ function Damage(dPhysical, dElectric, dFire) {
     this.fire = 0;
 }
 
+// Base class to load model
+function Equipment() {
+    this.name = "null";
+
+    // Model
+    this.modelFile = null;
+    this.mesh = null; // To store the loaded mesh
+}
+
+// Load the file
+Equipment.prototype.load = function(callback) {
+    // To help with async functions
+    var _this = this;
+
+    // Load model
+    var loader = new THREE.JSONLoader();
+    loader.load(this.modelFile, function(geometry, materials) {
+        // Create the mesh
+        _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+        _this.mesh.castShadow = true;
+
+        console.info('Loaded weapon', _this.modelFile); 
+
+        // callback
+        if (typeof(callback) === 'function') {
+            callback(_this);
+        }
+    });
+};
+
+
 // Base weapon
 function Weapon() {
     // Set the damage object
@@ -30,32 +61,29 @@ function Weapon() {
     this.damageScale = {
         strength: 1
     };
-
-    // Model
-    this.modelFile = null;
-    this.mesh = null; // To store the loaded mesh
 }
 
-// Load the file
-Weapon.prototype.load = function(callback) {
-    // To help with async functions
-    var _this = this;
+// Inherit
+Weapon.prototype = new Equipment();
 
-    // Load model
-    var loader = new THREE.JSONLoader();
-    loader.load(this.modelFile, function(geometry, materials) {
-        // Create the mesh
-        _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-        _this.mesh.castShadow = true;
 
-        console.info('Loaded weapon', _this.modelFile); 
+// Base shield
+function Shield() {
+    // Set basic parameters
+    this.stability = 0;
+}
 
-        // callback
-        if (typeof(callback) === 'function') {
-            callback(_this);
-        }
-    });
-};
+// Inherit
+Shield.prototype = new Equipment();
+
+// Example shield for testing
+function BasicShield() {
+    this.stability = 5;
+    this.modelFile = 'models/shield1.json';
+}
+
+// Inherit weapon
+BasicShield.prototype = new Weapon();
 
 
 // Example weapon for testing

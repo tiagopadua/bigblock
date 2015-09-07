@@ -141,24 +141,24 @@ Player.prototype.load = function() {
     });
 };
 
-// Simply attach weapon to RIGHT hand
-Player.prototype.attachWeaponRight = function(weapon) {
-    if (!weapon || !this.bones.rightHand) {
+// Simply attach equipment to RIGHT hand
+Player.prototype.attachEquipmentRight = function(equipment) {
+    if (!equipment || !this.bones.rightHand) {
         return;
     }
 
-    this.bones.rightHand.add(weapon.mesh);
-    this.rightHandWeapon = weapon;
+    this.bones.rightHand.add(equipment.mesh);
+    this.rightHandWeapon = equipment;
 };
 
-// Simply attach weapon to LEFT hand
-Player.prototype.attachWeaponLeft = function(weapon) {
-    if (!weapon || !this.bones.rightHand) {
+// Simply attach equipment to LEFT hand
+Player.prototype.attachEquipmentLeft = function(equipment) {
+    if (!equipment || !this.bones.rightHand) {
         return;
     }
 
-    this.bones.leftHand.add(weapon.mesh);
-    this.leftHandWeapon = weapon;
+    this.bones.leftHand.add(equipment.mesh);
+    this.leftHandWeapon = equipment;
 };
 
 Player.prototype.update = function(time) {

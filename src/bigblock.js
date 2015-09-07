@@ -69,11 +69,15 @@
             PRIVATE.level = new Level(PRIVATE.player);
             PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
-            // Load weapon
+            // Load weapon and shield
             // TODO: loading default; must read save file or new game option
             var weaponTest = new BigSwordTest();
             weaponTest.load(function(weapon) {
-                PRIVATE.player.attachWeaponRight(weapon);
+                PRIVATE.player.attachEquipmentRight(weapon);
+            });
+            var shieldTest = new BasicShield();
+            shieldTest.load(function(shield) {
+                PRIVATE.player.attachEquipmentLeft(shield);
             });
 
             // set camera initial position
