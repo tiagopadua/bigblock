@@ -1,3 +1,4 @@
+/* global THREE */
 /* global PUBLIC */
 /* global PRIVATE */
 
@@ -5,9 +6,30 @@
 
 (function() {
 
-    Math.SIN45 = Math.COS45 = Math.sin(Math.PI / 4);
-
     PRIVATE.PlayerControl = function() {
+
+        // Store the control's current values
+        // Movement info
+        this.movement = new THREE.Vector2(0, 0);
+        this.movement.deadLength = 0;
+        this.cameraMovement = {
+            x: 0,
+            y: 0
+        };
+        // Toggle buttons' info
+        function setDefaultToggleValues(propNameGamepad, propNameKeyboard) {
+            return {
+                pressed: false,
+                changed: false,
+                gamepadButtonId: propNameGamepad,
+                keyboardKeyId: propNameKeyboard
+            };
+        }
+        this.up    = setDefaultToggleValues(0, PUBLIC.keyboard.UP);
+        this.down  = setDefaultToggleValues(1, PUBLIC.keyboard.DOWN);
+        this.left  = setDefaultToggleValues(2, PUBLIC.keyboard.LEFT);
+        this.right = setDefaultToggleValues(3, PUBLIC.keyboard.RIGHT);
+        this.run   = setDefaultToggleValues(12, PUBLIC.keyboard.SHIFT);
 
         // Save the current gamepad
         this.gamepad = (function() {
@@ -90,28 +112,27 @@
         });
     };
 
+    // Generic function to set if button value was changed
+    function changeButtonPressedValue(button, newPressed) {
+        button.changed = (button.pressed != newPressed); // old value != new
+        button.pressed = newPressed;
+        return button;
+    }
+
     // Generic function to check a gamepad button or keyboard
-    function getButtonState(gamepad, buttonIndex, keyIndex) {
+    PRIVATE.PlayerControl.prototype.updateButtonState = function(button) {
         // Check gamepad button status
-        if (gamepad && gamepad.connected) {
-            if (gamepad.buttons[buttonIndex].pressed) { 
-                return true;
+        if (this.gamepad && this.gamepad.connected) {
+            if (this.gamepad.buttons[button.gamepadButtonId].pressed) { 
+                return changeButtonPressedValue(button, true);
             }
             // If not pressed, must check keyboard before returning
         }
         // Now check keyboard status
         if (PUBLIC.keyboard) {
-            return PUBLIC.keyboard.pressed[keyIndex];
+            return changeButtonPressedValue(button, PUBLIC.keyboard.pressed[button.keyboardKeyId]);
         }
-        return false; // Default not pressed
-    }
-
-    // Checks if player should be running
-    PRIVATE.PlayerControl.prototype.isRunning = function() {
-        // Just call default function with correct keys
-        return getButtonState(this.gamepad,
-                              this.input.gamepad.run,
-                              this.input.keyboard.run);
+        return changeButtonPressedValue(button, false); // Default not pressed
     };
 
     // Helper function to simulate a 'dead zone' on the center of the axis of controller
@@ -131,16 +152,20 @@
         return movement;
     }
 
+    // Read every control input and store it
+    PRIVATE.PlayerControl.prototype.update = function() {
+        this.movement = this.getPlayerMovement();
+        this.cameraMovement = this.getCameraMovement();
+        this.updateButtonState(this.run);
+        this.updateButtonState(this.up);
+        this.updateButtonState(this.down);
+        this.updateButtonState(this.left);
+        this.updateButtonState(this.right);
+    };
+
     // Get object with X and Y values for player movement 
     PRIVATE.PlayerControl.prototype.getPlayerMovement = function() {
-        // Default value is stopped
-        /*var movement = {
-            x: 0,
-            y: 0,
-            run: this.isRunning()
-        };*/
         var movement = new THREE.Vector2();
-        movement.run = this.isRunning();
 
         // First check gamepad
         var checkKeyboard = true;

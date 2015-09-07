@@ -100,10 +100,12 @@ Player.prototype.load = function() {
                     case 'No':
                         _this.animations.no = new THREE.Animation(_this.mesh, animation, THREE.AnimationHandler.CATMULLROM);
                         _this.animations.no.loop = false;
+                        console.info('Loaded player animation "No"');
                         break;
                     case 'Yes':
                         _this.animations.yes = new THREE.Animation(_this.mesh, animation, THREE.AnimationHandler.CATMULLROM);
                         _this.animations.yes.loop = false;
+                        console.info('Loaded player animation "Yes"');
                         break;
                 }
             }
@@ -148,30 +150,37 @@ Player.prototype.getDeltaDirection = function(currentDirection) {
     return dAngle;
 };
 */
-Player.prototype.update = function(time, move, cameraMove) {
+Player.prototype.update = function(time) {
+    // Check generic animations
+    // "No"
+    if (PRIVATE.control.left.pressed && PRIVATE.control.left.changed) {
+        if (this.animations.no && !this.animations.no.isPlaying) {
+            this.animations.no.play();
+        }
+    }
+    // "Yes"
+    if (PRIVATE.control.right.pressed && PRIVATE.control.right.changed) {
+        if (this.animations.yes && !this.animations.yes.isPlaying) {
+            this.animations.yes.play();
+        }
+    }
+
     // Set base speeds
     var frameTurnSpeed = this.turnSpeed * time;
     var frameWalkSpeed = this.walkSpeed * time;
-    var moveTiltAngle = move.deadLength * this.moveTiltFactor;
-    if (move.run) {
+    var moveTiltAngle = PRIVATE.control.movement.deadLength * this.moveTiltFactor;
+    var turnForCamera = PRIVATE.control.movement.x * this.turnInfluenceOnCamera;
+    if (PRIVATE.control.run.pressed) {
         frameWalkSpeed *= this.runSpeedRatio;
         moveTiltAngle *= this.runSpeedRatio;
+        turnForCamera *= this.runSpeedRatio;
     }
 
-    // Calculate movement influence on camera turn angle
-    var turnForCamera = move.x * this.turnInfluenceOnCamera;
-    if (move.y > 0) {
-        if (turnForCamera > 0) {
-            turnForCamera += move.y * this.turnInfluenceOnCamera;
-        } else {
-            turnForCamera -= move.y * this.turnInfluenceOnCamera;
-        }
-    }
     // Make rotation - always based on the camera
-    this.moveTarget.rotateY(-frameTurnSpeed * (cameraMove.x + turnForCamera));
+    this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
 
     // If we don't have movement, just ignore calculations
-    if (move.x === 0 && move.y === 0) {
+    if (PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) {
         this.bones.base.rotation.x = Math.HALFPI;
         //this.bones.base.rotation.y = 0;
         this.bones.top.rotation.x = 0;
@@ -179,8 +188,8 @@ Player.prototype.update = function(time, move, cameraMove) {
     }
 
     // Make movement
-    this.moveTarget.translateZ(frameWalkSpeed * move.y);
-    this.moveTarget.translateX(frameWalkSpeed * move.x);
+    this.moveTarget.translateZ(frameWalkSpeed * PRIVATE.control.movement.y);
+    this.moveTarget.translateX(frameWalkSpeed * PRIVATE.control.movement.x);
 
     // Set rotation
     this.mesh.lookAt(this.moveTarget.position);

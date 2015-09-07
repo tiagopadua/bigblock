@@ -68,12 +68,12 @@
             PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
             PUBLIC.camera = PRIVATE.camera; // TODO remover
 
+            // Mark things as loaded
+            PRIVATE.loaded = true;
+
             // Render first frame
             requestAnimFrame(PRIVATE.mainLoop);
 
-            // Mark things as loaded
-            PRIVATE.loaded = true;
-            
             console.info("Finished loading BigBlock");
         }).catch(function(reason) {
             console.error('Could not load BigBlock', reason);
@@ -91,7 +91,6 @@
             return;
         }
         PRIVATE.running = true;
-        PRIVATE.lastLoopTime = window.performance.now();
         requestAnimFrame(PRIVATE.mainLoop);
     };
 
@@ -123,27 +122,24 @@
 
         var elapsedTime = clock.getDelta(); // Seconds since last call
 
-        // Save the character's current movement
-        var movement = PRIVATE.control.getPlayerMovement();
-
-        // Save the camera's current movement 
-        var cameraMovement = PRIVATE.control.getCameraMovement();
+        // Update the control's input status
+        PRIVATE.control.update();
 
         // Animate objects
         THREE.AnimationHandler.update(elapsedTime);
 
         // Process player's movements
-        PRIVATE.player.update(elapsedTime, movement, cameraMovement);
+        PRIVATE.player.update(elapsedTime);
 
         // Position camera
-        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget, cameraMovement);
+        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget);
 
         // Process scenario stuff
         PRIVATE.level.animate(elapsedTime, PRIVATE.player);
 
         // Call user's function
         try {
-            PUBLIC.loop(elapsedTime, movement, cameraMovement);
+            PUBLIC.loop(elapsedTime, PRIVATE.control.movement, PRIVATE.control.cameraMovement);
         } catch (e) {
             // Ok; just ignore user exceptions
         }
