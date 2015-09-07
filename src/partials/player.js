@@ -41,7 +41,8 @@ function Player() {
     // Save the animations
     this.animations = {
         yes: null,
-        no: null
+        no: null,
+        attackRight1: null
     };
 }
 
@@ -108,6 +109,11 @@ Player.prototype.load = function() {
                         _this.animations.yes.loop = false;
                         console.info('Loaded player animation "Yes"');
                         break;
+                    case 'AttackRight1':
+                        _this.animations.attackRight1 = new THREE.Animation(_this.mesh, animation, THREE.AnimationHandler.CATMULLROM);
+                        _this.animations.attackRight1.loop = false;
+                        console.info('Loaded player animation "AttackRight1"');
+                        break;
                 }
             }
         }
@@ -163,10 +169,10 @@ Player.prototype.update = function(time) {
             this.animations.no.play();
         }
     }
-    // "Yes"
+    // "Attack right 1"
     if (PRIVATE.control.rightAttack.pressed && PRIVATE.control.rightAttack.changed) {
-        if (this.animations.yes && !this.animations.yes.isPlaying) {
-            this.animations.yes.play();
+        if (this.animations.attackRight1 && !this.animations.attackRight1.isPlaying) {
+            this.animations.attackRight1.play();
         }
     }
 
