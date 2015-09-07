@@ -164,7 +164,8 @@ Player.prototype.attachWeaponLeft = function(weapon) {
 Player.prototype.update = function(time) {
     // Check generic animations
     // "No"
-    if (PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) {
+    if ((PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) ||
+        (PRIVATE.control.leftAttackStrong.pressed && PRIVATE.control.leftAttackStrong.changed)) {
         if (this.animations.no && !this.animations.no.isPlaying) {
             this.animations.no.play();
         }
