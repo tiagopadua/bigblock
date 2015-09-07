@@ -153,13 +153,13 @@ Player.prototype.getDeltaDirection = function(currentDirection) {
 Player.prototype.update = function(time) {
     // Check generic animations
     // "No"
-    if (PRIVATE.control.left.pressed && PRIVATE.control.left.changed) {
+    if (PRIVATE.control.no.pressed && PRIVATE.control.no.changed) {
         if (this.animations.no && !this.animations.no.isPlaying) {
             this.animations.no.play();
         }
     }
     // "Yes"
-    if (PRIVATE.control.right.pressed && PRIVATE.control.right.changed) {
+    if (PRIVATE.control.yes.pressed && PRIVATE.control.yes.changed) {
         if (this.animations.yes && !this.animations.yes.isPlaying) {
             this.animations.yes.play();
         }

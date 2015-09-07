@@ -31,6 +31,9 @@
         this.right = setDefaultToggleValues(3, PUBLIC.keyboard.RIGHT);
         this.run   = setDefaultToggleValues(12, PUBLIC.keyboard.SHIFT);
 
+        this.yes = setDefaultToggleValues(9, 'y');
+        this.no  = setDefaultToggleValues(8, 'n');
+
         // Save the current gamepad
         this.gamepad = (function() {
             if (typeof(navigator.getGamepads) !== 'function') {
@@ -130,7 +133,7 @@
         }
         // Now check keyboard status
         if (PUBLIC.keyboard) {
-            return changeButtonPressedValue(button, PUBLIC.keyboard.pressed[button.keyboardKeyId]);
+            return changeButtonPressedValue(button, PUBLIC.keyboard.pressed(button.keyboardKeyId));
         }
         return changeButtonPressedValue(button, false); // Default not pressed
     };
@@ -161,6 +164,9 @@
         this.updateButtonState(this.down);
         this.updateButtonState(this.left);
         this.updateButtonState(this.right);
+
+        this.updateButtonState(this.yes);
+        this.updateButtonState(this.no);
     };
 
     // Get object with X and Y values for player movement 
