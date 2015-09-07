@@ -7,9 +7,9 @@
     var MIN_CAMERA_HEIGHT = 2;
     var MAX_CAMERA_HEIGHT = 20;
 
-    PRIVATE.followObjectWithCamera = function(time, target, cameraMove) {
+    PRIVATE.followObjectWithCamera = function(time, target) {
         // Calculate input movement
-        cameraY += cameraMove.y * cameraHeightSpeed * time;
+        cameraY += PRIVATE.control.cameraMovement.y * cameraHeightSpeed * time;
 
         // Constrain movement
         cameraY = Math.max(MIN_CAMERA_HEIGHT, Math.min(MAX_CAMERA_HEIGHT, cameraY));
