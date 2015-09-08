@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <head>
+        <title>THREE.js test</title>
+    <style>
+body {
+    margin: 0;
+}
+
+#container {
+    width: 1000px;
+    height: 600px;
+}
+
+.bb-hud {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+}
+
+.bb-health {
+    width: 200px;
+    height: 12px;
+    border: 1px solid #555;
+    background: #f0201c;
+    box-shadow: 0 0 20px 0 #888;
+}
+
+.bb-stamina {
+    width: 150px;
+    height: 12px;
+    border: 1px solid #555;
+    background: #20c01c;
+    box-shadow: 0 0 20px 0 #888;
+}
+
+    </style>
+    </head>
+    <body>
+        <div id="container">
+            <div class="bb-hud">
+                <div class="bb-health"></div>
+                <div class="bb-stamina"></div>
+            </div>
+        </div>
+
+<script src="http://threejs.org/build/three.min.js"></script>
+<script src="../build/bigblock.min.js"></script>
+<script type="text/javascript">
+    var container = document.getElementById('container'); 
+    BigBlock.load(container);
+</script>
+
+    </body>
+</html>
