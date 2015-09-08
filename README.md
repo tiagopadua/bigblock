@@ -8,7 +8,7 @@ Try it here: [http://bigblock.tiagopadua.com/samples](http://bigblock.tiagopadua
 
 ## Dependencies
 
-We're currently using only [http://threejs.org/](three.js).
+We're currently using only [three.js](http://threejs.org/).
 
 On our sample pages we load it directly from [http://threejs.org/build/three.min.js](http://threejs.org/build/three.min.js)
 
