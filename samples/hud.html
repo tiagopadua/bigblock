@@ -19,20 +19,21 @@ body {
     top: 50px;
 }
 
-.bb-health {
-    width: 200px;
+.bb-bar-base {
     height: 12px;
     border: 1px solid #555;
-    background: #f0201c;
+    border-radius: 2px;
     box-shadow: 0 0 20px 0 #888;
+}
+
+.bb-health {
+    width: 200px;
+    background: #f0201c;
 }
 
 .bb-stamina {
     width: 150px;
-    height: 12px;
-    border: 1px solid #555;
     background: #20c01c;
-    box-shadow: 0 0 20px 0 #888;
 }
 
     </style>
@@ -40,8 +41,8 @@ body {
     <body>
         <div id="container">
             <div class="bb-hud">
-                <div class="bb-health"></div>
-                <div class="bb-stamina"></div>
+                <div class="bb-bar-base bb-health"></div>
+                <div class="bb-bar-base bb-stamina"></div>
             </div>
         </div>
 
