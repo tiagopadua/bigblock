@@ -6,6 +6,12 @@ This is an engine written in JavaScript, for web browser games, using WebGL.
 
 Try it here: [http://bigblock.tiagopadua.com/samples](http://bigblock.tiagopadua.com/samples)
 
+## Dependencies
+
+We're currently using only [http://threejs.org/](three.js).
+
+On our sample pages we load it directly from [http://threejs.org/build/three.min.js](http://threejs.org/build/three.min.js)
+
 ## Building
 Requirements:
 * [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
