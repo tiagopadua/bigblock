@@ -58,12 +58,21 @@ module.exports = function(grunt) {
                     'build/<%= pkg.name %>.min.js': ['build/<%= pkg.name %>.js']
                 }
             }
+        },
+        shell: {
+            publish: {
+                // OK, nobody have my private key
+                // TODO: receive the last value (destination) as grunt command-line argument (if possible)
+                command: 'scp -r -i ~/dev/aws/ec2-private.pem samples/* ec2-user@ec2-52-21-171-112.compute-1.amazonaws.com:~/bigblock/samples/'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-shell');
 
     grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    grunt.registerTask('publish', ['default', 'shell:publish']);
 };
