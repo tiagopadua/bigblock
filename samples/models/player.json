@@ -2,30 +2,27 @@
     "normals": [0.707083,0,0.707083,0.577349,-0.577349,0.577349,0.577349,-0.577349,-0.577349,0.707083,0,-0.707083,-0.707083,0,0.707083,0.577349,0.577349,0.577349,-0.577349,0.577349,0.577349,-0.577349,-0.577349,-0.577349,-0.707083,0,-0.707083,0.577349,0.577349,-0.577349,-0.577349,0.577349,-0.577349,-0.577349,-0.577349,0.577349,-0.577349,0.577349,0.577319,-0.577349,0.577319,-0.577349,0.577319,0.577349,-0.577349,0.577319,-0.577349,-0.577349,0.577349,0.577349,0.577319],
     "skinIndices": [7,0,7,0,7,0,7,0,1,0,1,0,1,0,2,1,2,1,2,1,2,1,1,0,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2],
     "materials": [{
-        "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
-        "colorDiffuse": [0.8,0.8,0.8],
-        "transparent": false,
-        "colorAmbient": [0.8,0.8,0.8],
-        "visible": true,
-        "mapSpecularAnisotropy": 1,
-        "mapSpecular": "player2.png",
-        "DbgColor": 15658734,
-        "mapDiffuseAnisotropy": 1,
-        "mapSpecularWrap": ["RepeatWrapping","RepeatWrapping"],
-        "depthTest": true,
-        "specularCoef": 20,
-        "mapDiffuse": "player2.png",
-        "DbgName": "Material",
         "opacity": 1,
         "DbgIndex": 0,
-        "depthWrite": true,
+        "depthTest": true,
+        "colorDiffuse": [0.8,0.8,0.8],
         "colorEmissive": [0,0,0],
-        "mapSpecularRepeat": [1,1],
+        "colorAmbient": [0.8,0.8,0.8],
+        "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
         "shading": "phong",
+        "transparent": true,
+        "visible": true,
         "blending": "NormalBlending",
-        "mapDiffuseRepeat": [1,1],
+        "DbgColor": 15658734,
+        "mapDiffuseAnisotropy": 1,
         "colorSpecular": [0.2,0.2,0.2],
-        "wireframe": false
+        "mapDiffuseRepeat": [1,1],
+        "depthWrite": true,
+        "wireframe": false,
+        "specularCoef": 20,
+        "mapDiffuse": "player2.png",
+        "mapAlpha": "playerAlphaMap.png",
+        "DbgName": "Material"
     }],
     "animations": [{
         "name": "AttackRight1",
@@ -6180,5 +6177,5 @@
         "type": "Geometry"
     },
     "vertices": [1,0.29361,1,-1,0.29361,1,-1,0.29361,-1,1,0.29361,-1,0.999999,2.29361,1,-1,2.29361,-1,-1,2.29361,0.999999,1,4.29361,-1,0.999999,4.29361,1,-1,4.29361,-1,-1,4.29361,0.999999,1,2.29361,-0.999999,0.060969,3.4748,1.0414,0.060969,3.73345,1.0414,0.060969,3.4748,0.996846,0.060969,3.73345,0.996846,0.128134,3.4748,1.0414,0.128134,3.73345,1.0414,0.128134,3.4748,0.996846,0.128134,3.73345,0.996846,-0.139031,3.4748,1.0414,-0.139031,3.73345,1.0414,-0.139031,3.4748,0.996846,-0.139031,3.73345,0.996846,-0.071866,3.4748,1.0414,-0.071866,3.73345,1.0414,-0.071866,3.4748,0.996846,-0.071866,3.73345,0.996846],
-    "name": "CubeGeometry.3"
+    "name": "CubeGeometry.5"
 }

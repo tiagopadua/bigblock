@@ -124,6 +124,9 @@ Player.prototype.load = function() {
             // Set material flag to follow bones
             materials.forEach(function(mat) {
                 mat.skinning = true;
+                mat.side = THREE.DoubleSide;
+                mat.depthWrite = false;
+                //mat.alphaTest = 0.5;
             });
 
             // Create the mesh
