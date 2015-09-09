@@ -17,7 +17,7 @@ function Level(player) {
     // Create lights
     this.lights = [
         new THREE.DirectionalLight(0xffffff, 1),
-        new THREE.AmbientLight(0x505050),
+        new THREE.AmbientLight(0xa0a0a0),
         new THREE.SpotLight(0xff0000, 20, 60, Math.PI / 2),
         new THREE.SpotLight(0xffff00, 20, 60, Math.PI / 2),
         new THREE.SpotLight(0x00ff00, 20, 60, Math.PI / 2),

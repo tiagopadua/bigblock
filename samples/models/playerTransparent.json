@@ -5,24 +5,23 @@
         "opacity": 1,
         "DbgIndex": 0,
         "depthTest": true,
-        "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
         "colorDiffuse": [0.8,0.8,0.8],
         "colorEmissive": [0,0,0],
-        "mapLightRepeat": [1,1],
         "colorAmbient": [0.8,0.8,0.8],
-        "doubleSided": true,
+        "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
         "shading": "phong",
         "transparent": true,
         "visible": true,
         "blending": "NormalBlending",
         "DbgColor": 15658734,
-        "colorSpecular": [0.2,0.2,0.2],
-        "mapLightAnisotropy": 1,
-        "mapDiffuse": "player2.png",
-        "mapAlpha": "playerAlphaMap.png",
-        "depthWrite": false,
+        "mapDiffuseAnisotropy": 1,
+        "colorSpecular": [0.7,0.7,0.7],
+        "mapDiffuseRepeat": [1,1],
+        "depthWrite": true,
         "wireframe": false,
         "specularCoef": 20,
+        "mapDiffuse": "player2.png",
+        "mapAlpha": "playerAlphaMap.png",
         "DbgName": "Material"
     }],
     "animations": [{
@@ -6178,5 +6177,5 @@
         "type": "Geometry"
     },
     "vertices": [1,0.29361,1,-1,0.29361,1,-1,0.29361,-1,1,0.29361,-1,0.999999,2.29361,1,-1,2.29361,-1,-1,2.29361,0.999999,1,4.29361,-1,0.999999,4.29361,1,-1,4.29361,-1,-1,4.29361,0.999999,1,2.29361,-0.999999,0.060969,3.4748,1.0414,0.060969,3.73345,1.0414,0.060969,3.4748,0.996846,0.060969,3.73345,0.996846,0.128134,3.4748,1.0414,0.128134,3.73345,1.0414,0.128134,3.4748,0.996846,0.128134,3.73345,0.996846,-0.139031,3.4748,1.0414,-0.139031,3.73345,1.0414,-0.139031,3.4748,0.996846,-0.139031,3.73345,0.996846,-0.071866,3.4748,1.0414,-0.071866,3.73345,1.0414,-0.071866,3.4748,0.996846,-0.071866,3.73345,0.996846],
-    "name": "CubeGeometry.10"
+    "name": "CubeGeometry.5"
 }
