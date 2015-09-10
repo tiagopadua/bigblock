@@ -5,20 +5,23 @@
 
 // Damage object definition
 function Damage(dPhysical, dElectric, dFire) {
-    // Set different types of damage
-    this.physical = 0;
-    this.electric = 0;
-    this.fire = 0;
 }
+// Set different types of damage
+Damage.prototype.physical = 0;
+Damage.prototype.electric = 0;
+Damage.prototype.fire = 0;
 
 // Base class to load model
 function Equipment() {
-    this.name = "null";
-
-    // Model
-    this.modelFile = null;
-    this.mesh = null; // To store the loaded mesh
+    // ok
 }
+
+// Name
+Equipment.prototype.name = "null";
+// Model file name
+Equipment.prototype.modelFile = null;
+// Variable to store mesh, once loaded
+Equipment.prototype.mesh = null;
 
 // Load the file
 Equipment.prototype.load = function(callback) {
@@ -44,37 +47,37 @@ Equipment.prototype.load = function(callback) {
 
 // Base weapon
 function Weapon() {
-    // Set the damage object
-    this.damage = new Damage(0, 0, 0);
-    this.staminaCost = 0;
-
-    // Stats requirements
-    // Default is none
-    this.requirements = {
-        strength: 0,
-        dexterity: 0,
-        intelligence: 0
-    };
-
-    // Damage scaling with player stats
-    // Default is none (1x damage)
-    this.damageScale = {
-        strength: 1
-    };
+    // ok
 }
 
 // Inherit
-Weapon.prototype = new Equipment();
+Weapon.prototype = Object.create(Equipment.prototype);
+
+// Set variables with default values
+Weapon.prototype.damage = new Damage(0, 0, 0);
+Weapon.prototype.staminaCost = 0;
+// Stats requirements - default is none
+Weapon.prototype.requirements = {
+    strength: 0,
+    dexterity: 0,
+    intelligence: 0
+};
+// Damage scaling with player stats - default is none (1x damage)
+Weapon.prototype.damageScale = {
+    strength: 1
+};
 
 
 // Base shield
 function Shield() {
-    // Set basic parameters
-    this.stability = 0;
+    // ok
 }
 
 // Inherit
-Shield.prototype = new Equipment();
+Shield.prototype = Object.create(Equipment.prototype);
+
+// Set basic parameters
+Shield.prototype.stability = 0;
 
 // Example shield for testing
 function BasicShield() {
@@ -83,7 +86,7 @@ function BasicShield() {
 }
 
 // Inherit weapon
-BasicShield.prototype = new Weapon();
+BasicShield.prototype = Object.create(Weapon.prototype);
 
 
 // Example weapon for testing
@@ -94,4 +97,4 @@ function BigSwordTest() {
 }
 
 // Inherit weapon
-BigSwordTest.prototype = new Weapon();
+BigSwordTest.prototype = Object.create(Weapon.prototype);
