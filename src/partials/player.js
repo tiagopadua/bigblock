@@ -92,7 +92,7 @@ Player.prototype.load = function() {
         // Animations assignment
         function assignAnimations(animations) {
             var i;
-            for (i in animations) {
+            for (i = 0; i < animations.length; i++) {
                 var animation = animations[i];
                 if (!animation) {
                     continue;
@@ -124,9 +124,6 @@ Player.prototype.load = function() {
             // Set material flag to follow bones
             materials.forEach(function(mat) {
                 mat.skinning = true;
-                //mat.side = THREE.DoubleSide;
-                //mat.depthWrite = false;
-                //mat.alphaTest = 0.5;
             });
 
             // Create the mesh
