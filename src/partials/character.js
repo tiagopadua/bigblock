@@ -22,6 +22,8 @@ Character.prototype.attributes = {
     stamina: 0
 };
 
+// Object containing the main mesh
+Character.prototype.mesh = null;
 // Generic object for animations
 Character.prototype.animations = {};
 // This stores the required animations loaded from the model.

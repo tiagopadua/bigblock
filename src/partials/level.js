@@ -46,6 +46,15 @@ function Level(player) {
 
     this.lights[0].target = PRIVATE.player.mesh;
     //this.lights[0].shadowCameraVisible = true;
+    
+    this.enemies = [];
+    
+    var e = new FirstEnemy();
+    this.enemies.push(e);
+    e.load(function(mesh) {
+        // TODO: reorganize everything about Levels
+        PRIVATE.scene.add(mesh);
+    });
 }
 
 Level.prototype.addComponentsToScene = function(scene) {
@@ -57,6 +66,9 @@ Level.prototype.addComponentsToScene = function(scene) {
     scene.fog = new THREE.FogExp2(0x000000, 0.02);
 };
 
-Level.prototype.animate = function(time, player) {
-    
+Level.prototype.update = function(time) {
+    var enemyIndex;
+    for (enemyIndex in this.enemies) {
+        this.enemies[enemyIndex].update(time);
+    }
 };

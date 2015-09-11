@@ -154,7 +154,7 @@
         PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget);
 
         // Process scenario stuff
-        PRIVATE.level.animate(elapsedTime, PRIVATE.player);
+        PRIVATE.level.update(elapsedTime);
 
         // Call user's function
         try {
