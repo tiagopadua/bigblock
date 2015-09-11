@@ -34,7 +34,9 @@
 
     // !include partials/helpers.js
     // !include partials/control.js
+    // !include partials/character.js
     // !include partials/player.js
+    // !include partials/enemies/first.js
     // !include partials/weapon.js
     // !include partials/level.js
     // !include partials/setup.js
@@ -61,7 +63,7 @@
         PUBLIC.player = PRIVATE.player = new Player();
         PRIVATE.scene.add(PRIVATE.player.moveTarget);
         // Load player ASYNC
-        PRIVATE.player.load().then(function(mesh) {
+        PRIVATE.player.load(function(mesh) {
             PRIVATE.scene.add(mesh);
 
             // Load a level
@@ -94,8 +96,6 @@
             if (autoStart) {
                 PUBLIC.start();
             }
-        }).catch(function(reason) {
-            console.error('Could not load BigBlock', reason);
         });
     };
 
