@@ -16,11 +16,11 @@ Level.prototype.load = function() {
     // Helper for callback function
     var _this = this;
 
-    function loadEnemies() {
+    function loadSingleEnemy(enemyX, enemyY, enemyZ) {
         return new Promise(function(resolve, reject) {
             var e = new FirstEnemy();
             e.load().then(function(mesh) {
-                mesh.position.set(10, 0, -30);
+                mesh.position.set(enemyX, enemyY, enemyZ);
                 _this.enemies.push(e);
                 resolve(e);
             }).catch(function(error) {
@@ -28,6 +28,16 @@ Level.prototype.load = function() {
                 reject(error);
             });
         });
+    }
+
+    function loadEnemies() {
+        return Promise.all([
+            loadSingleEnemy(10, 0, -26),
+            loadSingleEnemy(15, 0, -30),
+            loadSingleEnemy(5, 0, -30),
+            loadSingleEnemy(12, 0, -20),
+            loadSingleEnemy(17, 0, -24)
+        ]);
     }
 
     function loadLevel() {

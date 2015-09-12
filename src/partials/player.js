@@ -71,10 +71,13 @@ Player.prototype.update = function(time) {
     // Check focus
     if (PRIVATE.control.focus.changed && PRIVATE.control.focus.pressed) {
         if (this.focus) {
+            this.focus.removeFocus();
             this.focus = null; // remove focus
         } else {
             this.focus = searchFocus();
-            //this.focus.setFocus(); // Set visual for focus
+            if (this.focus) {
+                this.focus.setFocus(); // Set visual for focus
+            }
         }
     }
 

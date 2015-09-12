@@ -115,6 +115,32 @@ Character.prototype.load = function() {
     });
 };
 
+// Create focus element
+Character.prototype.setFocus = function() {
+    if (this.focus) {
+        if (!(this.focus in this.mesh.children)) {
+            this.mesh.add(this.focus);
+        }
+        return;
+    }
+
+    var texture = THREE.ImageUtils.loadTexture('img/focus.png');
+    var material = new THREE.SpriteMaterial({
+        map: texture,
+        color: 0xffffff,
+        fog: true,
+        depthTest: false
+    });
+    this.focus = new THREE.Sprite(material);
+    this.focus.position.set(0, 3, 0);
+    this.mesh.add(this.focus);
+};
+
+// Remove the focus
+Character.prototype.removeFocus = function() {
+    this.mesh.remove(this.focus);
+};
+
 Character.prototype.update = function() {
     // OK, just must implement on child classes
  };
