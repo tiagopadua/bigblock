@@ -54,6 +54,9 @@
             console.error('Container must be a DOM element');
         }
 
+        PRIVATE.container = container;
+        PRIVATE.container.addEventListener('dblclick', enterFullScreen);
+
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
         }
