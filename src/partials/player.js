@@ -1,14 +1,9 @@
+/* global Character */
 /* global PRIVATE */
 /* global Promise */
 /* global THREE */
 
 function Player() {
-    // TODO: load from save file / create name
-    this.name = 'player';
-
-    // Path to model file
-    this.modelFile = 'models/player.json';
-
     // Helper object to make movement
     this.moveTarget = new THREE.Object3D();
 
@@ -20,21 +15,28 @@ function Player() {
 
     this.moveTiltFactor = 0.15;
 
-    // Set up initial stats
-    this.attributes.strength  = 5;
-    this.attributes.dexterity = 5;
-    this.attributes.stamina   = 5;
-
     // Initial weapons
     this.weaponRight = null;
     this.weaponLeft = null;
+
+    // Set up initial stats
+    // TODO: load from save-file
+    this.attributes.strength  = 5;
+    this.attributes.dexterity = 5;
+    this.attributes.stamina   = 5;
     
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
 }
 
 // Inherit from Character
-Player.prototype = Object.create(Character.prototype);
+Player.prototype = new Character();
+
+// TODO: load from save file
+Player.prototype.name = 'player';
+Player.prototype.modelFile = 'models/player.json';
+
+Player.prototype.focus = null;
 
 // Simply attach equipment to RIGHT hand
 Player.prototype.attachEquipmentRight = function(equipment) {
@@ -60,13 +62,33 @@ Player.prototype.attachEquipmentLeft = function(equipment) {
     }
 };
 
+// Decide which target the camera should follow
+Player.prototype.getCameraTarget = function() {
+    return this.moveTarget;
+};
+
 Player.prototype.update = function(time) {
+    // Check focus
+    if (PRIVATE.control.focus.changed && PRIVATE.control.focus.pressed) {
+        if (this.focus) {
+            this.focus = null; // remove focus
+        } else {
+            this.focus = searchFocus();
+            //this.focus.setFocus(); // Set visual for focus
+        }
+    }
+
     // Check generic animations
     // "No"
-    if ((PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) ||
-        (PRIVATE.control.leftAttackStrong.pressed && PRIVATE.control.leftAttackStrong.changed)) {
+    if (PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) {
         if (this.animations.No && !this.animations.No.isPlaying) {
             this.animations.No.play();
+        }
+    }
+    // "Yes"
+    if (PRIVATE.control.leftAttackStrong.pressed && PRIVATE.control.leftAttackStrong.changed) {
+        if (this.animations.Yes && !this.animations.Yes.isPlaying) {
+            this.animations.Yes.play();
         }
     }
     // "Attack right 1"
@@ -87,8 +109,14 @@ Player.prototype.update = function(time) {
         turnForCamera *= this.runSpeedRatio;
     }
 
-    // Make rotation - always based on the camera
-    this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
+    if (this.focus) {
+        this.moveTarget.lookAt(this.focus.mesh.position);
+        this.moveTarget.rotateY(Math.PI); // rotate 180deg for the camera
+        this.mesh.lookAt(this.focus.mesh.position);
+    } else {
+        // Make rotation - always based on the camera
+        this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
+    }
 
     // If we don't have movement, just ignore calculations
     if (PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) {
@@ -97,16 +125,21 @@ Player.prototype.update = function(time) {
         return;
     }
 
+    // Add tilt movement
+    this.bones.Base.rotation.x = Math.HALFPI + moveTiltAngle;
+    this.bones.Top.rotation.x = -moveTiltAngle/2;
+
     // Make movement
     this.moveTarget.translateZ(frameWalkSpeed * PRIVATE.control.movement.y);
     this.moveTarget.translateX(frameWalkSpeed * PRIVATE.control.movement.x);
 
     // Set rotation
-    this.mesh.lookAt(this.moveTarget.position);
-
-    // Add tilt movement
-    this.bones.Base.rotation.x = Math.HALFPI + moveTiltAngle;
-    this.bones.Top.rotation.x = -moveTiltAngle/2;
+    if (this.focus) {
+        //this.mesh.lookAt(this.focus.mesh.position);
+        //this.moveTarget.rotateY(Math.PI); // rotate 180deg for the camera
+    } else {
+        this.mesh.lookAt(this.moveTarget.position);
+    }
 
     // Set final position
     this.mesh.position.set(this.moveTarget.position.x, this.moveTarget.position.y, this.moveTarget.position.z);

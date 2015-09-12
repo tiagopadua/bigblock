@@ -95,6 +95,7 @@
         this.swapWeapon = setDefaultToggleValues(3, 'r');
         this.useItem    = setDefaultToggleValues(2, 'c');
         this.jump       = setDefaultToggleValues(10, PUBLIC.keyboard.SPACE);
+        this.focus      = setDefaultToggleValues(11, PUBLIC.keyboard.TAB);
 
         this.leftAttack = setDefaultToggleValues(4, 'q');
         this.rightAttack = setDefaultToggleValues(5, 'e');
@@ -115,6 +116,7 @@
             this.swapWeapon.gamepadButtonId = 14; 
             this.useItem.gamepadButtonId = 13;
             this.jump.gamepadButtonId = 6;
+            this.focus.gamepadButtonId = 7;
     
             this.leftAttack.gamepadButtonId = 8;
             this.rightAttack.gamepadButtonId = 9;
@@ -173,6 +175,7 @@
         this.updateButtonState(this.interact);
         this.updateButtonState(this.useItem);
         this.updateButtonState(this.jump);
+        this.updateButtonState(this.focus);
 
         this.updateButtonState(this.leftAttack);
         this.updateButtonState(this.rightAttack);

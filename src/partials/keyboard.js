@@ -16,9 +16,11 @@
      // Add listreners
     document.body.addEventListener('keydown', function(event) {
         keyCodes[event.keyCode] = true;
+        event.preventDefault();
     });
     document.body.addEventListener('keyup', function(event) {
         keyCodes[event.keyCode] = false;
+        event.preventDefault();
     });
 
     PUBLIC.keyboard = {

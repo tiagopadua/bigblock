@@ -1,3 +1,7 @@
+/* global clock */
+/* global BasicShield */
+/* global BigSwordTest */
+/* global setupThreeJS */
 /* global requestAnimFrame */
 
 // This is intended to be a singleton - only 1 engine per page
@@ -29,14 +33,15 @@
 
     /*
      * Include other parts of the code
-     * This is processed in build time before uglyfication
+     * This is processed in build time (grunt task 'concat') before minification
      */
 
     // !include partials/helpers.js
+    // !include partials/shaders.js
     // !include partials/control.js
     // !include partials/character.js
-    // !include partials/player.js
     // !include partials/enemies/first.js
+    // !include partials/player.js
     // !include partials/weapon.js
     // !include partials/level.js
     // !include partials/setup.js
@@ -61,18 +66,25 @@
 
         // Create a player object
         PUBLIC.player = PRIVATE.player = new Player();
+        PUBLIC.scene = PRIVATE.scene;
         PRIVATE.scene.add(PRIVATE.player.moveTarget);
-        // Load player ASYNC
-        PRIVATE.player.load(function(mesh) {
-            PRIVATE.scene.add(mesh);
 
-            // Load a level
-            // TODO: select levels from save file or new game
-            PRIVATE.level = new Level(PRIVATE.player);
+        // Load a level
+        // TODO: select levels from save file or new game
+        PUBLIC.level = PRIVATE.level = new Level();
+
+        // Load everything async
+        Promise.all([
+            PRIVATE.player.load(),
+            PRIVATE.level.load()
+        ]).then(function(objs) {
+            // objs[0] = player mesh
+            // objs[1] = level objects
+            PRIVATE.scene.add(objs[0]);
             PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
             // Load weapon and shield
-            // TODO: loading default; must read save file or new game option
+            // TODO: must read save file or new game option
             var weaponTest = new BigSwordTest();
             weaponTest.load(function(weapon) {
                 PRIVATE.player.attachEquipmentRight(weapon);
@@ -96,6 +108,9 @@
             if (autoStart) {
                 PUBLIC.start();
             }
+
+        }).catch(function(error) {
+            console.error('Aborting;', error);
         });
     };
 
@@ -151,7 +166,7 @@
         PRIVATE.player.update(elapsedTime);
 
         // Position camera
-        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.moveTarget);
+        PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.getCameraTarget());
 
         // Process scenario stuff
         PRIVATE.level.update(elapsedTime);
