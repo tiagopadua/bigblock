@@ -4,6 +4,10 @@
 /* global THREE */
 
 function Player() {
+    // TODO: load from save file
+    this.name = 'player';
+    this.modelFile = 'models/player.json';
+
     // Helper object to make movement
     this.moveTarget = new THREE.Object3D();
 
@@ -27,16 +31,12 @@ function Player() {
 
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
+
+    this.focus = null;
 }
 
 // Inherit from Character
 Player.prototype = new Character();
-
-// TODO: load from save file
-Player.prototype.name = 'player';
-Player.prototype.modelFile = 'models/player.json';
-
-Player.prototype.focus = null;
 
 // Simply attach equipment to RIGHT hand
 Player.prototype.attachEquipmentRight = function(equipment) {
