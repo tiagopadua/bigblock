@@ -162,7 +162,7 @@ Level.prototype.isOverGround = function(point) {
                                     y: triangle.b.z },
                                   { x: triangle.c.x,
                                     y: triangle.c.z })) {
-            return true;    
+            return triangle;
         }
     }
     return false; 

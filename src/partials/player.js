@@ -98,7 +98,9 @@ Player.prototype.update = function(time) {
 
     // Check if player is over ground
     // TODO: implement fall to death
-    if (PRIVATE.level.isOverGround(this.mesh.position) !== this.lastOverGround) {
+    var groundTriangle = PRIVATE.level.isOverGround(this.mesh.position);
+    var isOverGroundNow = Boolean(groundTriangle);
+    if (isOverGroundNow !== this.lastOverGround) {
         if (this.lastOverGround) {
             console.log('CAIU');
             this.lastOverGround = false;
@@ -147,6 +149,17 @@ Player.prototype.update = function(time) {
         // Make rotation - always based on the camera
         this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
     }
+
+    // Set player position right on the surface
+    var targetY = 2; // TODO: fall
+    if (isOverGroundNow) {
+        var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
+        var intersect = ray.intersectTriangle(groundTriangle.a, groundTriangle.b, groundTriangle.c, false);
+        if (intersect) {
+            targetY = intersect.y;
+        }
+    }
+    this.moveTarget.position.y = targetY;
 
     // If we don't have movement, just ignore calculations
     if (PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) {
