@@ -5,13 +5,13 @@
  */
 
 function Level() {
+    // Set level properties
+    this.enemies = [];
+    this.meshes = [];
+    this.lights = [];
 }
 
-// Set level properties
-Level.prototype.enemies = [];
-Level.prototype.meshes = [];
-Level.prototype.lights = [];
-
+// Load everything for a level: meshes, lights, enemies
 Level.prototype.load = function() {
     // Helper for callback function
     var _this = this;
@@ -41,6 +41,7 @@ Level.prototype.load = function() {
     }
 
     function loadLevel() {
+        // TODO: read from file
         return new Promise(function(resolve, reject) {
             // Create ground
             var geometry = new THREE.PlaneBufferGeometry(100, 100, 100, 100);
@@ -123,6 +124,7 @@ Level.prototype.addComponentsToScene = function(scene) {
     scene.fog = new THREE.FogExp2(0x000000, 0.02);
 };
 
+// Intended to run every frame, to animate everything
 Level.prototype.update = function(time) {
     var enemyIndex;
     for (enemyIndex in this.enemies) {
