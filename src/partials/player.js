@@ -24,7 +24,7 @@ function Player() {
     this.attributes.strength  = 5;
     this.attributes.dexterity = 5;
     this.attributes.stamina   = 5;
-    
+
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
 }
@@ -67,6 +67,7 @@ Player.prototype.getCameraTarget = function() {
     return this.moveTarget;
 };
 
+// Intended to be called each frame
 Player.prototype.update = function(time) {
     // Check focus
     if (PRIVATE.control.focus.changed && PRIVATE.control.focus.pressed) {
