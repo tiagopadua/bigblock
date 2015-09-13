@@ -9,6 +9,8 @@ function Level() {
     this.enemies = [];
     this.meshes = [];
     this.lights = [];
+    // To check player Y coord, or if he fell from a cliff
+    this.groundTriangles = [];
 }
 
 // Load everything for a level: meshes, lights, enemies
@@ -58,7 +60,17 @@ Level.prototype.load = function() {
             floorMesh.rotation.x = Math.PI / 2;
             floorMesh.receiveShadow = true;
             _this.meshes.push(floorMesh);
-        
+
+            // Add ground triangles
+            _this.groundTriangles = [
+                new THREE.Triangle(new THREE.Vector3(-50, 0, -50),
+                                   new THREE.Vector3(-50, 0, 50),
+                                   new THREE.Vector3(50, 0, 50)),
+                new THREE.Triangle(new THREE.Vector3(-50, 0, -50),
+                                   new THREE.Vector3(50, 0, -50),
+                                   new THREE.Vector3(50, 0, 50))
+            ];
+
             // Create lights
             _this.lights = [
                 new THREE.DirectionalLight(0xffffff, 1),
@@ -130,4 +142,25 @@ Level.prototype.update = function(time) {
     for (enemyIndex in this.enemies) {
         this.enemies[enemyIndex].update(time);
     }
+};
+
+// Checks if point is over the ground
+Level.prototype.isOverGround = function(point) {
+    var i;
+    // Consider only X and Z
+    var point2d = { x: point.x,
+                    y: point.z };
+    for (i = 0; i < this.groundTriangles.length; i++) {
+        var triangle = this.groundTriangles[i];
+        if (isPointInsideTriangle(point2d,
+                                  { x: triangle.a.x,
+                                    y: triangle.a.z },
+                                  { x: triangle.b.x,
+                                    y: triangle.b.z },
+                                  { x: triangle.c.x,
+                                    y: triangle.c.z })) {
+            return true;    
+        }
+    }
+    return false; 
 };

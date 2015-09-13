@@ -29,10 +29,15 @@ function Player() {
     this.attributes.dexterity = 5;
     this.attributes.stamina   = 5;
 
+    // Animations that MUST HAVE to run
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
 
+    // Focus target
     this.focus = null;
+
+    // Auxiliar variable to control fall event
+    this.lastOverGround = true;
 }
 
 // Inherit from Character
@@ -79,6 +84,16 @@ Player.prototype.update = function(time) {
             if (this.focus) {
                 this.focus.setFocus(); // Set visual for focus
             }
+        }
+    }
+
+    if (PRIVATE.level.isOverGround(this.mesh.position) !== this.lastOverGround) {
+        if (this.lastOverGround) {
+            console.log('CAIU');
+            this.lastOverGround = false;
+        } else {
+            console.log('VOLTOU');
+            this.lastOverGround = true;
         }
     }
 
