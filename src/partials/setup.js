@@ -3,7 +3,9 @@
  */
 
 function setupThreeJS() {
-    if (typeof(PRIVATE.container) === 'undefined' || PRIVATE.container === null) {
+    if (typeof(PRIVATE.container) === 'undefined' ||
+        PRIVATE.container === null ||
+        PRIVATE.container === document.body) {
         // Defaults to <body>
         PRIVATE.container = document.body;
         if (!PRIVATE.width) {

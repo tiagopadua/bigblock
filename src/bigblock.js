@@ -59,7 +59,7 @@
         setupThreeJS();
 
         // Process full-screen
-        PRIVATE.container.addEventListener('dblclick', enterFullScreen);
+        PRIVATE.container.addEventListener('dblclick', toggleFullScreen);
 
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
