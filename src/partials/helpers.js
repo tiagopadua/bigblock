@@ -37,18 +37,15 @@ function searchFocus() {
 
         // Calculate the squared distance between the enemy and point on line
         distanceEnemy = closestPoint.distanceToSquared(enemy.mesh.position);
-
         // Now the distance betwen point on line and start of line
         distanceOrigin = closestPoint.distanceToSquared(line.start);
+        // Normalize distance
+        distanceNormalized = distanceEnemy / distanceOrigin;
 
         // And distance of the enemy to player position
         distancePlayer = enemy.mesh.position.distanceToSquared(PRIVATE.player.mesh.position); 
 
-        // Normalize distance
-        distanceNormalized = distanceEnemy / distanceOrigin;
-
-        // 3. Pick the closest one
-        //    We have a minimum distance
+        // 3. Pick the closest one that satisfies the max distance to player
         if (distanceNormalized < closest.distance &&
             distancePlayer < maxDistanceToPlayer) {
             closest.distance = distanceNormalized;
