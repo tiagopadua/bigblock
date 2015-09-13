@@ -43,6 +43,9 @@ function setupThreeJS() {
     // Append renderer element to the container dom element
     PRIVATE.container.appendChild(PRIVATE.renderer.domElement);
 
+    // Process full-screen event
+    PRIVATE.container.addEventListener('dblclick', toggleFullScreen);
+
     // Set listener to window changing size
     window.addEventListener('resize', function() {
         // Save new dimensions

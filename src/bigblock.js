@@ -1,4 +1,5 @@
-/* global enterFullScreen */
+/* global Level */
+/* global toggleFullScreen */
 /* global clock */
 /* global BasicShield */
 /* global BigSwordTest */
@@ -57,9 +58,6 @@
 
         // Create three.js stuff
         setupThreeJS();
-
-        // Process full-screen
-        PRIVATE.container.addEventListener('dblclick', toggleFullScreen);
 
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
