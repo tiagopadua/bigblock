@@ -4,7 +4,7 @@ This is an engine written in JavaScript, for web browser games, using WebGL.
 
 ## Examples
 
-Try it here: [http://bigblock.tiagopadua.com/samples](http://bigblock.tiagopadua.com/samples)
+Try it here: [http://bigblock.tiagopadua.com/samples/hud.html](http://bigblock.tiagopadua.com/samples/hud.html)
 
 ## Dependencies
 
