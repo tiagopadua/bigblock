@@ -69,8 +69,8 @@
                 default:
                     return false;
             }
-            // "!!" converts to boolean if is undefined or null
-            return !!(keyCodes[key]);
+            // Converts to boolean
+            return Boolean(keyCodes[key]);
         }
      };
 
