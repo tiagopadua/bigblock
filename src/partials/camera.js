@@ -6,14 +6,15 @@
     var cameraHeightSpeed = 20;
     var MIN_CAMERA_HEIGHT = 2;
     var MAX_CAMERA_HEIGHT = 20;
+    var TARGET_OFFSET_Y = 2;
 
     PRIVATE.followObjectWithCamera = function(time, target) {
         // Calculate input movement
         cameraY += PRIVATE.control.cameraMovement.y * cameraHeightSpeed * time;
 
-        // Constrain movement
+        // Constrain Y movement
         cameraY = Math.max(MIN_CAMERA_HEIGHT, Math.min(MAX_CAMERA_HEIGHT, cameraY));
-        
+
         // Set camera position to follow target
         var relativeCameraOffset = new THREE.Vector3(PRIVATE.cameraOffset.x, cameraY, PRIVATE.cameraOffset.z); // We need to create a new vector, so we dont change the original one
         var cameraOffset = relativeCameraOffset.applyMatrix4(target.matrixWorld);
@@ -23,7 +24,7 @@
 
         // Point camera at player
         var cameraTarget = target.position.clone();
-        cameraTarget.y += 2;
+        cameraTarget.y += TARGET_OFFSET_Y;
         PRIVATE.camera.lookAt(cameraTarget);
     };
 })();
