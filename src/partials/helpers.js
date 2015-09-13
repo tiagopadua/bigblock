@@ -21,16 +21,7 @@ function searchFocus() {
     var line = new THREE.Line3();
     line.end.z = -focusLineLength;
     line.applyMatrix4(PRIVATE.camera.matrixWorld);
-/*
-    var material = new THREE.LineBasicMaterial(0xffff00);
-    material.linewidth = 5;
-    material.depthTest = false;
-    var geometry = new THREE.Geometry();
-    geometry.vertices.push(line.start, line.end);
 
-    var objectLine = new THREE.Line(geometry, material);
-    PRIVATE.scene.add(objectLine);
-*/
     // 2. Calculate the distance from every enemy to this line
     //    We are using distance squared because it is faster (avoids sqrt on calculation)
     //    But it works, because we are only comparing squared distances to each other
@@ -44,16 +35,6 @@ function searchFocus() {
         // Get the point on line closest to enemy
         closestPoint = line.closestPointToPoint(enemy.mesh.position);
 
-/*
-        // Draw!
-        material = new THREE.MeshBasicMaterial();
-        material.color = enemy.mesh.material.materials[0].color;
-        material.depthTest = false;
-        geometry = new THREE.SphereGeometry(0.5, 32, 32);
-        var circle = new THREE.Mesh(geometry, material);
-        circle.position.set(closestPoint.x, closestPoint.y, closestPoint.z);
-        PRIVATE.scene.add(circle);
-*/
         // Calculate the squared distance between the enemy and point on line
         distanceEnemy = closestPoint.distanceToSquared(enemy.mesh.position);
 
@@ -65,7 +46,6 @@ function searchFocus() {
 
         // Normalize distance
         distanceNormalized = distanceEnemy / distanceOrigin;
-        console.log(i, distanceNormalized);
 
         // 3. Pick the closest one
         //    We have a minimum distance
@@ -77,9 +57,6 @@ function searchFocus() {
     }
 
     return closest.enemy; // null if did not find any
-
-    // TODO: really search for the nearest enemy in front
-    //return PRIVATE.level.enemies[0];
 }
 
 // Check if a 2d point is inside a 2d triangle 
