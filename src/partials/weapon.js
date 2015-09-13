@@ -27,18 +27,23 @@ Equipment.prototype.load = function(callback) {
     // To help with async functions
     var _this = this;
 
-    // Load model
-    var loader = new THREE.JSONLoader();
-    loader.load(this.modelFile, function(geometry, materials) {
-        // Create the mesh
-        _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-        _this.mesh.castShadow = true;
+    return new Promise(function(resolve, reject) {
+        // Load model
+        var loader = new THREE.JSONLoader();
+        try {
+            loader.load(_this.modelFile, function(geometry, materials) {
+                // Create the mesh
+                _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
+                _this.mesh.castShadow = true;
 
-        console.info('Loaded weapon', _this.modelFile); 
+                console.info('Loaded weapon', _this.modelFile); 
 
-        // callback
-        if (typeof(callback) === 'function') {
-            callback(_this);
+                // Signal everything went OK
+                resolve(_this);
+            });
+        } catch (error) {
+            console.error('Unable to load equipment:', error);
+            reject(error);
         }
     });
 };

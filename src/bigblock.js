@@ -88,11 +88,11 @@
             // Load weapon and shield
             // TODO: must read save file or new game option
             var weaponTest = new BigSwordTest();
-            weaponTest.load(function(weapon) {
+            weaponTest.load().then(function(weapon) {
                 PRIVATE.player.attachEquipmentRight(weapon);
             });
             var shieldTest = new BasicShield();
-            shieldTest.load(function(shield) {
+            shieldTest.load().then(function(shield) {
                 PRIVATE.player.attachEquipmentLeft(shield);
             });
 
