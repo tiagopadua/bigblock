@@ -6,11 +6,7 @@
     <style>
 body {
     margin: 0;
-}
-
-#container {
-    width: 1000px;
-    height: 600px;
+    overflow: hidden;
 }
 
 .bb-hud {
@@ -20,18 +16,22 @@ body {
 }
 
 .bb-bar-base {
+    position: absolute;
+    left: 0;
     height: 12px;
     border: 1px solid #555;
     border-radius: 2px;
-    box-shadow: 0 0 20px 0 #888;
+    /*box-shadow: 0 0 20px 0 #888;*/
 }
 
 .bb-health {
+    top: 0;
     width: 200px;
     background: #f0201c;
 }
 
 .bb-stamina {
+    top: 13px;
     width: 150px;
     background: #20c01c;
 }
@@ -39,18 +39,16 @@ body {
     </style>
     </head>
     <body>
-        <div id="container">
-            <div class="bb-hud">
-                <div class="bb-bar-base bb-health"></div>
-                <div class="bb-bar-base bb-stamina"></div>
-            </div>
-        </div>
+     <div class="bb-hud">
+      <div class="bb-bar-base bb-health"></div>
+      <div class="bb-bar-base bb-stamina"></div>
+     </div>
 
 <script src="http://threejs.org/build/three.min.js"></script>
 <script src="../build/bigblock.min.js"></script>
 <script type="text/javascript">
     var container = document.getElementById('container'); 
-    BigBlock.load(container);
+    BigBlock.load();
 </script>
 
     </body>

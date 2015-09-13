@@ -1,3 +1,4 @@
+/* global enterFullScreen */
 /* global clock */
 /* global BasicShield */
 /* global BigSwordTest */
@@ -49,20 +50,20 @@
 
 
     // Loads all necessary data to start the loop
-    PUBLIC.load = function(container, autoStart) {
-        if (!(container instanceof HTMLElement)) {
-            console.error('Container must be a DOM element');
-        }
-
+    PUBLIC.load = function(container, autoStart, inputWidth, inputHeight) {
+        PRIVATE.width = inputWidth;
+        PRIVATE.height = inputHeight;
         PRIVATE.container = container;
+
+        // Create three.js stuff
+        setupThreeJS();
+
+        // Process full-screen
         PRIVATE.container.addEventListener('dblclick', enterFullScreen);
 
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
         }
-
-        // Create three.js objects
-        setupThreeJS(container);
 
         // Setup controls
         PRIVATE.control = new PRIVATE.PlayerControl();
