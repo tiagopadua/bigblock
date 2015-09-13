@@ -13,6 +13,7 @@ function searchFocus() {
     return PRIVATE.level.enemies[0];
 }
 
+// Process enter/exit full-screen
 function toggleFullScreen() {
     if (!PRIVATE.container) {
         return;
