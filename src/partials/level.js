@@ -23,6 +23,9 @@ Level.prototype.load = function() {
             var e = new FirstEnemy();
             e.load().then(function(mesh) {
                 mesh.position.set(enemyX, enemyY, enemyZ);
+                mesh.material.materials[0].color.r = 0.2 + Math.random() * 0.8;
+                mesh.material.materials[0].color.g = 0.2 + Math.random() * 0.8;
+                mesh.material.materials[0].color.b = 0.2 + Math.random() * 0.8;
                 _this.enemies.push(e);
                 resolve(e);
             }).catch(function(error) {
