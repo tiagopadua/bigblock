@@ -13,7 +13,6 @@ var clock = new THREE.Clock();
 function searchFocus() {
     // Total length of the line
     var focusLineLength = 50;
-    var maxDistanceToPlayer = 400; // Distance SQUARED
 
     // 1. Create a line starting on player's position
     //    And going on the direction of camera's X-Z rotation
@@ -47,7 +46,7 @@ function searchFocus() {
 
         // 3. Pick the closest one that satisfies the max distance to player
         if (distanceNormalized < closest.distance &&
-            distancePlayer < maxDistanceToPlayer) {
+            distancePlayer < PRIVATE.player.maxFocusDistanceSquared) {
             closest.distance = distanceNormalized;
             closest.enemy = enemy;
         }

@@ -11,6 +11,10 @@ function Player() {
     // Helper object to make movement
     this.moveTarget = new THREE.Object3D();
 
+    // Maximum distance to put a target in focus
+    // The value is SQUARED, to make calculations less intense
+    this.maxFocusDistanceSquared = 900; // sqrt(900) = 30
+
     // Constants for movement
     this.turnSpeed = 3; // radians/time - This must be tuned
     this.walkSpeed = 10; // pixels/time - This must be tuned
@@ -86,7 +90,14 @@ Player.prototype.update = function(time) {
             }
         }
     }
+    // Now check if distance of focus is enough
+    if (this.focus && (this.mesh.position.distanceToSquared(this.focus.mesh.position) > this.maxFocusDistanceSquared)) {
+        this.focus.removeFocus();
+        this.focus = null;
+    }
 
+    // Check if player is over ground
+    // TODO: implement fall to death
     if (PRIVATE.level.isOverGround(this.mesh.position) !== this.lastOverGround) {
         if (this.lastOverGround) {
             console.log('CAIU');
