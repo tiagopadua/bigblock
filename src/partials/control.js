@@ -25,6 +25,55 @@
         return button;
     }
 
+    // Helper function to simulate a 'dead zone' on the center of the axis of controller
+    function applyDeadZone(originalValue, deadZoneAmount) {
+        return Math.abs(originalValue) < deadZoneAmount ? 0 : originalValue;
+    }
+    // Helper function to check if value is in dead zone
+    function isInDeadZone(value, deadZoneAmount) {
+        return (Math.abs(value) < deadZoneAmount);
+    }
+
+    // Normalize the movement and set variables
+    function normalizeMovement(movement, deadZone) {
+        // Only normalize if it is bigger than unit vector
+        if (movement.length() > 1) {
+            movement.normalize();
+        }
+        // Set the length considering dead zone
+        movement.deadLength = movement.length() - (deadZone || 0);
+
+        return movement;
+    }
+
+    // Class that defines movement
+    function Movement() {
+        this.deadLength = 0;
+        this.changedX = false;
+        this.changedY = false;
+        this.lastX = 0;
+        this.lastY = 0;
+        this.CHANGED_OFFSET = 0.27; // TODO: calibrate this
+    }
+    // Inherit
+    Movement.prototype = new THREE.Vector2(0, 0);
+
+    // Override set functions, to save last values
+    Movement.prototype.setX = function(newValue) {
+        this.lastX = this.x;
+        this.x = newValue;
+
+        this.changedX = isInDeadZone(this.x, this.CHANGED_OFFSET) !== isInDeadZone(this.lastX, this.CHANGED_OFFSET); 
+    };
+    Movement.prototype.setY = function(newValue) {
+        this.lastY = this.y;
+        this.y = newValue;
+        this.changedY = isInDeadZone(this.y, this.CHANGED_OFFSET) !== isInDeadZone(this.lastY, this.CHANGED_OFFSET); 
+    };
+    Movement.prototype.set = function(newValueX, newValueY) {
+        this.setX(newValueX);
+        this.setY(newValueY);
+    };
 
     // Create control class
     PRIVATE.PlayerControl = function() {
@@ -39,12 +88,17 @@
 
         // Store the control's current values
         // Movement info
+        this.movement = new Movement();
+        this.cameraMovement = new Movement();
+        /*
         this.movement = new THREE.Vector2(0, 0);
         this.movement.deadLength = 0;
+        this.movement.changedX = false;
+        this.movement.changedY = false;
         this.cameraMovement = {
             x: 0,
             y: 0
-        };
+        };*/
 
         this.gamepadDeadZone = 0.27; // TODO: calibrate this
         this.gamepadAxisTrigger = 0.2; // TODO: calibrate this
@@ -144,27 +198,10 @@
         return changeButtonPressedValue(button, false); // Default not pressed
     };
 
-    // Helper function to simulate a 'dead zone' on the center of the axis of controller
-    function applyDeadZone(originalValue, deadZoneAmount) {
-        return Math.abs(originalValue) < deadZoneAmount ? 0 : originalValue;
-    }
-
-    // Normalize the movement and set variables
-    function normalizeMovement(movement, deadZone) {
-        // Only normalize if it is bigger than unit vector
-        if (movement.length() > 1) {
-            movement.normalize();
-        }
-        // Set the length considering dead zone
-        movement.deadLength = movement.length() - (deadZone || 0);
-
-        return movement;
-    }
-
     // Read every control input and store it
     PRIVATE.PlayerControl.prototype.update = function() {
-        this.movement = this.getPlayerMovement();
-        this.cameraMovement = this.getCameraMovement();
+        this.updatePlayerMovement();
+        this.updateCameraMovement();
         this.updateButtonState(this.up);
         this.updateButtonState(this.down);
         this.updateButtonState(this.left);
@@ -189,24 +226,24 @@
     };
 
     // Get object with X and Y values for player movement 
-    PRIVATE.PlayerControl.prototype.getPlayerMovement = function() {
-        var movement = new THREE.Vector2();
+    PRIVATE.PlayerControl.prototype.updatePlayerMovement = function() {
+        //var movement = new THREE.Vector2();
 
         // First check gamepad
         var checkKeyboard = true;
         if (this.gamepad && this.gamepad.connected) {
             var axisX = this.gamepad.axes[this.gamepadAxisX];
             var axisY = this.gamepad.axes[this.gamepadAxisY];
-            movement.x = applyDeadZone(axisX, this.gamepadDeadZone);
-            movement.y = applyDeadZone(axisY, this.gamepadDeadZone);
+            this.movement.setX(applyDeadZone(axisX, this.gamepadDeadZone));
+            this.movement.setY(applyDeadZone(axisY, this.gamepadDeadZone));
 
             // If there is movement with the gamepad, use it
-            if (movement.x !== 0 || movement.y !== 0) {
+            if (this.movement.x !== 0 || this.movement.y !== 0) {
                 // Soften movements near axis, if is already moving
-                if (movement.x === 0) {
-                    movement.x = axisX;
-                } else if (movement.y === 0) {
-                    movement.y = axisY;
+                if (this.movement.x === 0) {
+                    this.movement.x = axisX;
+                } else if (this.movement.y === 0) {
+                    this.movement.y = axisY;
                 }
                 checkKeyboard = false;
             }
@@ -214,57 +251,49 @@
         // Then check keyboard
         if (checkKeyboard && PUBLIC.keyboard) {
             if (PUBLIC.keyboard.pressed(this.keyboardMoveLeft)) {
-                movement.x -= 1;
+                this.movement.setX(-1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveRight)) {
-                movement.x += 1;
+                this.movement.setX(1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveUp)) {
-                movement.y -= 1;
+                this.movement.setY(-1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveDown)) {
-                movement.y += 1;
+                this.movement.setY(1);
             }
         }
 
-        // Normalize, save and return
-        this.lastMovement = normalizeMovement(movement, checkKeyboard ? 0 : this.gamepadDeadZone);
-        return this.lastMovement;
+        // Normalize
+        normalizeMovement(this.movement, checkKeyboard ? 0 : this.gamepadDeadZone);
     };
 
     // Get object with X and Y values for player movement 
-    PRIVATE.PlayerControl.prototype.getCameraMovement = function() {
-        // Default value is stopped
-        var movement = {
-            x: 0,
-            y: 0
-        };
-
+    PRIVATE.PlayerControl.prototype.updateCameraMovement = function() {
         // First check gamepad
         if (this.gamepad && this.gamepad.connected) {
-            movement.x = applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraX], this.gamepadDeadZone);
-            movement.y = applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraY], this.gamepadDeadZone);
-            if (movement.x !== 0 || movement.y !== 0) {
+            this.cameraMovement.setX(applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraX], this.gamepadDeadZone));
+            this.cameraMovement.setY(applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraY], this.gamepadDeadZone));
+            if (this.cameraMovement.x !== 0 || this.cameraMovement.y !== 0) {
                 // If there is movement with the gamepad, use it
-                return movement;
+                return;
             }
         }
         // Then check keyboard
         if (PUBLIC.keyboard) {
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraLeft)) {
-                movement.x -= 1;
+                this.cameraMovement.setX(-1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraRight)) {
-                movement.x += 1;
+                this.cameraMovement.setX(1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraUp)) {
-                movement.y -= 1;
+                this.cameraMovement.setY(-1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraDown)) {
-                movement.y += 1;
+                this.cameraMovement.setY(1);
             }
         }
-        return movement;
     };
 
 })();
