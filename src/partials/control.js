@@ -62,7 +62,6 @@
     Movement.prototype.setX = function(newValue) {
         this.lastX = this.x;
         this.x = newValue;
-
         this.changedX = isInDeadZone(this.x, this.CHANGED_OFFSET) !== isInDeadZone(this.lastX, this.CHANGED_OFFSET); 
     };
     Movement.prototype.setY = function(newValue) {
@@ -227,8 +226,6 @@
 
     // Get object with X and Y values for player movement 
     PRIVATE.PlayerControl.prototype.updatePlayerMovement = function() {
-        //var movement = new THREE.Vector2();
-
         // First check gamepad
         var checkKeyboard = true;
         if (this.gamepad && this.gamepad.connected) {
@@ -270,30 +267,34 @@
 
     // Get object with X and Y values for player movement 
     PRIVATE.PlayerControl.prototype.updateCameraMovement = function() {
+        var moveX = 0;
+        var moveY = 0;
+        var checkKeyboard = true;
         // First check gamepad
         if (this.gamepad && this.gamepad.connected) {
-            this.cameraMovement.setX(applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraX], this.gamepadDeadZone));
-            this.cameraMovement.setY(applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraY], this.gamepadDeadZone));
-            if (this.cameraMovement.x !== 0 || this.cameraMovement.y !== 0) {
+            moveX = applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraX], this.gamepadDeadZone);
+            moveY = applyDeadZone(this.gamepad.axes[this.gamepadAxisCameraY], this.gamepadDeadZone);
+            if (moveX !== 0 || moveY !== 0) {
                 // If there is movement with the gamepad, use it
-                return;
+                checkKeyboard = false;
             }
         }
         // Then check keyboard
-        if (PUBLIC.keyboard) {
+        if (PUBLIC.keyboard && checkKeyboard) {
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraLeft)) {
-                this.cameraMovement.setX(-1);
+                moveX = -1;
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraRight)) {
-                this.cameraMovement.setX(1);
+                moveX = 1;
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraUp)) {
-                this.cameraMovement.setY(-1);
+                moveY = -1;
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraDown)) {
-                this.cameraMovement.setY(1);
+                moveY = 1;
             }
         }
+        this.cameraMovement.set(moveX, moveY);
     };
 
 })();
