@@ -150,7 +150,7 @@ Player.prototype.update = function(time) {
         this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
     }
 
-    // Set player position right on the surface
+    // Set player position right over the ground triangles
     var targetY = 2; // TODO: fall
     if (isOverGroundNow) {
         var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
