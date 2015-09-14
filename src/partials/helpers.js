@@ -55,6 +55,47 @@ function searchFocus() {
     return closest.enemy; // null if did not find any
 }
 
+// Search for next enemy to LEFT or RIGHT
+function searchNextFocus(right) {
+    if (!PRIVATE.player.focus) {
+        return null;
+    }
+
+    var closest = {
+        enemy: null,
+        angle: right ? Infinity : -Infinity
+    };
+
+    // Consider only X and Z axis (no height involved)
+    var targetVector = new THREE.Vector2(PRIVATE.player.focus.mesh.position.x - PRIVATE.camera.position.x,
+                                         PRIVATE.player.focus.mesh.position.z - PRIVATE.camera.position.z);
+    // TODO: research if we can avoid the atan2
+    var currentEnemyAngle = Math.atan2(targetVector.y, targetVector.x);
+
+    var i, enemy, enemyAngle;
+    for (i = 0; i < PRIVATE.level.enemies.length; i++) {
+        enemy = PRIVATE.level.enemies[i];
+        // Ignore current target
+        if (enemy === PRIVATE.player.focus) {
+            continue;
+        }
+
+        // Calculate the angle of the enemy to the camera
+        targetVector.x = enemy.mesh.position.x - PRIVATE.camera.position.x;
+        targetVector.y = enemy.mesh.position.z - PRIVATE.camera.position.z;
+        enemyAngle = Math.atan2(targetVector.y, targetVector.x) - currentEnemyAngle;
+
+        // Save if is the closest
+        if ((right && enemyAngle >= 0 && enemyAngle < closest.angle) ||
+            (!right && enemyAngle < 0 && enemyAngle > closest.angle)) {
+            closest.angle = enemyAngle;
+            closest.enemy = enemy;
+        }
+    }
+
+    return closest.enemy;
+}
+
 // Check if a 2d point is inside a 2d triangle 
 function isPointInsideTriangle(point, vertex1, vertex2, vertex3) {
     // Using barycentric coordinates

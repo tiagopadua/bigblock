@@ -130,7 +130,7 @@ Player.prototype.update = function(time) {
         }
     }
 
-    // Set base speeds
+    // Set speeds
     var frameTurnSpeed = this.turnSpeed * time;
     var frameWalkSpeed = this.walkSpeed * time;
     var moveTiltAngle = PRIVATE.control.movement.deadLength * this.moveTiltFactor;
@@ -141,18 +141,34 @@ Player.prototype.update = function(time) {
         turnForCamera *= this.runSpeedRatio;
     }
 
+    // Set focus rotation/movement
     if (this.focus) {
         this.moveTarget.lookAt(this.focus.mesh.position);
         this.moveTarget.rotateY(Math.PI); // rotate 180deg for the camera
         this.mesh.lookAt(this.focus.mesh.position);
+
+        if (PRIVATE.control.cameraMovement.changedX) {
+            var newFocus = null;
+            if (PRIVATE.control.cameraMovement.x > 0) {
+                newFocus = searchNextFocus(true);
+            } else if (PRIVATE.control.cameraMovement.x < 0) {
+                newFocus = searchNextFocus(false);
+            }
+            if (newFocus) {
+                this.focus.removeFocus();
+                this.focus = newFocus;
+                this.focus.setFocus();
+            }
+        }
     } else {
         // Make rotation - always based on the camera
         this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
     }
 
     // Set player position right over the ground triangles
-    var targetY = 2; // TODO: fall
+    var targetY = 4; // TODO: fall
     if (isOverGroundNow) {
+        // The vector MUST be normalized
         var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
         var intersect = ray.intersectTriangle(groundTriangle.a, groundTriangle.b, groundTriangle.c, false);
         if (intersect) {
