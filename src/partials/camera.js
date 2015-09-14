@@ -5,7 +5,7 @@
     var cameraY = PRIVATE.cameraOffset.y;
     var cameraHeightSpeed = 20;
     var MIN_CAMERA_HEIGHT = 2;
-    var MAX_CAMERA_HEIGHT = 20;
+    var MAX_CAMERA_HEIGHT = 15;
     var TARGET_OFFSET_Y = 2;
 
     PRIVATE.followObjectWithCamera = function(time, target) {
