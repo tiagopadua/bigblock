@@ -69,7 +69,8 @@ function searchNextFocus(right) {
     // Consider only X and Z axis (no height involved)
     var targetVector = new THREE.Vector2(PRIVATE.player.focus.mesh.position.x - PRIVATE.camera.position.x,
                                          PRIVATE.player.focus.mesh.position.z - PRIVATE.camera.position.z);
-    // TODO: research if we can avoid the atan2
+    // TODO: Research if we can avoid the atan2
+    //       Not too critical though, it only happens once on user action
     var currentEnemyAngle = Math.atan2(targetVector.y, targetVector.x);
 
     var i, enemy, enemyAngle;
@@ -83,11 +84,22 @@ function searchNextFocus(right) {
         // Calculate the angle of the enemy to the camera
         targetVector.x = enemy.mesh.position.x - PRIVATE.camera.position.x;
         targetVector.y = enemy.mesh.position.z - PRIVATE.camera.position.z;
+        // TODO: Research if we can avoid the atan2
+        //       Not too critical though, it only happens on user action.
+        //       May become heavy if we have a lot of enemies (which is not intended for the game)
         enemyAngle = Math.atan2(targetVector.y, targetVector.x) - currentEnemyAngle;
+        // Normalize between -180 to 180
+        while(enemyAngle > Math.PI) {
+            enemyAngle -= Math.TWOPI;
+        }
+        while(enemyAngle < -Math.PI) {
+            enemyAngle += Math.TWOPI;
+        }
 
-        // Save if is the closest
-        if ((right && enemyAngle >= 0 && enemyAngle < closest.angle) ||
-            (!right && enemyAngle < 0 && enemyAngle > closest.angle)) {
+        // Save if is the closest angle and is lower than max distance from player 
+        if (((right && enemyAngle >= 0 && enemyAngle < closest.angle) ||
+             (!right && enemyAngle < 0 && enemyAngle > closest.angle)) &&
+            (enemy.mesh.position.distanceToSquared(PRIVATE.player.mesh.position) < PRIVATE.player.maxFocusDistanceSquared)) {
             closest.angle = enemyAngle;
             closest.enemy = enemy;
         }
