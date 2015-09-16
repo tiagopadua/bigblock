@@ -15,7 +15,7 @@
         FOV: 75, // Field of view for the camera
         scene: null,
         camera: null,
-        cameraOffset: new THREE.Vector3(0, 5, 8), // Values must be tuned
+        cameraOffset: new THREE.Vector3(0, 5, 10), // Values must be tuned
         renderer: null,
         control: null,
         mainLoopIntervalId: null,
