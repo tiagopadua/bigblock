@@ -228,6 +228,7 @@
     PRIVATE.PlayerControl.prototype.updatePlayerMovement = function() {
         // First check gamepad
         var checkKeyboard = true;
+        this.movement.set(0, 0);
         if (this.gamepad && this.gamepad.connected) {
             var axisX = this.gamepad.axes[this.gamepadAxisX];
             var axisY = this.gamepad.axes[this.gamepadAxisY];
@@ -248,16 +249,16 @@
         // Then check keyboard
         if (checkKeyboard && PUBLIC.keyboard) {
             if (PUBLIC.keyboard.pressed(this.keyboardMoveLeft)) {
-                this.movement.setX(-1);
+                this.movement.setX(this.movement.x - 1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveRight)) {
-                this.movement.setX(1);
+                this.movement.setX(this.movement.x + 1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveUp)) {
-                this.movement.setY(-1);
+                this.movement.setY(this.movement.y - 1);
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveDown)) {
-                this.movement.setY(1);
+                this.movement.setY(this.movement.y + 1);
             }
         }
 
@@ -282,16 +283,16 @@
         // Then check keyboard
         if (PUBLIC.keyboard && checkKeyboard) {
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraLeft)) {
-                moveX = -1;
+                moveX -= 1; // additive, because it may counter the own keyboard opposite key, or the gamepad
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraRight)) {
-                moveX = 1;
+                moveX += 1; // additive, because it may counter the own keyboard opposite key, or the gamepad
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraUp)) {
-                moveY = -1;
+                moveY -= 1; // additive, because it may counter the own keyboard opposite key, or the gamepad
             }
             if (PUBLIC.keyboard.pressed(this.keyboardMoveCameraDown)) {
-                moveY = 1;
+                moveY += 1; // additive, because it may counter the own keyboard opposite key, or the gamepad
             }
         }
         this.cameraMovement.set(moveX, moveY);
