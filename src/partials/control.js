@@ -78,43 +78,37 @@
     PRIVATE.PlayerControl = function() {
 
         // Save the current gamepad
-        this.gamepad = (function() {
+        this.gamepad = null;
+        this.lastGamepadTimestamp = 0;
+        this.gamePadIndex = (function() {
             if (typeof(navigator.getGamepads) !== 'function') {
                 return null;
             }
-            return navigator.getGamepads()[0];
+            return (navigator.getGamepads().length > 0) ? 0 : -1;
         })();
 
         // Store the control's current values
         // Movement info
         this.movement = new Movement();
         this.cameraMovement = new Movement();
-        /*
-        this.movement = new THREE.Vector2(0, 0);
-        this.movement.deadLength = 0;
-        this.movement.changedX = false;
-        this.movement.changedY = false;
-        this.cameraMovement = {
-            x: 0,
-            y: 0
-        };*/
 
         this.gamepadDeadZone = 0.27; // TODO: calibrate this
         this.gamepadAxisTrigger = 0.2; // TODO: calibrate this
         this.setupButtons();
-
 
         // Adds event listeners to handle connect/disconnect of gamepads
         var _this = this;
         window.addEventListener("gamepadconnected", function(event) {
             // TODO: pause game and ask if user wants to use this gamepad
             _this.gamepad = event.gamepad;
+            _this.gamepadIndex = event.gamepad.index;
             _this.setupButtons();
             console.log('Controller connected', _this.gamepad.index, _this.gamepad.id);
         });
         window.addEventListener("gamepaddisconnected", function(event) {
-            if (_this.gamepad.id === event.gamepad.id) {
+            if (_this.gamepad.index === event.gamepad.index) {
                 _this.gamepad = null;
+                _this.gamepadIndex = -1;
             }
             console.log('Controller disconnected', event.gamepad.index, event.gamepad.id);
         });
@@ -199,6 +193,15 @@
 
     // Read every control input and store it
     PRIVATE.PlayerControl.prototype.update = function() {
+        if (this.gamepadIndex >= 0) {
+            var newGamepadObject = navigator.getGamepads()[this.gamepadIndex];
+            if (this.gamepad) {
+                this.lastGamepadTimestamp = this.gamepad.timestamp;
+            }
+            if (newGamepadObject.timestamp !== this.lastGamepadTimestamp) {
+                this.gamepad = newGamepadObject;
+            }
+        }
         this.updatePlayerMovement();
         this.updateCameraMovement();
         this.updateButtonState(this.up);
