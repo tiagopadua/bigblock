@@ -65,10 +65,12 @@ function searchNextFocus(right) {
         enemy: null,
         angle: right ? Infinity : -Infinity
     };
+    var baseX = PRIVATE.player.mesh.position.x;
+    var baseZ = PRIVATE.player.mesh.position.z;
 
     // Consider only X and Z axis (no height involved)
-    var targetVector = new THREE.Vector2(PRIVATE.player.focus.mesh.position.x - PRIVATE.camera.position.x,
-                                         PRIVATE.player.focus.mesh.position.z - PRIVATE.camera.position.z);
+    var targetVector = new THREE.Vector2(PRIVATE.player.focus.mesh.position.x - baseX,
+                                         PRIVATE.player.focus.mesh.position.z - baseZ);
     // TODO: Research if we can avoid the atan2
     //       Not too critical though, it only happens once on user action
     var currentEnemyAngle = Math.atan2(targetVector.y, targetVector.x);
@@ -82,13 +84,13 @@ function searchNextFocus(right) {
         }
 
         // Calculate the angle of the enemy to the camera
-        targetVector.x = enemy.mesh.position.x - PRIVATE.camera.position.x;
-        targetVector.y = enemy.mesh.position.z - PRIVATE.camera.position.z;
+        targetVector.x = enemy.mesh.position.x - baseX;
+        targetVector.y = enemy.mesh.position.z - baseZ;
         // TODO: Research if we can avoid the atan2
         //       Not too critical though, it only happens on user action.
         //       May become heavy if we have a lot of enemies (which is not intended for the game)
         enemyAngle = Math.atan2(targetVector.y, targetVector.x) - currentEnemyAngle;
-        // Normalize between -180 to 180
+        // Normalize between -180deg to 180deg
         while(enemyAngle > Math.PI) {
             enemyAngle -= Math.TWOPI;
         }
