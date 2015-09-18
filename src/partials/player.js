@@ -95,11 +95,14 @@ Player.prototype.setFocus = function(newFocus) {
     this.focus.setFocus();
 
     // Now set the target's target initial position (final position is already focus')
-    this.lerping = true;
-    this.moveTargetTarget.position.set(0, 0, -2); // 2 units ahead of target
-    this.moveTargetTarget.position.applyMatrix4(this.moveTarget.matrix);//PRIVATE.camera.matrixWorld);
-    this.moveTargetTarget.position.setY(this.moveTarget.position.y);
-    this.lerpStartVector = this.moveTargetTarget.position.clone();
+    if (this.lerping) {
+        this.lerpStartVector = this.moveTargetTarget.position.clone();
+    } else {
+        this.lerping = true;
+        this.moveTargetTarget.position.set(0, 0, -2); // 2 units ahead of target
+        this.moveTargetTarget.position.applyMatrix4(this.moveTarget.matrix);//PRIVATE.camera.matrixWorld);
+        this.lerpStartVector = this.moveTargetTarget.position.clone();
+    }
     this.lerpTimeElapsed = 0;
 };
 
