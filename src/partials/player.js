@@ -10,6 +10,7 @@ function Player() {
 
     // Helper object to make movement
     this.moveTarget = new THREE.Object3D();
+    this.moveTargetTarget = new THREE.Object3D();
 
     // Maximum distance to put a target in focus
     // The value is SQUARED, to make calculations less intense
@@ -42,6 +43,12 @@ function Player() {
 
     // Auxiliar variable to control fall event
     this.lastOverGround = true;
+    
+    // For camera movement 'smoothing'
+    this.lerping = false;
+    this.lerpDuration = 0.4; // seconds
+    this.lerpTimeElapsed = 0;
+    this.lerpStartVector = null; // This is the Vector3 start position for lerp
 }
 
 // Inherit from Character
@@ -76,24 +83,48 @@ Player.prototype.getCameraTarget = function() {
     return this.moveTarget;
 };
 
+// Set focus and prepare things related
+Player.prototype.setFocus = function(newFocus) {
+    if (!newFocus) {
+        return;
+    }
+    if (this.focus) {
+        this.focus.removeFocus();
+    }
+    this.focus = newFocus;
+    this.focus.setFocus();
+
+    // Now set the target's target initial position (final position is already focus')
+    this.lerping = true;
+    this.moveTargetTarget.position.set(0, 0, -2); // 2 units ahead of target
+    this.moveTargetTarget.position.applyMatrix4(this.moveTarget.matrix);//PRIVATE.camera.matrixWorld);
+    this.moveTargetTarget.position.setY(this.moveTarget.position.y);
+    this.lerpStartVector = this.moveTargetTarget.position.clone();
+    this.lerpTimeElapsed = 0;
+};
+
+// Remove focus and things related
+Player.prototype.clearFocus = function() {
+    if (this.focus) {
+        this.focus.removeFocus();
+    }
+    this.focus = null; // remove focus
+    this.lerping = false; // only lerp with focus
+};
+
 // Intended to be called each frame
 Player.prototype.update = function(time) {
     // Check focus
     if (PRIVATE.control.focus.changed && PRIVATE.control.focus.pressed) {
         if (this.focus) {
-            this.focus.removeFocus();
-            this.focus = null; // remove focus
+            this.clearFocus();
         } else {
-            this.focus = searchFocus();
-            if (this.focus) {
-                this.focus.setFocus(); // Set visual for focus
-            }
+            this.setFocus(searchFocus());
         }
     }
     // Now check if distance of focus is enough
     if (this.focus && (this.mesh.position.distanceToSquared(this.focus.mesh.position) > this.maxFocusDistanceSquared)) {
-        this.focus.removeFocus();
-        this.focus = null;
+        this.clearFocus();
     }
 
     // Check if player is over ground
@@ -143,10 +174,25 @@ Player.prototype.update = function(time) {
 
     // Set focus rotation/movement
     if (this.focus) {
-        this.moveTarget.lookAt(this.focus.mesh.position);
+        var lerpPercentage;
+        if (this.lerping) {
+            this.lerpTimeElapsed += time;
+            lerpPercentage = this.lerpTimeElapsed / this.lerpDuration; // Duration should never be 0 (we set it manually)
+            if (lerpPercentage >= 1) {
+                this.lerping = false;
+            }
+        }
+        // ...still lerping after percentage calculation
+        if (this.lerping) {
+            this.moveTargetTarget.position.lerpVectors(this.lerpStartVector, this.focus.mesh.position, lerpPercentage);
+            this.moveTarget.lookAt(this.moveTargetTarget.position);
+        } else {
+            this.moveTarget.lookAt(this.focus.mesh.position);
+        }
         this.moveTarget.rotateY(Math.PI); // rotate 180deg for the camera
         this.mesh.lookAt(this.focus.mesh.position);
 
+        // Check target changing
         if (PRIVATE.control.cameraMovement.changedX) {
             var newFocus = null;
             if (PRIVATE.control.cameraMovement.x > 0) {
@@ -154,11 +200,8 @@ Player.prototype.update = function(time) {
             } else if (PRIVATE.control.cameraMovement.x < 0) {
                 newFocus = searchNextFocus(false);
             }
-            if (newFocus) {
-                this.focus.removeFocus();
-                this.focus = newFocus;
-                this.focus.setFocus();
-            }
+            // Set the new focus target
+            this.setFocus(newFocus);
         }
     } else {
         // Make rotation - always based on the camera
