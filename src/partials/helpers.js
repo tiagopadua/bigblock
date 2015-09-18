@@ -19,12 +19,12 @@ function searchFocus() {
     //    The line must have pre-defined length
     var line = new THREE.Line3();
     line.end.z = -focusLineLength;
-    line.applyMatrix4(PRIVATE.camera.matrixWorld);
+    line.applyMatrix4(PRIVATE.player.moveTarget.matrixWorld);
 
     // 2. Calculate the distance from every enemy to this line
     //    We are using distance squared because it is faster (avoids sqrt on calculation)
     //    But it works, because we are only comparing squared distances to each other
-    var i, enemy, closestPoint, distanceEnemy, distanceOrigin, distanceNormalized, distancePlayer;
+    var i, enemy, closestPoint, distanceEnemy, distancePlayer;
     var closest = {
         enemy: null,
         distance: Infinity // Start with max distance possible
@@ -36,18 +36,14 @@ function searchFocus() {
 
         // Calculate the squared distance between the enemy and point on line
         distanceEnemy = closestPoint.distanceToSquared(enemy.mesh.position);
-        // Now the distance betwen point on line and start of line
-        distanceOrigin = closestPoint.distanceToSquared(line.start);
-        // Normalize distance
-        distanceNormalized = distanceEnemy / distanceOrigin;
 
         // And distance of the enemy to player position
         distancePlayer = enemy.mesh.position.distanceToSquared(PRIVATE.player.mesh.position); 
 
         // 3. Pick the closest one that satisfies the max distance to player
-        if (distanceNormalized < closest.distance &&
+        if (distanceEnemy < closest.distance &&
             distancePlayer < PRIVATE.player.maxFocusDistanceSquared) {
-            closest.distance = distanceNormalized;
+            closest.distance = distanceEnemy;
             closest.enemy = enemy;
         }
     }
