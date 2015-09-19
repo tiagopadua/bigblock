@@ -22,7 +22,8 @@
         loaded: false,
         running: false,
         player: null,
-        level: null
+        level: null,
+        focusTexture: null
     };
 
     // Shim layer with setTimeout fallback
@@ -95,6 +96,9 @@
             shieldTest.load().then(function(shield) {
                 PRIVATE.player.attachEquipmentLeft(shield);
             });
+
+            // Pre-load the focus image file
+            loadFocusTexture();
 
             // set camera initial position
             PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);

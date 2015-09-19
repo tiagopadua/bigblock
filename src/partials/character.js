@@ -124,9 +124,8 @@ Character.prototype.setFocus = function() {
         return;
     }
 
-    var texture = THREE.ImageUtils.loadTexture('img/focus.png');
     var material = new THREE.SpriteMaterial({
-        map: texture,
+        map: PRIVATE.focusTexture,
         color: 0xffffff,
         fog: true,
         depthTest: false

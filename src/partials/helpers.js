@@ -117,6 +117,11 @@ function isPointInsideTriangle(point, vertex1, vertex2, vertex3) {
     return (s >= 0) && (t >= 0) && (s + t) <= (2 * A * sign);
 }
 
+// Load the focus image file
+function loadFocusTexture() {
+     PRIVATE.focusTexture = THREE.ImageUtils.loadTexture('img/focus.png');
+}
+
 // Process enter/exit full-screen
 function toggleFullScreen() {
     if (!PRIVATE.container) {
