@@ -76,6 +76,9 @@
         // TODO: select levels from save file or new game
         PUBLIC.level = PRIVATE.level = new Level();
 
+        // Pre-load the focus image file
+        loadFocusTexture();
+
         // Load everything async
         Promise.all([
             PRIVATE.player.load(),
@@ -86,37 +89,33 @@
             PRIVATE.scene.add(objs[0]);
             PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
-            // Load weapon and shield
-            // TODO: must read save file or new game option
-            var weaponTest = new BigSwordTest();
-            weaponTest.load().then(function(weapon) {
-                PRIVATE.player.attachEquipmentRight(weapon);
-            });
-            var shieldTest = new BasicShield();
-            shieldTest.load().then(function(shield) {
-                PRIVATE.player.attachEquipmentLeft(shield);
-            });
-
-            // Pre-load the focus image file
-            loadFocusTexture();
-
             // set camera initial position
             PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
             PUBLIC.camera = PRIVATE.camera; // TODO remover
 
-            // Mark things as loaded
-            PRIVATE.loaded = true;
+            // Load weapon and shield
+            // TODO: must read save file or new game option
+            var weaponTest = new BigSwordTest();
+            var shieldTest = new BasicShield();
+            Promise.all([weaponTest.load(), shieldTest.load()]).then(function(equipment) {
+                PRIVATE.player.attachEquipmentRight(equipment[0]);
+                PRIVATE.player.attachEquipmentLeft(equipment[1]);
 
-            // Render first frame
-            requestAnimFrame(PRIVATE.mainLoop);
-            console.info("Finished loading BigBlock");
-
-            if (autoStart) {
-                PUBLIC.start();
-            }
-
+                // Mark things as loaded
+                PRIVATE.loaded = true;
+    
+                // Render first frame
+                requestAnimFrame(PRIVATE.mainLoop);
+                console.info('Finished loading BigBlock');
+    
+                if (autoStart) {
+                    PUBLIC.start();
+                }
+            }).catch(function(error) {
+                console.error('Error loading; Aborting;', error);
+            });
         }).catch(function(error) {
-            console.error('Aborting;', error);
+            console.error('Error loading; Aborting;', error);
         });
     };
 

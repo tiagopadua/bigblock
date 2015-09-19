@@ -122,6 +122,25 @@ function loadFocusTexture() {
      PRIVATE.focusTexture = THREE.ImageUtils.loadTexture('img/focus.png');
 }
 
+// Load JSON file
+function loadJsonFile(url) {
+    return new Promise(function(resolve, reject) {
+        var xReq = new XMLHttpRequest();
+        xReq.open('GET', url, true);
+        xReq.onreadystatechange = function() {
+            if (xReq.readyState === 4) {
+                if (xReq.status !== 200) {
+                    console.log(2);
+                    return reject('Unable to load file', url, 'Status:', xReq.status);
+                }
+                return resolve(JSON.parse(xReq.responseText));
+            }
+        };
+        // Actually make the request
+        xReq.send(null);
+    });
+}
+
 // Process enter/exit full-screen
 function toggleFullScreen() {
     if (!PRIVATE.container) {

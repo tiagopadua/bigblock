@@ -23,7 +23,7 @@ function Equipment() {
 }
 
 // Load the file
-Equipment.prototype.load = function(callback) {
+Equipment.prototype.load = function() {
     // To help with async functions
     var _this = this;
 
@@ -36,7 +36,7 @@ Equipment.prototype.load = function(callback) {
                 _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 _this.mesh.castShadow = true;
 
-                console.info('Loaded weapon', _this.modelFile); 
+                console.info('Loaded equipment', _this.modelFile); 
 
                 // Signal everything went OK
                 resolve(_this);
@@ -54,6 +54,7 @@ function Weapon() {
     // Set variables with default values
     this.damage = new Damage(0, 0, 0);
     this.staminaCost = 0;
+    this.collisionRays = [];
 
     // Stats requirements - default is none
     this.requirements = {
@@ -71,6 +72,50 @@ function Weapon() {
 // Inherit
 Weapon.prototype = new Equipment();
 
+// Override load method for weapon specialized format
+Weapon.prototype.load = function() {
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+        loadJsonFile(_this.modelFile).then(function(parsedObject) {
+            if (!parsedObject || !('name' in parsedObject) || !('collisionRays' in parsedObject) || !('model' in parsedObject)) {
+                return reject('Invalid weapon file format:', _this.modelFile);
+            }
+            
+            try {
+                _this.name = parsedObject.name;
+                _this.collisionRays = [];
+                for (var rayIndex = 0; rayIndex < parsedObject.collisionRays.length; rayIndex++) {
+                    var rayData = parsedObject.collisionRays[rayIndex];
+                    var rayOrigin = new THREE.Vector3(rayData.origin[0],
+                                                      rayData.origin[1],
+                                                      rayData.origin[2]);
+                    var rayDirection = new THREE.Vector3(rayData.direction[0],
+                                                         rayData.direction[1],
+                                                         rayData.direction[2]);
+                    rayDirection.normalize();
+                    var ray = new THREE.Ray(rayOrigin, rayDirection);
+                    _this.collisionRays.push(ray);
+                }
+
+                // Load Three.js model
+                var loader = new THREE.JSONLoader();
+                var loadedModel = loader.parse(parsedObject.model);
+
+                // Create the mesh
+                _this.mesh = new THREE.SkinnedMesh(loadedModel.geometry, new THREE.MeshFaceMaterial(loadedModel.materials));
+                _this.mesh.castShadow = true;
+            } catch(error) {
+                return reject(error);
+            }
+
+            console.info('Loaded weapon', _this.modelFile); 
+
+            return resolve(_this);
+        }).catch(function(error) {
+            return reject(error);
+        });
+    });
+};
 
 // Base shield
 function Shield() {
