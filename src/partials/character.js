@@ -22,6 +22,8 @@ function Character() {
 
     // Object containing the main mesh
     this.mesh = null;
+    // Mesh for collision detection
+    this.collisionMesh = null;
     // Generic object for animations
     this.animations = {};
     // This stores the required animations loaded from the model.
@@ -100,6 +102,9 @@ Character.prototype.load = function() {
                 _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 _this.mesh.castShadow = true;
                 //_this.mesh.receiveShadow = true;
+                // Copy the mesh
+                // TODO: read different mesh
+                _this.collisionMesh = _this.mesh;
 
                 // Set up bones and animations
                 assignBones(_this.mesh.skeleton.bones);
@@ -140,6 +145,19 @@ Character.prototype.removeFocus = function() {
     this.mesh.remove(this.focus);
 };
 
+// Check for collision
+Character.prototype.collided = function(rayCasters) {
+    for (var rayIndex = 0; rayIndex < rayCasters.length; rayIndex++) {
+        var caster = rayCasters[rayIndex];
+        var intersections = caster.intersectObject(this.collisionMesh);
+        if (intersections.length > 0) {
+            return true;
+        }
+    }
+    // No collisions detected
+    return false;
+};
+
 Character.prototype.update = function() {
     // OK, just must implement on child classes
- };
+};

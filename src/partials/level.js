@@ -147,6 +147,18 @@ Level.prototype.update = function(time) {
     }
 };
 
+// Remove killed enemy
+Level.prototype.killEnemy = function(enemy){
+    if (!enemy) {
+        return;
+    }
+
+    // Remove from scene
+    PRIVATE.scene.remove(enemy.mesh);
+    // Remove from our list
+    this.enemies.splice(this.enemies.indexOf(enemy), 1);
+};
+
 // Checks if point is over the ground
 Level.prototype.isOverGround = function(point) {
     var i;

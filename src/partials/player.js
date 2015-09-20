@@ -25,8 +25,8 @@ function Player() {
     this.moveTiltFactor = 0.15;
 
     // Initial weapons
-    this.weaponRight = null;
-    this.weaponLeft = null;
+    this.equipmentRight = null;
+    this.equipmentLeft = null;
 
     // Set up initial stats
     // TODO: load from save-file
@@ -49,6 +49,18 @@ function Player() {
     this.lerpDuration = 0.4; // seconds
     this.lerpTimeElapsed = 0;
     this.lerpStartVector = null; // This is the Vector3 start position for lerp
+    
+    // Weapon collision detection distance. The enemy must be at this distance to check for hit
+    this.weaponHitMinDistanceSq = 100; // Value squared
+    // Flag to indicate blocking animation
+    this.isAttacking = false;
+    this.wasAttacking = false; // To check if attacking ended
+    // Stores which weapon is attacking
+    this.attackingWeapon = null;
+    // Stores attacking animation to check if it ended
+    this.attackingAnimation = null;
+    // List of enemies to check for hit with weapon attack
+    this.enemyHitList = [];
 }
 
 // Inherit from Character
@@ -62,7 +74,7 @@ Player.prototype.attachEquipmentRight = function(equipment) {
 
     if (this.bones.HandRight) {
         this.bones.HandRight.add(equipment.mesh);
-        this.rightHandWeapon = equipment;
+        this.equipmentRight = equipment;
     }
 };
 
@@ -74,7 +86,7 @@ Player.prototype.attachEquipmentLeft = function(equipment) {
 
     if (this.bones.HandLeft) {
         this.bones.HandLeft.add(equipment.mesh);
-        this.leftHandWeapon = equipment;
+        this.equipmentLeft = equipment;
     }
 };
 
@@ -115,12 +127,48 @@ Player.prototype.clearFocus = function() {
     this.lerping = false; // only lerp with focus
 };
 
-// Just check if any of the blocking animations are running
-Player.prototype.isAnimationBlocking = function() {
-    if (this.animations.AttackRight1.isPlaying) {
-        return true;
+// Sets up everything for weapon swing
+Player.prototype.startSwing = function(weapon, animation) {
+    // check if is already playing
+    if (animation.isPlaying) {
+        return;
     }
-    return false;
+    // Start animation
+    animation.play();
+
+    // Save the attacking weapon and animation
+    this.attackingWeapon = weapon;
+    this.attackingAnimation = animation;
+    // Set up enemies to check collision
+    this.enemyHitList = [];
+    for (var enemyId = 0; enemyId < PRIVATE.level.enemies.length; enemyId++) {
+        var enemy = PRIVATE.level.enemies[enemyId];
+        // Compare the distance between player and enemy: length of the vector (player.position - enemy.position)
+        if (this.mesh.position.clone().sub(enemy.mesh.position).lengthSq() < this.weaponHitMinDistanceSq) {
+            this.enemyHitList.push(enemy);
+        }
+    }
+    // Set flag for blocking animation
+    this.isAttacking = true;
+};
+
+Player.prototype.finishSwing = function() {
+    // Reset enemy list
+    this.enemyHitList = [];
+    // Set flag for blocking animation
+    this.isAttacking = false;
+};
+
+// Check for weapon hit
+Player.prototype.checkWeaponHit = function() {
+    for (var enemyId = 0; enemyId < this.enemyHitList.length; enemyId++) {
+        var enemy = this.enemyHitList[enemyId];
+        if (enemy.collided(this.attackingWeapon.getCollisionRays())) {
+            console.log('MATOU');
+            this.enemyHitList.splice(enemyId, 1);
+            PRIVATE.level.killEnemy(enemy);
+        }
+    }
 };
 
 // Intended to be called each frame
@@ -153,8 +201,17 @@ Player.prototype.update = function(time) {
     }
     // "Attack right 1"
     if (PRIVATE.control.rightAttack.pressed && PRIVATE.control.rightAttack.changed) {
-        if (!this.animations.AttackRight1.isPlaying) {
-            this.animations.AttackRight1.play();
+        this.startSwing(this.equipmentRight, this.animations.AttackRight1);
+    }
+
+    // Check for attack swings
+    if (this.isAttacking) {
+        if (this.attackingAnimation.isPlaying) {
+            // Not finished, so check for collision
+            this.checkWeaponHit();
+        } else {
+            // Finished attack
+            this.finishSwing();
         }
     }
 
@@ -168,8 +225,6 @@ Player.prototype.update = function(time) {
         moveTiltAngle *= this.runSpeedRatio;
         turnForCamera *= this.runSpeedRatio;
     }
-
-    var blocked = this.isAnimationBlocking();
 
     // Set focus rotation/movement
     if (this.focus) {
@@ -192,7 +247,7 @@ Player.prototype.update = function(time) {
         this.mesh.lookAt(this.focus.mesh.position);
 
         // Check target changing
-        if (PRIVATE.control.cameraMovement.changedX && !blocked) {
+        if (PRIVATE.control.cameraMovement.changedX && !this.isAttacking) {
             var newFocus = null;
             if (PRIVATE.control.cameraMovement.x > 0) {
                 newFocus = searchNextFocus(true);
@@ -208,7 +263,7 @@ Player.prototype.update = function(time) {
     }
 
     // If we don't have movement, just ignore calculations
-    if ((PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) || blocked) {
+    if ((PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) || this.isAttacking) {
         this.bones.Base.rotation.x = Math.HALFPI;
         this.bones.Top.rotation.x = 0;
         return;

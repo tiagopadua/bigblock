@@ -72,6 +72,26 @@ function Weapon() {
 // Inherit
 Weapon.prototype = new Equipment();
 
+// Return collision rays adapted to the world
+Weapon.prototype.getCollisionRays = function() {
+    // TODO: improve algorithm
+    var rayCasters = [];
+    for (var rayId = 0; rayId < this.collisionRays.length; rayId++) {
+        var caster = this.collisionRays[rayId];
+
+        var newRayCaster = new THREE.Raycaster();
+        newRayCaster.near = caster.near;
+        newRayCaster.far = caster.far;
+        newRayCaster.ray = caster.ray.clone();
+        // Apply offset/rotation/scale
+        newRayCaster.ray.applyMatrix4(this.mesh.matrixWorld);
+
+        // Add to the list
+        rayCasters.push(newRayCaster);
+    }
+    return rayCasters;
+};
+
 // Override load method for weapon specialized format
 Weapon.prototype.load = function() {
     var _this = this;
@@ -93,8 +113,8 @@ Weapon.prototype.load = function() {
                                                          rayData.direction[1],
                                                          rayData.direction[2]);
                     rayDirection.normalize();
-                    var ray = new THREE.Ray(rayOrigin, rayDirection);
-                    _this.collisionRays.push(ray);
+                    var rayCaster = new THREE.Raycaster(rayOrigin, rayDirection, 0, rayData.length);
+                    _this.collisionRays.push(rayCaster);
                 }
 
                 // Load Three.js model
