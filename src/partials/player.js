@@ -164,7 +164,6 @@ Player.prototype.checkWeaponHit = function() {
     for (var enemyId = 0; enemyId < this.enemyHitList.length; enemyId++) {
         var enemy = this.enemyHitList[enemyId];
         if (enemy.collided(this.attackingWeapon.getCollisionRays())) {
-            console.log('MATOU');
             this.enemyHitList.splice(enemyId, 1);
             PRIVATE.level.killEnemy(enemy);
         }
