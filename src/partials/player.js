@@ -115,6 +115,14 @@ Player.prototype.clearFocus = function() {
     this.lerping = false; // only lerp with focus
 };
 
+// Just check if any of the blocking animations are running
+Player.prototype.isAnimationBlocking = function() {
+    if (this.animations.AttackRight1.isPlaying) {
+        return true;
+    }
+    return false;
+};
+
 // Intended to be called each frame
 Player.prototype.update = function(time) {
     // Check focus
@@ -130,36 +138,22 @@ Player.prototype.update = function(time) {
         this.clearFocus();
     }
 
-    // Check if player is over ground
-    // TODO: implement fall to death
-    var groundTriangle = PRIVATE.level.isOverGround(this.mesh.position);
-    var isOverGroundNow = Boolean(groundTriangle);
-    if (isOverGroundNow !== this.lastOverGround) {
-        if (this.lastOverGround) {
-            console.log('CAIU');
-            this.lastOverGround = false;
-        } else {
-            console.log('VOLTOU');
-            this.lastOverGround = true;
-        }
-    }
-
     // Check generic animations
     // "No"
     if (PRIVATE.control.leftAttack.pressed && PRIVATE.control.leftAttack.changed) {
-        if (this.animations.No && !this.animations.No.isPlaying) {
+        if (!this.animations.No.isPlaying) {
             this.animations.No.play();
         }
     }
     // "Yes"
     if (PRIVATE.control.leftAttackStrong.pressed && PRIVATE.control.leftAttackStrong.changed) {
-        if (this.animations.Yes && !this.animations.Yes.isPlaying) {
+        if (!this.animations.Yes.isPlaying) {
             this.animations.Yes.play();
         }
     }
     // "Attack right 1"
     if (PRIVATE.control.rightAttack.pressed && PRIVATE.control.rightAttack.changed) {
-        if (this.animations.AttackRight1 && !this.animations.AttackRight1.isPlaying) {
+        if (!this.animations.AttackRight1.isPlaying) {
             this.animations.AttackRight1.play();
         }
     }
@@ -174,6 +168,8 @@ Player.prototype.update = function(time) {
         moveTiltAngle *= this.runSpeedRatio;
         turnForCamera *= this.runSpeedRatio;
     }
+
+    var blocked = this.isAnimationBlocking();
 
     // Set focus rotation/movement
     if (this.focus) {
@@ -196,7 +192,7 @@ Player.prototype.update = function(time) {
         this.mesh.lookAt(this.focus.mesh.position);
 
         // Check target changing
-        if (PRIVATE.control.cameraMovement.changedX) {
+        if (PRIVATE.control.cameraMovement.changedX && !blocked) {
             var newFocus = null;
             if (PRIVATE.control.cameraMovement.x > 0) {
                 newFocus = searchNextFocus(true);
@@ -211,20 +207,8 @@ Player.prototype.update = function(time) {
         this.moveTarget.rotateY(-frameTurnSpeed * (PRIVATE.control.cameraMovement.x + turnForCamera));
     }
 
-    // Set player position right over the ground triangles
-    var targetY = 4; // TODO: fall
-    if (isOverGroundNow) {
-        // The vector MUST be normalized
-        var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
-        var intersect = ray.intersectTriangle(groundTriangle.a, groundTriangle.b, groundTriangle.c, false);
-        if (intersect) {
-            targetY = intersect.y;
-        }
-    }
-    this.moveTarget.position.y = targetY;
-
     // If we don't have movement, just ignore calculations
-    if (PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) {
+    if ((PRIVATE.control.movement.x === 0 && PRIVATE.control.movement.y === 0) || blocked) {
         this.bones.Base.rotation.x = Math.HALFPI;
         this.bones.Top.rotation.x = 0;
         return;
@@ -237,6 +221,31 @@ Player.prototype.update = function(time) {
     // Make movement
     this.moveTarget.translateZ(frameWalkSpeed * PRIVATE.control.movement.y);
     this.moveTarget.translateX(frameWalkSpeed * PRIVATE.control.movement.x);
+
+    // Check if player is over ground
+    // TODO: implement fall to death
+    var groundTriangle = PRIVATE.level.isOverGround(this.mesh.position);
+    var isOverGroundNow = Boolean(groundTriangle);
+    if (isOverGroundNow !== this.lastOverGround) {
+        if (this.lastOverGround) {
+            console.log('CAIU');
+            this.lastOverGround = false;
+        } else {
+            console.log('VOLTOU');
+            this.lastOverGround = true;
+        }
+    }
+    // Set player position right over the ground triangles
+    var targetY = 4; // TODO: fall
+    if (isOverGroundNow) {
+        // The vector MUST be normalized
+        var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
+        var intersect = ray.intersectTriangle(groundTriangle.a, groundTriangle.b, groundTriangle.c, false);
+        if (intersect) {
+            targetY = intersect.y;
+        }
+    }
+    this.moveTarget.position.y = targetY;
 
     // Set rotation
     if (this.focus) {
