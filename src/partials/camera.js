@@ -1,7 +1,7 @@
 // Follow object at a given distance
 //  target: THREE.Object3d
 //  relativeCameraOffset: THREE.Vector3
-(function() {
+(function bigBlockCamera() {
     var cameraY = PRIVATE.cameraOffset.y;
     var cameraHeightSpeed = 20;
     var MIN_CAMERA_HEIGHT = 2;

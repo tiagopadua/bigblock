@@ -7,10 +7,12 @@
 /* global requestAnimFrame */
 
 // This is intended to be a singleton - only 1 engine per page
-(function(PUBLIC) {
-    "use strict";
+// The parameter PUBLIC is the only public object (window.BigBlock).
+// It is named this way to be explicit that you are making some thing accessible for end user
+(function bigBlockMain(PUBLIC) {
+    'use strict';
 
-    // Just create an object to hold variables we do not want to share
+    // Just create an object to hold variables we do not want to let others take control
     var PRIVATE = {
         FOV: 75, // Field of view for the camera
         scene: null,
@@ -27,12 +29,12 @@
     };
 
     // Shim layer with setTimeout fallback
-    window.requestAnimFrame = window.requestAnimationFrame       ||
-                              window.webkitRequestAnimationFrame ||
-                              window.mozRequestAnimationFrame    ||
-                              function(callback) {
-                                  window.setTimeout(callback, 1000 / 60); // 60 fps
-                              };
+    var requestAnimFrame = window.requestAnimationFrame       ||
+                           window.webkitRequestAnimationFrame ||
+                           window.mozRequestAnimationFrame    ||
+                           function(callback) {
+                               window.setTimeout(callback, 1000 / 60); // 60 fps
+                           };
 
     /*
      * Include other parts of the code
@@ -57,9 +59,28 @@
         PRIVATE.height = inputHeight;
         PRIVATE.container = container;
 
-        // Create three.js stuff
-        setupThreeJS();
+        // Check container
+        if (typeof(PRIVATE.container) === 'undefined' ||
+            PRIVATE.container === null ||
+            PRIVATE.container === document.body) {
+            // Defaults to <body>
+            PRIVATE.container = document.body;
+            if (!PRIVATE.width) {
+                PRIVATE.width = window.innerWidth;
+            }
+            if (!PRIVATE.height) {
+                PRIVATE.height = window.innerHeight;
+            }
+        } else if (!(PRIVATE.container instanceof HTMLElement)) {
+            return console.error('Container must be a DOM element. Received:', typeof(PRIVATE.container));
+        }
 
+        // Prepare pointer locking on the container click
+        PRIVATE.setupMouse(PRIVATE.container);
+
+        // Create three.js stuff
+        PRIVATE.setupThreeJS();
+        
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
         }

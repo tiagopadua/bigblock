@@ -4,9 +4,10 @@
 /* global PRIVATE */
 
 // !include partials/keyboard.js
+// !include partials/mouse.js
 
-(function() {
-
+(function bigBlockControl() {
+    
     // Helper function to set default gamepad buttons' info
     function setDefaultToggleValues(propNameGamepad, propNameKeyboard) {
         return {
@@ -298,7 +299,15 @@
                 moveY += 1; // additive, because it may counter the own keyboard opposite key, or the gamepad
             }
         }
+
         this.cameraMovement.set(moveX, moveY);
+
+        // Now check MOUSE movement - it must not alter the 'changed' value
+        if (PRIVATE.mouseLocked) {
+            var mouseMovement = PRIVATE.getMouseMovement();
+            this.cameraMovement.x += mouseMovement.x;
+            this.cameraMovement.y += mouseMovement.y;
+        }
     };
 
 })();

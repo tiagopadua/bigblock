@@ -8,7 +8,7 @@
  *
  */
  
- (function() {
+ (function bigBlockKeyboard() {
 
     var keyCodes = [];
     //var modifiers = [];
