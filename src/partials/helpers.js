@@ -142,6 +142,26 @@ function loadJsonFile(url) {
 }
 
 // Process enter/exit full-screen
+function enterFullScreen() {
+    if (PRIVATE.container.requestFullscreen) {
+        PRIVATE.container.requestFullscreen();
+    } else if (PRIVATE.container.msRequestFullscreen) {
+        PRIVATE.container.msRequestFullscreen();
+    } else if (PRIVATE.container.mozRequestFullScreen) {
+        PRIVATE.container.mozRequestFullScreen();
+    } else if (PRIVATE.container.webkitRequestFullscreen) {
+        PRIVATE.container.webkitRequestFullscreen();
+    }
+}
+function exitFullScreen() {
+    if (document.cancelFullScreen) {  
+        document.cancelFullScreen();  
+    } else if (document.mozCancelFullScreen) {  
+        document.mozCancelFullScreen();  
+    } else if (document.webkitCancelFullScreen) {  
+        document.webkitCancelFullScreen();  
+    }
+}
 function toggleFullScreen() {
     if (!PRIVATE.container) {
         return;
@@ -149,24 +169,8 @@ function toggleFullScreen() {
 
     if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
         (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-        // Enter full-screen
-        if (PRIVATE.container.requestFullscreen) {
-            PRIVATE.container.requestFullscreen();
-        } else if (PRIVATE.container.msRequestFullscreen) {
-            PRIVATE.container.msRequestFullscreen();
-        } else if (PRIVATE.container.mozRequestFullScreen) {
-            PRIVATE.container.mozRequestFullScreen();
-        } else if (PRIVATE.container.webkitRequestFullscreen) {
-            PRIVATE.container.webkitRequestFullscreen();
-        }
+        enterFullScreen();
     } else {
-        // Exit full-screen
-        if (document.cancelFullScreen) {  
-            document.cancelFullScreen();  
-        } else if (document.mozCancelFullScreen) {  
-            document.mozCancelFullScreen();  
-        } else if (document.webkitCancelFullScreen) {  
-            document.webkitCancelFullScreen();  
-        }
+        exitFullScreen();
     }
 }
