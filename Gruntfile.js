@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 
         matches = matches || hasEmbededIncludes(content);
         var i = 0,
-            l = matches? matches.length : 0,
+            l = matches ? matches.length : 0,
             file = null,
             currentMatch = null,
             fs = require('fs');
@@ -20,9 +20,13 @@ module.exports = function(grunt) {
 
             // Extract filename
             file = currentMatch.replace(/\/(\/|\*)( )?\!(include|embed) /, '');
+            var isHtml = (file.indexOf('.htm') === (file.length - 4)) || (file.indexOf('.html') === (file.length - 5));
             // Read file
-            file = fs.readFileSync('src/' + file);
+            file = fs.readFileSync(file);
             file = file + ""; // Convert to string if got anything else
+            if (isHtml) {
+                file = file.replace(/\\/g, '\\\\').replace(/"/g, '\\\"').replace(/'/g, "\\\'").replace(/\n/g, ' ');
+            }
 
             // Insert the content inline
             content = content.replace(currentMatch, file);

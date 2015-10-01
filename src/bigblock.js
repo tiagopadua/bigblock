@@ -41,17 +41,21 @@
      * This is processed in build time (grunt task 'concat') before minification
      */
 
-    // !include partials/helpers.js
-    // !include partials/shaders.js
-    // !include partials/control.js
-    // !include partials/character.js
-    // !include partials/enemies/first.js
-    // !include partials/player.js
-    // !include partials/weapon.js
-    // !include partials/level.js
-    // !include partials/setup.js
-    // !include partials/camera.js
+    // !include src/partials/helpers.js
+    // !include src/partials/shaders.js
+    // !include src/partials/control.js
+    // !include src/partials/character.js
+    // !include src/partials/enemies/first.js
+    // !include src/partials/player.js
+    // !include src/partials/weapon.js
+    // !include src/partials/level.js
+    // !include src/partials/setup.js
+    // !include src/partials/camera.js
 
+    var templates = {
+        hud: "// !include templates/hud.html"
+    };
+    PUBLIC.templates = templates;
 
     // Loads all necessary data to start the loop
     PUBLIC.load = function(container, autoStart, inputWidth, inputHeight) {
