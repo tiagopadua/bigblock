@@ -1,0 +1,25 @@
+.bb-hud {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+
+    .bb-bar-base {
+        position: absolute;
+        left: 0;
+        height: 12px;
+        border: 1px solid #555;
+        border-radius: 2px;
+    }
+
+    .bb-health {
+        top: 0;
+        width: 150px;
+        background: #f0201c;
+    }
+
+    .bb-stamina {
+        top: 13px;
+        width: 150px;
+        background: #20c01c;
+    }
+}

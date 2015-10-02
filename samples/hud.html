@@ -1,54 +1,22 @@
 <!DOCTYPE html>
 <html>
-    <meta charset="utf-8">
-    <head>
-        <title>THREE.js test</title>
-    <style>
-body {
-    margin: 0;
-    overflow: hidden;
-}
+ <meta charset="utf-8">
+ <head>
+  <title>THREE.js test</title>
+  <style>
+   body {
+       margin: 0;
+       overflow: hidden;
+   }
+  </style>
+  <link href="../build/bigblock.css" rel="stylesheet"/>
+ </head>
 
-.bb-hud {
-    position: absolute;
-    left: 50px;
-    top: 50px;
-}
-
-.bb-bar-base {
-    position: absolute;
-    left: 0;
-    height: 12px;
-    border: 1px solid #555;
-    border-radius: 2px;
-    /*box-shadow: 0 0 20px 0 #888;*/
-}
-
-.bb-health {
-    top: 0;
-    width: 200px;
-    background: #f0201c;
-}
-
-.bb-stamina {
-    top: 13px;
-    width: 150px;
-    background: #20c01c;
-}
-
-    </style>
-    </head>
-    <body>
-     <div class="bb-hud">
-      <div class="bb-bar-base bb-health" id="bb-health"></div>
-      <div class="bb-bar-base bb-stamina" id="bb-stamina"></div>
-     </div>
-
-<script src="http://threejs.org/build/three.min.js"></script>
-<script src="../build/bigblock.js"></script>
-<script type="text/javascript">
-    BigBlock.load();
-</script>
-
-    </body>
+ <body>
+  <script src="http://threejs.org/build/three.min.js"></script>
+  <script src="../build/bigblock.js"></script>
+  <script type="text/javascript">
+   BigBlock.load();
+  </script>
+ </body>
 </html>

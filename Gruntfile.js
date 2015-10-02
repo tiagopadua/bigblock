@@ -49,7 +49,7 @@ module.exports = function(grunt) {
                         return embedIncludes(content);
                     }
                 },
-                src: 'src/<%= pkg.name %>.js',
+                src: 'src/js/<%= pkg.name %>.js',
                 dest: 'build/<%= pkg.name %>.js'
             }
         },
@@ -63,9 +63,16 @@ module.exports = function(grunt) {
                 }
             }
         },
+        sass: {
+            dist: {
+                files: {
+                    'build/bigblock.css': 'src/scss/main.scss'
+                }
+            }
+        },
         shell: {
             publish: {
-                // OK, nobody have my private key
+                // OK, nobody has my private key
                 // TODO: receive the last value (destination) as grunt command-line argument (if possible)
                 command: 'scp -r -i ~/dev/aws/ec2-private.pem samples build ec2-user@ec2-52-21-171-112.compute-1.amazonaws.com:~/bigblock/'
             }
@@ -75,8 +82,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'sass']);
     grunt.registerTask('publish', ['default', 'shell:publish']);
 };

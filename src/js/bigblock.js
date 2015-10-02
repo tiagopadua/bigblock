@@ -41,16 +41,16 @@
      * This is processed in build time (grunt task 'concat') before minification
      */
 
-    // !include src/partials/helpers.js
-    // !include src/partials/shaders.js
-    // !include src/partials/control.js
-    // !include src/partials/character.js
-    // !include src/partials/enemies/first.js
-    // !include src/partials/player.js
-    // !include src/partials/weapon.js
-    // !include src/partials/level.js
-    // !include src/partials/setup.js
-    // !include src/partials/camera.js
+    // !include src/js/partials/helpers.js
+    // !include src/js/partials/shaders.js
+    // !include src/js/partials/control.js
+    // !include src/js/partials/character.js
+    // !include src/js/partials/enemies/first.js
+    // !include src/js/partials/player.js
+    // !include src/js/partials/weapon.js
+    // !include src/js/partials/level.js
+    // !include src/js/partials/setup.js
+    // !include src/js/partials/camera.js
 
     var templates = {
         hud: "// !include templates/hud.html"
@@ -78,6 +78,9 @@
         } else if (!(PRIVATE.container instanceof HTMLElement)) {
             return console.error('Container must be a DOM element. Received:', typeof(PRIVATE.container));
         }
+        
+        // "render" templates (just append html code)
+        PRIVATE.container.insertAdjacentHTML('afterbegin', templates.hud);
 
         // Prepare pointer locking on the container click
         PRIVATE.setupMouse(PRIVATE.container);
