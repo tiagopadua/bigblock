@@ -53,6 +53,7 @@
     // !include src/js/levels/level.js
     // !include src/js/partials/setup.js
     // !include src/js/controls/camera.js
+    // !include src/js/audio/audio.js
 
 
     // Loads all necessary data to start the loop
@@ -109,10 +110,8 @@
         Promise.all([
             PRIVATE.player.load(),
             PRIVATE.level.load()
-        ]).then(function(objs) {
-            // objs[0] = player mesh
-            // objs[1] = level objects
-            PRIVATE.scene.add(objs[0]);
+        ]).then(function() {
+            PRIVATE.player.addComponentsToScene(PRIVATE.scene);
             PRIVATE.level.addComponentsToScene(PRIVATE.scene);
 
             // set camera initial position

@@ -36,10 +36,20 @@ function Character() {
     // This stores the required bones loaded from the model.
     // Must abort if could not load all.
     this.requiredBones = [];
+
+    // Sounds needed to play
+    this.requiredSounds = {};
 }
 
 // Actually load the model file
 Character.prototype.load = function() {
+    var promises = this.loadSounds();
+    promises.unshift(this.loadMesh());
+    return Promise.all(promises);
+};
+
+// Loads only the mesh
+Character.prototype.loadMesh = function() {
     // Helper for callback function
     var _this = this;
 
@@ -119,6 +129,28 @@ Character.prototype.load = function() {
             reject(error);
         }
     });
+};
+
+// Loads all sounds
+Character.prototype.loadSounds = function() {
+    var promises = [];
+    for (var soundName in this.requiredSounds) {
+        if (!this.requiredSounds.hasOwnProperty(soundName)) {
+            continue;
+        }
+
+        promises.push(PRIVATE.loadSound(soundName, this.requiredSounds[soundName]));
+    }
+    return promises;
+};
+
+// Just add mesh to scene
+Character.prototype.addComponentsToScene = function(scene) {
+    if (!scene) {
+        return;
+    }
+
+    scene.add(this.mesh);
 };
 
 // Create focus element

@@ -38,6 +38,10 @@ function Player() {
     // Animations that MUST HAVE to run
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
+    this.requiredSounds = {
+        grunt: 'http://localhost/bigblock/resources/audio/sfx/grunt-2_zJ3EwGE_.mp3',
+        hit: 'http://localhost/bigblock/resources/audio/sfx/hit-solid_M175G3Vu.mp3'
+    };
 
     // Focus target
     this.focus = null;
@@ -136,6 +140,8 @@ Player.prototype.startSwing = function(weapon, animation) {
     }
     // Start animation
     animation.play();
+    // Start sound
+    PRIVATE.playSound('grunt');
 
     // Save the attacking weapon and animation
     this.attackingWeapon = weapon;
@@ -165,6 +171,7 @@ Player.prototype.checkWeaponHit = function() {
     for (var enemyId = 0; enemyId < this.enemyHitList.length; enemyId++) {
         var enemy = this.enemyHitList[enemyId];
         if (enemy.collided(this.attackingWeapon.getCollisionRays())) {
+            PRIVATE.playSound('hit');
             this.enemyHitList.splice(enemyId, 1);
             PRIVATE.level.killEnemy(enemy);
         }

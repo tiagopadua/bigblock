@@ -28,10 +28,14 @@
                 PRIVATE.mouseLocked = true;
                 // Listen to mouse movement
                 targetElement.addEventListener('mousemove', onMouseMove, false);
+                // Start Music
+                PRIVATE.startMainMusic();
             } else {
                 PRIVATE.mouseLocked = false;
                 // Remove listener
                 targetElement.removeEventListener('mousemove', onMouseMove);
+                // Stop Music
+                PRIVATE.stopMainMusic();
             }
         }
         function onPointerLockError(event) {

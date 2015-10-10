@@ -21,7 +21,9 @@ Level.prototype.load = function() {
     function loadSingleEnemy(enemyX, enemyY, enemyZ) {
         return new Promise(function(resolve, reject) {
             var e = new FirstEnemy();
-            e.load().then(function(mesh) {
+            e.load().then(function(resources) {
+                // Character passes the mesh on position 0
+                var mesh = resources[0];
                 mesh.position.set(enemyX, enemyY, enemyZ);
                 mesh.material.materials[0].color.r = 0.2 + Math.random() * 0.8;
                 mesh.material.materials[0].color.g = 0.2 + Math.random() * 0.8;
@@ -110,9 +112,24 @@ Level.prototype.load = function() {
         });
     }
 
+    // Loads sounds
+    function loadSounds() {
+        return new Promise(function(resolve, reject) {
+            PRIVATE.loadSound('music', 'http://localhost/bigblock/resources/audio/music/future-electronic-drum-and-synth-loop-with-cymbal-96-bpm_My9NvCVd.mp3')
+            .then(function() {
+                PRIVATE.setMainMusic('music');
+                return resolve();
+            })
+            .catch(function(e) {
+                return reject(e);
+            });
+        });
+    }
+
     return Promise.all([
         loadLevel(),
-        loadEnemies()
+        loadEnemies(),
+        loadSounds()
     ]);
 };
 
