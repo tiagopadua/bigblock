@@ -115,7 +115,7 @@ Level.prototype.load = function() {
     // Loads sounds
     function loadSounds() {
         return new Promise(function(resolve, reject) {
-            PRIVATE.loadSound('music', 'http://localhost/bigblock/resources/audio/music/future-electronic-drum-and-synth-loop-with-cymbal-96-bpm_My9NvCVd.mp3')
+            PRIVATE.loadSound('music', '../resources/audio/music/future-electronic-drum-and-synth-loop-with-cymbal-96-bpm_My9NvCVd.mp3')
             .then(function() {
                 PRIVATE.setMainMusic('music');
                 return resolve();

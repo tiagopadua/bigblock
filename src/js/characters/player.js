@@ -46,8 +46,8 @@ function Player() {
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
     this.requiredBones = [ 'HandRight', 'HandLeft' ];
     this.requiredSounds = {
-        grunt: 'http://localhost/bigblock/resources/audio/sfx/grunt-2_zJ3EwGE_.mp3',
-        hit: 'http://localhost/bigblock/resources/audio/sfx/hit-solid_M175G3Vu.mp3'
+        grunt: '../resources/audio/sfx/grunt-2_zJ3EwGE_.mp3',
+        hit: '../resources/audio/sfx/hit-solid_M175G3Vu.mp3'
     };
 
     // Focus target
