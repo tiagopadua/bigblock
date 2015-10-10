@@ -23,3 +23,9 @@ cd bigblock/
 npm install
 grunt
 ```
+
+## Disclaimer
+
+All music and sounds on this repository are copyrighted. They were obtained on [SoundCloud](https://soundcloud.com) and are legitimately licensed to the author of this project.
+
+These audio files must not be redistributed or used in any way outside of this game.
