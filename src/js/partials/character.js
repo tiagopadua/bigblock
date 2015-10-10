@@ -15,9 +15,10 @@ function Character() {
     this.modelFile = null;
     // Basic attributes
     this.attributes = {
+        health: 0,
+        stamina: 0,
         strength: 0,
-        dexterity: 0,
-        stamina: 0
+        dexterity: 0
     };
 
     // Object containing the main mesh

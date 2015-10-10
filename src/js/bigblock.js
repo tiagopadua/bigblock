@@ -36,6 +36,7 @@
                                window.setTimeout(callback, 1000 / 60); // 60 fps
                            };
 
+
     /*
      * Include other parts of the code
      * This is processed in build time (grunt task 'concat') before minification
@@ -47,15 +48,12 @@
     // !include src/js/partials/character.js
     // !include src/js/partials/enemies/first.js
     // !include src/js/partials/player.js
+    // !include src/js/partials/hud.js
     // !include src/js/partials/weapon.js
     // !include src/js/partials/level.js
     // !include src/js/partials/setup.js
     // !include src/js/partials/camera.js
 
-    var templates = {
-        hud: "// !include templates/hud.html"
-    };
-    PUBLIC.templates = templates;
 
     // Loads all necessary data to start the loop
     PUBLIC.load = function(container, autoStart, inputWidth, inputHeight) {
@@ -78,9 +76,9 @@
         } else if (!(PRIVATE.container instanceof HTMLElement)) {
             return console.error('Container must be a DOM element. Received:', typeof(PRIVATE.container));
         }
-        
-        // "render" templates (just append html code)
-        PRIVATE.container.insertAdjacentHTML('afterbegin', templates.hud);
+
+        // Set up hud elements
+        PRIVATE.renderHud();
 
         // Prepare pointer locking on the container click
         PRIVATE.setupMouse(PRIVATE.container);
@@ -134,6 +132,8 @@
     
                 // Render first frame
                 requestAnimFrame(PRIVATE.mainLoop);
+                PRIVATE.updateHud();
+
                 console.info('Finished loading BigBlock');
     
                 if (autoStart) {

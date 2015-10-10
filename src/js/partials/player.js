@@ -30,9 +30,10 @@ function Player() {
 
     // Set up initial stats
     // TODO: load from save-file
+    this.attributes.health    = 10;
+    this.attributes.stamina   = 5;
     this.attributes.strength  = 5;
     this.attributes.dexterity = 5;
-    this.attributes.stamina   = 5;
 
     // Animations that MUST HAVE to run
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
