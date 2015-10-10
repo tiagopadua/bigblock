@@ -30,10 +30,17 @@ function Player() {
 
     // Set up initial stats
     // TODO: load from save-file
-    this.attributes.health    = 10;
-    this.attributes.stamina   = 5;
-    this.attributes.strength  = 5;
-    this.attributes.dexterity = 5;
+    this.attributes.health               = 10;
+    this.attributes.stamina              = 5;
+    this.attributes.staminaRecoverySpeed = 0.001;
+    this.attributes.strength             = 5;
+    this.attributes.dexterity            = 5;
+    // ---
+    this.currentAttributes.health               = 10;
+    this.currentAttributes.stamina              = 5;
+    this.currentAttributes.staminaRecoverySpeed = 0.7; // unit / second
+    this.currentAttributes.strength             = 5;
+    this.currentAttributes.dexterity            = 5;
 
     // Animations that MUST HAVE to run
     this.requiredAnimations = [ 'Yes', 'No', 'AttackRight1' ];
@@ -138,11 +145,20 @@ Player.prototype.startSwing = function(weapon, animation) {
     if (animation.isPlaying) {
         return;
     }
+
+    // Check if we have the stamina
+    if (this.currentAttributes.stamina < weapon.staminaCost) {
+        // TODO: blink the stamina bar
+        return;
+    }
+    // Remove the needed stamina
+    this.addStamina(-weapon.staminaCost);
+
     // Start animation
     animation.play();
     // Start sound
     PRIVATE.playSound('grunt');
-
+    
     // Save the attacking weapon and animation
     this.attackingWeapon = weapon;
     this.attackingAnimation = animation;
@@ -192,6 +208,9 @@ Player.prototype.update = function(time) {
     if (this.focus && (this.mesh.position.distanceToSquared(this.focus.mesh.position) > this.maxFocusDistanceSquared)) {
         this.clearFocus();
     }
+    
+    // Recover the stamina for this frame
+    this.recoverStamina(time);
 
     // Check generic animations
     // "No"
@@ -319,4 +338,16 @@ Player.prototype.update = function(time) {
 
     // Set final position
     this.mesh.position.set(this.moveTarget.position.x, this.moveTarget.position.y, this.moveTarget.position.z);
+};
+
+// Add some life to the player (or remove, the amount may be negative)
+Player.prototype.addHealth = function(amount) {
+    Character.prototype.addHealth.call(this, amount);
+    PRIVATE.updateHealthBar(this.currentAttributes.health, this.attributes.health);
+};
+
+// Add some stamina to the player (or remove, the amount may be negative)
+Player.prototype.addStamina = function(amount) {
+    Character.prototype.addStamina.call(this, amount);
+    PRIVATE.updateStaminaBar(this.currentAttributes.stamina, this.attributes.stamina);
 };

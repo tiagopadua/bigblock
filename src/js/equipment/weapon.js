@@ -159,7 +159,7 @@ BasicShield.prototype = new Shield();
 // Example weapon for testing
 function BigSwordTest() {
     this.damage.physical = 1;
-    this.staminaCost = 3;
+    this.staminaCost = 2;
     this.modelFile = 'models/weapon1.json';
 }
 

@@ -17,6 +17,15 @@ function Character() {
     this.attributes = {
         health: 0,
         stamina: 0,
+        staminaRecoverySpeed: 0,
+        strength: 0,
+        dexterity: 0
+    };
+    // Current attributes values (with buffs/debuffs etc)
+    this.currentAttributes = {
+        health: 0,
+        stamina: 0,
+        staminaRecoverySpeed: 0,
         strength: 0,
         dexterity: 0
     };
@@ -193,4 +202,36 @@ Character.prototype.collided = function(rayCasters) {
 
 Character.prototype.update = function() {
     // OK, just must implement on child classes
+};
+
+// Change health
+Character.prototype.addHealth = function(amount) {
+    this.currentAttributes.health += amount;
+    // Check if died
+    if (this.currentAttributes.health < 0) {
+        this.currentAttributes.health = 0;
+        this.die();
+    } else if (this.currentAttributes.health > this.attributes.health) {
+        // Cannot have more health than max pool
+        this.currentAttributes.health = this.attributes.health;
+    }
+};
+
+// Change stamina
+Character.prototype.addStamina = function(amount) {
+    this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina + amount));
+    return this.currentAttributes.stamina;
+};
+
+// Recover stamina
+Character.prototype.recoverStamina = function(timeElapsed) {
+    // Do NOT call 'addStamina' because Player overrides it and updates the HUD.
+    // It may generate too many unnecessary updates
+    var amount = timeElapsed * this.currentAttributes.staminaRecoverySpeed;
+    this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina + amount));
+};
+
+// Stuff to do when it dies
+Character.prototype.die = function() {
+    console.log('DEAD!');
 };

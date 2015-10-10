@@ -156,6 +156,7 @@
             console.warn('Engine already started. Aborting');
             return;
         }
+        PRIVATE.startHudTimer();
         PRIVATE.running = true;
         requestAnimFrame(PRIVATE.mainLoop);
     };

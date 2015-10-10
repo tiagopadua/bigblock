@@ -18,18 +18,41 @@
         // Save DOM elements for future use
         PRIVATE.dom = {
             health: PRIVATE.container.querySelector('.bb-health'),
-            stamina: PRIVATE.container.querySelector('.bb-stamina')
+            healthCurrent: PRIVATE.container.querySelector('.bb-health-current'),
+            stamina: PRIVATE.container.querySelector('.bb-stamina'),
+            staminaCurrent: PRIVATE.container.querySelector('.bb-stamina-current')
         };
+    };
+
+    // Update health bar
+    PRIVATE.updateHealthBar = function(current, total) {
+        var finalHealthWidth = baseBarWidth + total * healthWidthFactor;
+        PRIVATE.dom.health.style.width = finalHealthWidth.toString() + 'px';
+        
+        // Avoid exception
+        if (total === 0) {
+            return;
+        }
+        PRIVATE.dom.healthCurrent.style.width = (100.0 * current / total).toString() + '%';
+    };
+    
+    // Update stamina bar
+    PRIVATE.updateStaminaBar = function(current, total) {
+        var finalStaminaWidth = baseBarWidth + total * staminaWidthFactor;
+        PRIVATE.dom.stamina.style.width = finalStaminaWidth.toString() + 'px';
+        
+        // Avoid exception
+        if (total === 0) {
+            return;
+        }
+        PRIVATE.dom.staminaCurrent.style.width = (100.0 * current / total).toString() + '%';
     };
 
     // Update the hud values
     PRIVATE.updateHud = function() {
-        // Update health bar
-        var finalHealthWidth = baseBarWidth + PRIVATE.player.attributes.health * healthWidthFactor;
-        PRIVATE.dom.health.style.width = finalHealthWidth.toString() + 'px';
+        PRIVATE.updateHealthBar(PRIVATE.player.currentAttributes.health, PRIVATE.player.attributes.health);
         // Update stamina bar
-        var finalStaminaWidth = baseBarWidth + PRIVATE.player.attributes.stamina * staminaWidthFactor;
-        PRIVATE.dom.stamina.style.width = finalStaminaWidth.toString() + 'px';
+        PRIVATE.updateStaminaBar(PRIVATE.player.currentAttributes.stamina, PRIVATE.player.attributes.stamina);
     };
 
     // Set up update hud timer
