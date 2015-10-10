@@ -1,3 +1,4 @@
+/* global loadFocusTexture */
 /* global Level */
 /* global toggleFullScreen */
 /* global clock */

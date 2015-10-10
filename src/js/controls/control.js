@@ -7,15 +7,16 @@
 // !include src/js/controls/mouse.js
 
 (function bigBlockControl() {
-    
+
     // Helper function to set default gamepad buttons' info
-    function setDefaultToggleValues(propNameGamepad, propNameKeyboard) {
+    function setDefaultToggleValues(propNameGamepad, propNameKeyboard, mouseButtonId) {
         return {
             pressed: false,
             changed: false,
             useAxis: false,
             gamepadButtonId: propNameGamepad, // or AXIS ID if useAxis is true
-            keyboardKeyId: propNameKeyboard
+            keyboardKeyId: propNameKeyboard,
+            mouseButtonId: mouseButtonId
         };
     }
 
@@ -145,8 +146,8 @@
         this.jump       = setDefaultToggleValues(10, PUBLIC.keyboard.SPACE);
         this.focus      = setDefaultToggleValues(11, PUBLIC.keyboard.TAB);
 
-        this.leftAttack = setDefaultToggleValues(4, 'q');
-        this.rightAttack = setDefaultToggleValues(5, 'e');
+        this.leftAttack = setDefaultToggleValues(4, 'q', 1);
+        this.rightAttack = setDefaultToggleValues(5, 'e', 3);
         this.leftAttackStrong = setDefaultToggleValues(6, 'q');
         this.rightAttackStrong = setDefaultToggleValues(7, 'e');
 
@@ -187,7 +188,14 @@
         }
         // Now check keyboard status
         if (PUBLIC.keyboard) {
-            return changeButtonPressedValue(button, PUBLIC.keyboard.pressed(button.keyboardKeyId));
+            var keyboardPressed = PUBLIC.keyboard.pressed(button.keyboardKeyId);
+            if (keyboardPressed) {
+                return changeButtonPressedValue(button, keyboardPressed);
+            }
+        }
+        // Check mouse button
+        if (button.mouseButtonId) {
+            return changeButtonPressedValue(button, PRIVATE.mouseButtonState[button.mouseButtonId]);
         }
         return changeButtonPressedValue(button, false); // Default not pressed
     };

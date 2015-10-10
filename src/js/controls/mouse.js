@@ -13,6 +13,8 @@
     // Mouse influence on camera speed
     PRIVATE.mouseLocked = false;
     PRIVATE.MOUSE_MOVEMENT_SPEED = 0.1;
+    // Holds the mouse buttons' state
+    PRIVATE.mouseButtonState = [ false, false, false, false, false ];
 
     // Set mouse hiding
     PRIVATE.setupMouse = function(targetElement) {
@@ -81,6 +83,14 @@
 
             enterFullScreen();
         }, false);
+
+        // Save mouse buttons' state
+        targetElement.addEventListener('mousedown', function(mouseEvent) {
+            PRIVATE.mouseButtonState[mouseEvent.which] = true;
+        });
+        targetElement.addEventListener('mouseup', function(mouseEvent) {
+            PRIVATE.mouseButtonState[mouseEvent.which] = false;
+        });
     };
 
     // Returns mouse movement
