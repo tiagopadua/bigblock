@@ -44,15 +44,15 @@
 
     // !include src/js/partials/helpers.js
     // !include src/js/partials/shaders.js
-    // !include src/js/partials/control.js
-    // !include src/js/partials/character.js
-    // !include src/js/partials/enemies/first.js
-    // !include src/js/partials/player.js
+    // !include src/js/controls/control.js
+    // !include src/js/characters/character.js
+    // !include src/js/characters/enemies/first.js
+    // !include src/js/characters/player.js
     // !include src/js/partials/hud.js
-    // !include src/js/partials/weapon.js
-    // !include src/js/partials/level.js
+    // !include src/js/equipment/weapon.js
+    // !include src/js/levels/level.js
     // !include src/js/partials/setup.js
-    // !include src/js/partials/camera.js
+    // !include src/js/controls/camera.js
 
 
     // Loads all necessary data to start the loop

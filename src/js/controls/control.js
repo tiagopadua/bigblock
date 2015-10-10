@@ -3,8 +3,8 @@
 /* global PUBLIC */
 /* global PRIVATE */
 
-// !include src/js/partials/keyboard.js
-// !include src/js/partials/mouse.js
+// !include src/js/controls/keyboard.js
+// !include src/js/controls/mouse.js
 
 (function bigBlockControl() {
     
