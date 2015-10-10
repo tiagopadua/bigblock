@@ -1,3 +1,6 @@
+/* global PRIVATE */
+/* global enterFullScreen */
+
 /*
  * This file contains everything needed to capture the mouse movement and control the camera
  */
@@ -63,14 +66,14 @@
         targetElement.addEventListener('click', function() {
 
             // Only let control with mouse when full-screen
-            var onFullscreenChanged = function(event) {
+            function onFullscreenChanged(event) {
                 if (document.fullscreenElement === targetElement || document.mozFullScreenElement === targetElement || document.webkitFullscreenElement === targetElement) {
                     document.removeEventListener('fullscreenchange', onFullscreenChanged);
                     document.removeEventListener('mozfullscreenchange', onFullscreenChanged);
                     document.removeEventListener('webkitfullscreenchange', onFullscreenChanged);
                     targetElement.requestPointerLock();
                 }
-            };
+            }
 
             document.addEventListener('fullscreenchange', onFullscreenChanged, false);
             document.addEventListener('mozfullscreenchange', onFullscreenChanged, false);
