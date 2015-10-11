@@ -1,0 +1,47 @@
+{
+    "name": "level 1",
+    "lights": [{
+        "type": "point",
+        "origin": [50, 0, 50],
+        "intensity": 6
+    }],
+    "model": {
+        "vertices": [-100,4e-06,100,100,4e-06,100,-100,-4e-06,-100,100,-4e-06,-100],
+        "metadata": {
+            "vertices": 4,
+            "type": "Geometry",
+            "version": 3,
+            "faces": 1,
+            "uvs": 0,
+            "normals": 1,
+            "materials": 1,
+            "generator": "io_three"
+        },
+        "uvs": [],
+        "faces": [35,0,1,3,2,0,0,0,0,0],
+        "name": "PlaneGeometry.5",
+        "materials": [{
+            "colorEmissive": [0,0,0],
+            "depthWrite": true,
+            "depthTest": true,
+            "visible": true,
+            "wireframe": false,
+            "mapDiffuseAnisotropy": 1,
+            "shading": "phong",
+            "mapDiffuse": "ground1.jpg",
+            "DbgName": "ground",
+            "colorAmbient": [0.64,0.64,0.64],
+            "specularCoef": 50,
+            "colorSpecular": [0.5,0.5,0.5],
+            "DbgIndex": 0,
+            "colorDiffuse": [0.64,0.64,0.64],
+            "DbgColor": 15658734,
+            "transparent": false,
+            "mapDiffuseRepeat": [20,20],
+            "opacity": 1,
+            "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
+            "blending": "NormalBlending"
+        }],
+        "normals": [0,1,0]
+    }
+}
