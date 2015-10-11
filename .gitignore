@@ -9,6 +9,9 @@
 # Blender temporary
 *.blend1
 
+# Maya swatch 
+*.swatch
+
 # Sass temporary
 .sass-cache
 
