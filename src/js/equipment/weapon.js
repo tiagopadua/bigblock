@@ -97,7 +97,10 @@ Weapon.prototype.load = function() {
     var _this = this;
     return new Promise(function(resolve, reject) {
         loadJsonFile(_this.modelFile).then(function(parsedObject) {
-            if (!parsedObject || !('name' in parsedObject) || !('collisionRays' in parsedObject) || !('model' in parsedObject)) {
+            if (!parsedObject ||
+                !('name' in parsedObject) ||
+                !('collisionRays' in parsedObject) ||
+                !('model' in parsedObject)) {
                 return reject('Invalid weapon file format:', _this.modelFile);
             }
             
