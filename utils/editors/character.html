@@ -3,117 +3,60 @@
  <meta charset="utf-8">
  <head>
   <title>Character editor</title>
-  <style>
-   body {
-       margin: 0;
-       font-family: Ubuntu, Arial, Helvetica, sans-serif;
-   }
-
-   .menu {
-       position: absolute;
-       margin: 10px;
-       width: 300px;
-       height: calc(100% - 20px);
-       background-color: #fff;
-   }
-   
-   .menu-list {
-       display: inline-block;
-       padding: 5px;
-       width: calc(100% - 30px);
-       border: 1px solid #007acc;
-       border-radius: 5px;
-   }
-
-   .menu-list label {
-       display: inline-block;
-       width: 100%;
-       cursor: pointer;
-   }
-   
-   .menu-list label:hover {
-       background-color: #44aaff;
-       border-radius: 2px;
-   }
-
-   .container3d {
-       position: absolute;
-       left: 300px;
-       width: calc(100% - 300px);
-       height: calc(100% - 20px);
-       background-color: #191917;
-   }
-   
-   .status {
-       position: absolute;
-       padding: 5px 5px 1px 5px;
-       width: calc(100% - 10px);
-       height: 20px;
-       bottom: 0;
-       color: #fff;
-       text-shadow: 0px 0px 6px #aaa;
-       background-color: #007acc;
-   }
-   
-   .error {
-       background-color: #d51400;
-   }
-  </style>
+  <link href="editor.css" rel="stylesheet" type="text/css"></link>
  </head>
 
  <body>
   <div class="menu">
    <h1>Character Editor</h1>
    <br/>
-   <input type="button" value="Load Character"></input>
+   <textarea name="fileName" rows="4" id="fileName" class="fullText">../../samples/models/player.json</textarea>
+   <input type="button" value="Load Character" onclick="Editor.loadCharacter()"></input>
    <input type="button" value="Save Character" disabled></input>
 
    <br/>
    <br/>
    Meshes
    <div class="menu-list" id="meshes">
-    <label><input type="checkbox" name="meshes" value="Mesh1">Mesh 1</label>
-    <br/>
-    <label><input type="checkbox" name="meshes" value="Mesh2">Mesh 2</label>
-    <br/>
-    <label><input type="checkbox" name="meshes" value="Mesh3">Mesh 3</label>
     <input type="button" value="+ Add"/>
     <input type="button" value="- Remove"/>
+    <!--<label><input type="checkbox" name="meshes" value="Mesh1">Mesh 1</label>-->
    </div>
 
    <br/>
    <br/>
    Collision Rays
    <div class="menu-list" id="rays">
-    <label><input type="checkbox" name="rays" value="Ray1">Ray 1</label>
-    <br/>
-    <label><input type="checkbox" name="rays" value="Ray2">Ray 2</label>
-    <br/>
-    <label><input type="checkbox" name="rays" value="Ray3">Ray 3</label>
     <input type="button" value="+ Add"/>
     <input type="button" value="- Remove"/>
+    <!--<label><input type="checkbox" name="rays" value="Ray1">Ray 1</label>-->
    </div>
 
    <br/>
    <br/>
    Animations
    <div class="menu-list" id="animations">
-    <label><input type="checkbox" name="animations" value="Animation1">Animation 1</label>
-    <br/>
-    <label><input type="checkbox" name="animations" value="Animation2">Animation 2</label>
-    <br/>
-    <label><input type="checkbox" name="animations" value="Animation3">Animation 3</label>
     <input type="button" value="+ Add"/>
     <input type="button" value="- Remove"/>
+    <!--<label><input type="checkbox" name="animations" value="Animation1">Animation 1</label>-->
+   </div>
+
+   <br/>
+   <br/>
+   Bones
+   <div class="menu-list" id="bones">
+    <!--<li>Bone 1</li>-->
    </div>
   </div>
-  <div class="container3d">asdf</div>
-  <div class="status">OK</div>
+  <div class="container3d" id="container"></div>
+  <div class="status" id="status">OK</div>
+
   <script src="http://threejs.org/build/three.min.js"></script>
   <script src="editor.js"></script>
   <script src="character.js"></script>
+
   <script type="text/javascript">
-   //BigBlock.load();
+   Editor.setupScene(document.getElementById('container'));
   </script>
  </body>
 </html>

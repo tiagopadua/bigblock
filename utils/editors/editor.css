@@ -1,0 +1,67 @@
+
+body {
+    margin: 0;
+    font-family: Ubuntu, Arial, Helvetica, sans-serif;
+}
+
+.menu {
+    position: absolute;
+    padding: 10px;
+    width: 300px;
+    height: calc(100% - 20px);
+    color: #dfdada;
+    background-color: #333;
+}
+
+.menu-list {
+    display: inline-block;
+    padding: 5px;
+    width: calc(100% - 30px);
+    border: 1px solid #005a88;
+    border-radius: 5px;
+}
+
+.menu-list label {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.menu-list input {
+    position: relative;
+    top: -2px;
+}
+
+.menu-list label:hover {
+    color: #fff;
+    background-color: #44aaff;
+    border-radius: 2px;
+}
+
+.container3d {
+    position: absolute;
+    left: 300px;
+    width: calc(100% - 300px);
+    height: calc(100% - 20px);
+    background-color: #191917;
+}
+
+.status {
+    position: absolute;
+    padding: 5px 5px 1px 5px;
+    width: calc(100% - 10px);
+    height: 20px;
+    bottom: 0;
+    color: #fff;
+    text-shadow: 0px 0px 6px #aaa;
+    background-color: #007acc;
+}
+
+.error {
+    background-color: #d51400;
+}
+
+.fullText {
+    display: inline-block;
+    width: calc(100% - 30px);
+}
