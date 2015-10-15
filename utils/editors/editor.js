@@ -11,7 +11,7 @@
 
     // Templates
     PUBLIC.templates = {
-        listItem: '<li>#VALUE#</li>',
+        label: '<label>#VALUE#</label>',
         checkbox: '<label><input type="checkbox" name="#NAME#" value="#VALUE#">#VALUE#</label>'
     };
 
@@ -61,6 +61,8 @@
 
             // Update renderer size
             PUBLIC.renderer.setSize(PUBLIC.width, PUBLIC.height);
+            
+            PUBLIC.renderFrame();
         }, false);
 
         // set bg color
@@ -89,8 +91,8 @@
         if (!PUBLIC.camera) {
             return;
         }
-        PUBLIC.camera.position.set(-2, 5, 10);
-        PUBLIC.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        PUBLIC.camera.position.set(-2, 5, 4);
+        PUBLIC.camera.lookAt(new THREE.Vector3(0, 3, 0));
     };
 
     // Render a single frame
@@ -124,7 +126,6 @@
                             PUBLIC.addAnimation(geometry.animations[i]);
                         }
 
-                        debugger;
                         for (i=0; i<mesh.skeleton.bones.length; i++) {
                             PUBLIC.addBone(mesh.skeleton.bones[i]);
                         }
@@ -160,7 +161,7 @@
 
     PUBLIC.addBone = function(bone) {
         var domList = document.getElementById('bones');
-        domList.innerHTML += PUBLIC.templates.listItem.replace(/#VALUE#/g, bone.name);
+        domList.innerHTML += PUBLIC.templates.label.replace(/#VALUE#/g, bone.name);
     };
 
     // Notifications
