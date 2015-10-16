@@ -3,11 +3,14 @@
 (function(PUBLIC) {
 
     PUBLIC.loadCharacter = function() {
-        var modelName = document.getElementById('fileName').value;
-        PUBLIC.loadModel(modelName).then(function() {
-            PUBLIC.notifySuccess('Loaded model: ' + modelName);
+        PUBLIC.setLoading();
+        var modelFile = document.getElementById('fileName').value;
+        PUBLIC.loadModel(modelFile).then(function() {
+            PUBLIC.notifySuccess('Loaded model: ' + modelFile);
+            PUBLIC.removeLoading();
         }).catch(function() {
-            PUBLIC.notifyError('Unable to load model: ' + modelName);
+            PUBLIC.notifyError('Unable to load model: ' + modelFile);
+            PUBLIC.removeLoading();
         });
     };
 

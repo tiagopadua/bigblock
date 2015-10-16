@@ -1,3 +1,6 @@
+/* global Promise */
+/* global THREE */
+
 'use strict';
 
 (function(PUBLIC) {
@@ -179,5 +182,12 @@
         }
         statusDom.innerHTML = text;
     };
+
+    PUBLIC.setLoading = function() {
+        document.getElementById('loading').style.display = 'block';
+    };
+    PUBLIC.removeLoading = function() {
+        document.getElementById('loading').style.display = 'none';
+    }
 
 })(window.Editor = window.Editor || {});
