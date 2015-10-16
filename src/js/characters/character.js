@@ -96,7 +96,7 @@ Character.prototype.loadMesh = function() {
                 if (!animation || typeof(animation.name) !== 'string' || animation.name.length <= 0) {
                     continue;
                 }
-                _this.animations[animation.name] = new THREE.Animation(_this.mesh, animation, THREE.AnimationHandler.CATMULLROM);
+                _this.animations[animation.name] = new THREE.Animation(_this.mesh, animation);
                 _this.animations[animation.name].loop = false;
                 console.info('Loaded animation "' + animation.name + '" to character: ' + _this.name);
             }
