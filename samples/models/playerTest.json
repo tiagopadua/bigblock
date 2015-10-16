@@ -76,7 +76,6 @@
         "depthWrite": true,
         "visible": true,
         "colorDiffuse": [0.443697,0.443697,0.443697],
-        "colorAmbient": [0.443697,0.443697,0.443697],
         "DbgColor": 15658734,
         "depthTest": true
     }],

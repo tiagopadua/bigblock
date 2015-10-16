@@ -9,7 +9,6 @@
         "DbgColor": 15658734,
         "visible": true,
         "transparent": false,
-        "colorAmbient": [0.764072,0.282965,0.13706],
         "colorEmissive": [0,0,0],
         "DbgName": "Material",
         "DbgIndex": 0,

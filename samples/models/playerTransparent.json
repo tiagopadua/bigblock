@@ -7,7 +7,6 @@
         "depthTest": true,
         "colorDiffuse": [0.8,0.8,0.8],
         "colorEmissive": [0,0,0],
-        "colorAmbient": [0.8,0.8,0.8],
         "mapDiffuseWrap": ["RepeatWrapping","RepeatWrapping"],
         "shading": "phong",
         "transparent": true,
