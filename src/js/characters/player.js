@@ -1,3 +1,4 @@
+/* global searchFocus */
 /* global Character */
 /* global PRIVATE */
 /* global Promise */
@@ -36,8 +37,10 @@ function Player() {
     this.attributes.staminaRunDrain      = 0.002; // unit / second
     this.attributes.strength             = 5;
     this.attributes.dexterity            = 5;
-    // ---
+    // --- and load these from attributes on armor/power-ups
+    this.currentAttributes.healthTotal          = 10;
     this.currentAttributes.health               = 10;
+    this.currentAttributes.staminaTotal         = 5;
     this.currentAttributes.stamina              = 5;
     this.currentAttributes.staminaRecoverySpeed = 0.7; // unit / second
     this.currentAttributes.staminaRunDrain      = 1.5; // unit / second
@@ -198,6 +201,12 @@ Player.prototype.checkWeaponHit = function() {
 
 // Intended to be called each frame
 Player.prototype.update = function(time) {
+    // Set speeds
+    var frameTurnSpeed = this.turnSpeed * time;
+    var frameWalkSpeed = this.walkSpeed * time;
+    var moveTiltAngle = PRIVATE.control.movement.deadLength * this.moveTiltFactor;
+    var turnForCamera = PRIVATE.control.movement.x * this.turnInfluenceOnCamera;
+
     // Check focus
     if (PRIVATE.control.focus.changed && PRIVATE.control.focus.pressed) {
         if (this.focus) {
@@ -241,27 +250,21 @@ Player.prototype.update = function(time) {
             // Finished attack
             this.finishSwing();
         }
-    }
-
-    // Set speeds
-    var frameTurnSpeed = this.turnSpeed * time;
-    var frameWalkSpeed = this.walkSpeed * time;
-    var moveTiltAngle = PRIVATE.control.movement.deadLength * this.moveTiltFactor;
-    var turnForCamera = PRIVATE.control.movement.x * this.turnInfluenceOnCamera;
-
-    // Check if we should RUN
-    var staminaDrainAmount = time * this.currentAttributes.staminaRunDrain;
-    if (PRIVATE.control.run.pressed) {
-        if (this.currentAttributes.stamina >= staminaDrainAmount && !this.runStaminaRecovering) {
-            frameWalkSpeed *= this.runSpeedRatio;
-            moveTiltAngle *= this.runSpeedRatio;
-            turnForCamera *= this.runSpeedRatio;
-
-            // Do NOT call 'addStamina' because Player overrides it and updates the HUD - it
-            // will generate too many unnecessary updates to DOM
-            this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina - staminaDrainAmount));
-        } else {
-            this.runStaminaRecovering = !PRIVATE.control.run.changed;
+    } else { // Attacks are BLOCKING ACTIONS
+        // Check if we should RUN
+        var staminaDrainAmount = time * this.currentAttributes.staminaRunDrain;
+        if (PRIVATE.control.run.pressed) {
+            if (this.currentAttributes.stamina >= staminaDrainAmount && !this.runStaminaRecovering) {
+                frameWalkSpeed *= this.runSpeedRatio;
+                moveTiltAngle *= this.runSpeedRatio;
+                turnForCamera *= this.runSpeedRatio;
+    
+                // Do NOT call 'addStamina' because Player overrides it and updates the HUD - it
+                // will generate too many unnecessary updates to DOM
+                this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina - staminaDrainAmount));
+            } else {
+                this.runStaminaRecovering = !PRIVATE.control.run.changed && this.currentAttributes.stamina < this.currentAttributes.staminaTotal;
+            }
         }
     }
 
@@ -356,11 +359,11 @@ Player.prototype.update = function(time) {
 // Add some life to the player (or remove, the amount may be negative)
 Player.prototype.addHealth = function(amount) {
     Character.prototype.addHealth.call(this, amount);
-    PRIVATE.updateHealthBar(this.currentAttributes.health, this.attributes.health);
+    PRIVATE.updateHealthBar(this.currentAttributes.health, this.currentAttributes.healthTotal);
 };
 
 // Add some stamina to the player (or remove, the amount may be negative)
 Player.prototype.addStamina = function(amount) {
     Character.prototype.addStamina.call(this, amount);
-    PRIVATE.updateStaminaBar(this.currentAttributes.stamina, this.attributes.stamina);
+    PRIVATE.updateStaminaBar(this.currentAttributes.stamina, this.currentAttributes.staminaTotal);
 };
