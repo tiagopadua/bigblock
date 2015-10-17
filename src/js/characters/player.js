@@ -42,8 +42,8 @@ function Player() {
     this.currentAttributes.health               = 10;
     this.currentAttributes.staminaTotal         = 5;
     this.currentAttributes.stamina              = 5;
-    this.currentAttributes.staminaRecoverySpeed = 0.7; // unit / second
-    this.currentAttributes.staminaRunDrain      = 1.5; // unit / second
+    this.currentAttributes.staminaRecoverySpeed = 1.0; // unit / second
+    this.currentAttributes.staminaRunDrain      = 1.8; // unit / second
     this.currentAttributes.strength             = 5;
     this.currentAttributes.dexterity            = 5;
 
@@ -259,8 +259,8 @@ Player.prototype.update = function(time) {
                 moveTiltAngle *= this.runSpeedRatio;
                 turnForCamera *= this.runSpeedRatio;
     
-                // Do NOT call 'addStamina' because Player overrides it and updates the HUD - it
-                // will generate too many unnecessary updates to DOM
+                // Do NOT call 'addStamina' because it and updates the HUD - and will
+                //  generate too many unnecessary updates to DOM
                 this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina - staminaDrainAmount));
             } else {
                 this.runStaminaRecovering = !PRIVATE.control.run.changed && this.currentAttributes.stamina < this.currentAttributes.staminaTotal;
@@ -345,10 +345,7 @@ Player.prototype.update = function(time) {
     this.moveTarget.position.y = targetY;
 
     // Set rotation
-    if (this.focus) {
-        //this.mesh.lookAt(this.focus.mesh.position);
-        //this.moveTarget.rotateY(Math.PI); // rotate 180deg for the camera
-    } else {
+    if (!this.focus) {
         this.mesh.lookAt(this.moveTarget.position);
     }
 
