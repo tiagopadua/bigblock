@@ -1,6 +1,6 @@
 # Big Block
 
-This is an engine written in JavaScript, for web browser games, using WebGL.
+This is a game written in JavaScript, for web browser games, using WebGL.
 
 ## Examples
 
