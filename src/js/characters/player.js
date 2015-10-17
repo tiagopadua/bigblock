@@ -32,13 +32,15 @@ function Player() {
     // TODO: load from save-file
     this.attributes.health               = 10;
     this.attributes.stamina              = 5;
-    this.attributes.staminaRecoverySpeed = 0.001;
+    this.attributes.staminaRecoverySpeed = 0.001; // unit / second
+    this.attributes.staminaRunDrain      = 0.002; // unit / second
     this.attributes.strength             = 5;
     this.attributes.dexterity            = 5;
     // ---
     this.currentAttributes.health               = 10;
     this.currentAttributes.stamina              = 5;
     this.currentAttributes.staminaRecoverySpeed = 0.7; // unit / second
+    this.currentAttributes.staminaRunDrain      = 1.5; // unit / second
     this.currentAttributes.strength             = 5;
     this.currentAttributes.dexterity            = 5;
 
@@ -208,8 +210,8 @@ Player.prototype.update = function(time) {
     if (this.focus && (this.mesh.position.distanceToSquared(this.focus.mesh.position) > this.maxFocusDistanceSquared)) {
         this.clearFocus();
     }
-    
-    // Recover the stamina for this frame
+
+    // Recover the stamina for this frame (YES, even if we are running)
     this.recoverStamina(time);
 
     // Check generic animations
@@ -246,10 +248,21 @@ Player.prototype.update = function(time) {
     var frameWalkSpeed = this.walkSpeed * time;
     var moveTiltAngle = PRIVATE.control.movement.deadLength * this.moveTiltFactor;
     var turnForCamera = PRIVATE.control.movement.x * this.turnInfluenceOnCamera;
+
+    // Check if we should RUN
+    var staminaDrainAmount = time * this.currentAttributes.staminaRunDrain;
     if (PRIVATE.control.run.pressed) {
-        frameWalkSpeed *= this.runSpeedRatio;
-        moveTiltAngle *= this.runSpeedRatio;
-        turnForCamera *= this.runSpeedRatio;
+        if (this.currentAttributes.stamina >= staminaDrainAmount && !this.runStaminaRecovering) {
+            frameWalkSpeed *= this.runSpeedRatio;
+            moveTiltAngle *= this.runSpeedRatio;
+            turnForCamera *= this.runSpeedRatio;
+
+            // Do NOT call 'addStamina' because Player overrides it and updates the HUD - it
+            // will generate too many unnecessary updates to DOM
+            this.currentAttributes.stamina = Math.max(0, Math.min(this.attributes.stamina, this.currentAttributes.stamina - staminaDrainAmount));
+        } else {
+            this.runStaminaRecovering = !PRIVATE.control.run.changed;
+        }
     }
 
     // Set focus rotation/movement
