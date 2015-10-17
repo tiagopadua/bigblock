@@ -11,7 +11,7 @@
         if (!PRIVATE.height) {
             PRIVATE.height = PRIVATE.container.offsetHeight;
         }
-    
+
         // Set up THREE.js base objects
         PRIVATE.scene = new THREE.Scene();
         PRIVATE.camera = new THREE.PerspectiveCamera(
@@ -24,13 +24,10 @@
         PRIVATE.renderer.shadowMap.enabled = true;
         PRIVATE.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         PRIVATE.renderer.setSize(PRIVATE.width, PRIVATE.height);
-    
+
         // Append renderer element to the container dom element
         PRIVATE.container.appendChild(PRIVATE.renderer.domElement);
-    
-        // Process full-screen event
-        //PRIVATE.container.addEventListener('dblclick', toggleFullScreen);
-    
+
         // Set listener to window changing size
         window.addEventListener('resize', function() {
             // Save new dimensions
@@ -41,11 +38,11 @@
                 PRIVATE.width = PRIVATE.container.offsetWidth;
                 PRIVATE.height = PRIVATE.container.offsetHeight;
             }
-    
+
             // Update camera
             PRIVATE.camera.aspect = PRIVATE.width / PRIVATE.height;
             PRIVATE.camera.updateProjectionMatrix();
-    
+
             // Update renderer size
             PRIVATE.renderer.setSize(PRIVATE.width, PRIVATE.height);
         }, false);

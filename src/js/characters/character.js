@@ -108,6 +108,8 @@ Character.prototype.loadMesh = function() {
             }
         }
 
+        var loadingItem = PRIVATE.addLoadingItem(_this.modelFile);
+
         try {
             // Load model
             var loader = new THREE.JSONLoader();
@@ -131,10 +133,12 @@ Character.prototype.loadMesh = function() {
                 assignAnimations(geometry.animations);
 
                 // Signal that we are done
+                loadingItem.setDone();
                 resolve(_this.mesh);
             });
         } catch (error) {
             console.error('Unable to load model:', _this.modelFile);
+            loadingItem.setError();
             reject(error);
         }
     });

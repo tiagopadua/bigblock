@@ -9,6 +9,15 @@ Math.TWOPI = Math.PI * 2;
 
 var clock = new THREE.Clock();
 
+
+// Insert inline template files (set by grunt 'concat' task)
+PRIVATE.templates = {
+    hud: "// !include templates/hud.html",
+    loading: "// !include templates/loading.html",
+    loadingItem: "// !include templates/loading_item.html"
+};
+
+
 // Search for a focuseable enemy
 function searchFocus() {
     // Total length of the line
@@ -125,14 +134,17 @@ function loadFocusTexture() {
 // Load JSON file
 function loadJsonFile(url) {
     return new Promise(function(resolve, reject) {
+        var loadingItem = PRIVATE.addLoadingItem(url);
+
         var xReq = new XMLHttpRequest();
         xReq.open('GET', url, true);
         xReq.onreadystatechange = function() {
             if (xReq.readyState === 4) {
                 if (xReq.status !== 200) {
-                    console.log(2);
+                    loadingItem.setError();
                     return reject('Unable to load file', url, 'Status:', xReq.status);
                 }
+                loadingItem.setDone();
                 return resolve(JSON.parse(xReq.responseText));
             }
         };

@@ -53,7 +53,9 @@ Level.prototype.load = function() {
             // Create ground
             var geometry = new THREE.PlaneBufferGeometry(100, 100, 100, 100);
             // Texture
+            var loadingItem = PRIVATE.addLoadingItem('../resources/textures/ground1.jpg');
             var floorTexture = new THREE.ImageUtils.loadTexture('../resources/textures/ground1.jpg');//img/checkers.png');
+            loadingItem.setDone();
             floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
             floorTexture.repeat.set(20, 20);
             // Material

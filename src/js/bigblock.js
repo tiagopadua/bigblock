@@ -50,6 +50,7 @@
     // !include src/js/characters/enemies/first.js
     // !include src/js/characters/player.js
     // !include src/js/partials/hud.js
+    // !include src/js/partials/loading.js
     // !include src/js/equipment/weapon.js
     // !include src/js/levels/level.js
     // !include src/js/partials/setup.js
@@ -81,13 +82,14 @@
 
         // Set up hud elements
         PRIVATE.renderHud();
+        PRIVATE.renderLoadingScreen();
 
         // Prepare pointer locking on the container click
         PRIVATE.setupMouse(PRIVATE.container);
 
         // Create three.js stuff
         PRIVATE.setupThreeJS();
-        
+
         if (typeof(autoStart) !== 'boolean') {
             autoStart = true; // Default is start automatically
         }
@@ -129,6 +131,7 @@
 
                 // Mark things as loaded
                 PRIVATE.loaded = true;
+                PRIVATE.hideLoadingScreen();
     
                 // Render first frame
                 requestAnimFrame(PRIVATE.mainLoop);

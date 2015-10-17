@@ -23,6 +23,8 @@
                 return resolve(); // OK we already have it
             }
 
+            var loadingItem = PRIVATE.addLoadingItem('audio ' + name + '(' + url + ')');
+
             // Assume modern browsers - we are a WebGL game after all...
             var request = new XMLHttpRequest();
             request.open('GET', url, true);
@@ -30,23 +32,28 @@
             request.onload = function() {
                 try {
                     if (request.status !== 200) {
+                        loadingItem.setError();
                         return reject('Could not load audio; response was not HTTP 200');
                     }
                     audioContext.decodeAudioData(request.response, function(audioBuffer) {
                         soundBuffers[name] = audioBuffer;
                         console.info('Loaded sound:', name);
+                        loadingItem.setDone();
                         return resolve(name); // Success!
                     }, function(error) {
                         console.error('Could not decode audio', name, url);
+                        loadingItem.setError();
                         return reject(error);
                     });
                 } catch(e) {
                     console.error('Could not load audio:', name, url);
+                    loadingItem.setError();
                     return reject(e);
                 }
             };
             request.onerror = function(e) {
                 console.error('Could not load audio:', name, url);
+                loadingItem.setError();
                 return reject(e);
             };
 

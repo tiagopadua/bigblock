@@ -83,7 +83,7 @@ body {
     width: 128px;
     height: 128px;
     margin: -64px -64px;
-    background-image: url("img/loading_orange.png");
+    background-image: url("../../resources/img/loading_orange.png");
     background-position: 50% 50%;
     background-repeat: no-repeat;
     -webkit-animation: spin 2s infinite ease-in-out;

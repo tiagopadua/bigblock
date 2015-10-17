@@ -28,6 +28,8 @@ Equipment.prototype.load = function() {
     var _this = this;
 
     return new Promise(function(resolve, reject) {
+        var loadingItem = PRIVATE.addLoadingItem(_this.modelFile);
+
         // Load model
         var loader = new THREE.JSONLoader();
         try {
@@ -36,13 +38,16 @@ Equipment.prototype.load = function() {
                 _this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
                 _this.mesh.castShadow = true;
 
-                console.info('Loaded equipment', _this.modelFile); 
+                console.info('Loaded equipment', _this.modelFile);
+                
+                loadingItem.setDone();
 
                 // Signal everything went OK
                 resolve(_this);
             });
         } catch (error) {
             console.error('Unable to load equipment:', error);
+            loadingItem.setError();
             reject(error);
         }
     });
