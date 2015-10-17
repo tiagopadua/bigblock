@@ -233,5 +233,5 @@ Character.prototype.recoverStamina = function(timeElapsed) {
 
 // Stuff to do when it dies
 Character.prototype.die = function() {
-    console.log('DEAD!');
+    console.warn('DEAD!');
 };
