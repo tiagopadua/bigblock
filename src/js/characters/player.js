@@ -169,8 +169,8 @@ Player.prototype.startSwing = function(weapon, animation) {
     this.attackingAnimation = animation;
     // Set up enemies to check collision
     this.enemyHitList = [];
-    for (var enemyId = 0; enemyId < PRIVATE.level.enemies.length; enemyId++) {
-        var enemy = PRIVATE.level.enemies[enemyId];
+    for (var enemyId = 0; enemyId < PRIVATE.currentLevel.enemies.length; enemyId++) {
+        var enemy = PRIVATE.currentLevel.enemies[enemyId];
         // Compare the distance between player and enemy: length of the vector (player.position - enemy.position)
         if (this.mesh.position.clone().sub(enemy.mesh.position).lengthSq() < this.weaponHitMinDistanceSq) {
             this.enemyHitList.push(enemy);
@@ -194,7 +194,7 @@ Player.prototype.checkWeaponHit = function() {
         if (enemy.collided(this.attackingWeapon.getCollisionRays())) {
             PRIVATE.playSound('hit');
             this.enemyHitList.splice(enemyId, 1);
-            PRIVATE.level.killEnemy(enemy);
+            PRIVATE.currentLevel.killEnemy(enemy);
         }
     }
 };
@@ -321,7 +321,7 @@ Player.prototype.update = function(time) {
 
     // Check if player is over ground
     // TODO: implement fall to death
-    var groundTriangle = PRIVATE.level.isOverGround(this.mesh.position);
+    var groundTriangle = PRIVATE.currentLevel.isOverGround(this.mesh.position);
     var isOverGroundNow = Boolean(groundTriangle);
     if (isOverGroundNow !== this.lastOverGround) {
         if (this.lastOverGround) {

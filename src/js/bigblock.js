@@ -25,7 +25,8 @@
         loaded: false,
         running: false,
         player: null,
-        level: null,
+        currentLevel: null,
+        levels: [],
         focusTexture: null
     };
 
@@ -104,18 +105,23 @@
 
         // Load a level
         // TODO: select levels from save file or new game
-        PUBLIC.level = PRIVATE.level = new Level();
+        PRIVATE.currentLevel = new Level();
+        PRIVATE.levels.push(PRIVATE.currentLevel);
+        PUBLIC.levels = PRIVATE.levels;
 
         // Pre-load the focus image file
         loadFocusTexture();
 
         // Load everything async
-        Promise.all([
-            PRIVATE.player.load(),
-            PRIVATE.level.load()
-        ]).then(function() {
+        var loadPromises = [ PRIVATE.player.load() ];
+        PRIVATE.levels.forEach(function (lvl) {
+            loadPromises.push(lvl.load());
+        });
+        Promise.all(loadPromises).then(function() {
             PRIVATE.player.addComponentsToScene(PRIVATE.scene);
-            PRIVATE.level.addComponentsToScene(PRIVATE.scene);
+            PRIVATE.levels.forEach(function (lvl) {
+                lvl.addComponentsToScene(PRIVATE.scene);
+            });
 
             // set camera initial position
             PRIVATE.camera.position.set(PRIVATE.cameraOffset.x, PRIVATE.cameraOffset.y, PRIVATE.cameraOffset.z);
@@ -206,7 +212,9 @@
         PRIVATE.followObjectWithCamera(elapsedTime, PRIVATE.player.getCameraTarget());
 
         // Process scenario stuff
-        PRIVATE.level.update(elapsedTime);
+        PRIVATE.levels.forEach(function (lvl) {
+            lvl.update(elapsedTime);
+        });
 
         // Call user's function
         try {

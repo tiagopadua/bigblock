@@ -38,8 +38,8 @@ function searchFocus() {
         enemy: null,
         distance: Infinity // Start with max distance possible
     };
-    for (i = 0; i < PRIVATE.level.enemies.length; i++) {
-        enemy = PRIVATE.level.enemies[i];
+    for (i = 0; i < PRIVATE.currentLevel.enemies.length; i++) {
+        enemy = PRIVATE.currentLevel.enemies[i];
         // Get the point on line closest to enemy
         closestPoint = line.closestPointToPoint(enemy.mesh.position);
 
@@ -81,8 +81,8 @@ function searchNextFocus(right) {
     var currentEnemyAngle = Math.atan2(targetVector.y, targetVector.x);
 
     var i, enemy, enemyAngle;
-    for (i = 0; i < PRIVATE.level.enemies.length; i++) {
-        enemy = PRIVATE.level.enemies[i];
+    for (i = 0; i < PRIVATE.currentLevel.enemies.length; i++) {
+        enemy = PRIVATE.currentLevel.enemies[i];
         // Ignore current target
         if (enemy === PRIVATE.player.focus) {
             continue;
