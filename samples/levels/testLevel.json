@@ -1,0 +1,49 @@
+{
+    // Unique identifier among levels
+    "id": 1,
+    "name": "Test level",
+    // These connections are actual links to other levels.
+    // The player must reach these points to go to next/previous level
+    "connections": [{
+        "id": 2, // Target level unique identifier
+        "name": "Next level",// Friendly level name (can be different of real name)
+        "position": [50, 0, 50] // x, y, z
+    }, {
+        "id": 55,
+        "name": "Secret",
+        "position": [100, 0, -50]
+    }],
+    "enemies": [{
+        "id": 1, // Enemy's unique identifier
+        "name": "Peon",
+        "position": [80, 0, 0], // x, y, z
+        "equipments": 1 // Equipment's unique ID
+    }],
+    "models": [{
+        "vertices": [-50,0,-50, -50,0,50, 50,0,50, 50,0,-50],
+        "materials": [{
+            "opacity": 1,
+            "colorEmissive": [0,0,0],
+            "colorDiffuse": [0.8,0.8,0.8],
+            "DbgColor": 15658734,
+            "specularCoef": 20,
+            "depthWrite": false,
+            "transparent": true,
+            "wireframe": false,
+            "mapDiffuse": "player2.png",
+            "mapAlpha": "playerAlphaMap.png",
+            "mapLightAnisotropy": 1,
+            "mapLightRepeat": [1,1],
+            "DbgIndex": 0,
+            "shading": "phong",
+            "colorSpecular": [0.2,0.2,0.2],
+            "depthTest": true,
+            "DbgName": "Material",
+            "blending": "NormalBlending",
+            "doubleSided": true,
+            "visible": true
+        }],
+        "name": "Player",
+        "normals": [0,1,0, 0,1,0]
+   }] // THREE.js JSON formatted models
+}
