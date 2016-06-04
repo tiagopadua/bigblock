@@ -20,3 +20,7 @@ FirstEnemy.prototype.update = function(time) {
     }
 */
 };
+
+
+// Add this enemy class to the character list
+Character.availableEnemies['firstEnemy'] = FirstEnemy;

@@ -50,6 +50,16 @@ function Character() {
     this.requiredSounds = {};
 }
 
+
+// This list holds all the enemy classes available on the game.
+// Useful for loading enemies from JSON files
+Character.availableEnemies = {};
+
+// This list holds all the enemy classes available on the game.
+// Useful for loading enemies from JSON files
+Character.availableFriends = {};
+
+
 // Actually load the model file
 Character.prototype.load = function() {
     var promises = this.loadSounds();
