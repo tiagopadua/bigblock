@@ -162,8 +162,10 @@
             console.warn('Engine already started. Aborting');
             return;
         }
-        PRIVATE.startHudTimer();
 
+        clock.getDelta(); // Must call this to avoid a huge delta after pausing
+
+        PRIVATE.startHudTimer();
         PRIVATE.running = true;
         requestAnimFrame(PRIVATE.mainLoop);
 
