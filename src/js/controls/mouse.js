@@ -33,14 +33,12 @@
                 PRIVATE.mouseLocked = true;
                 // Listen to mouse movement
                 targetElement.addEventListener('mousemove', onMouseMove, false);
-                // Start Music
-                PRIVATE.startMainMusic();
             } else {
                 PRIVATE.mouseLocked = false;
                 // Remove listener
                 targetElement.removeEventListener('mousemove', onMouseMove);
-                // Stop Music
-                PRIVATE.stopMainMusic();
+                exitFullScreen();
+                PUBLIC.pause();
             }
         }
         function onPointerLockError(event) {
@@ -66,7 +64,6 @@
         // Request lock on element click
         targetElement.requestPointerLock = targetElement.requestPointerLock || targetElement.mozRequestPointerLock || targetElement.webkitRequestPointerLock;
         targetElement.addEventListener('click', function() {
-
             // Only let control with mouse when full-screen
             function onFullscreenChanged(event) {
                 if (document.fullscreenElement === targetElement || document.mozFullScreenElement === targetElement || document.webkitFullscreenElement === targetElement) {

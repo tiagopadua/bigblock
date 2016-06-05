@@ -163,17 +163,26 @@
             return;
         }
         PRIVATE.startHudTimer();
+
         PRIVATE.running = true;
         requestAnimFrame(PRIVATE.mainLoop);
+
+        // Start Music
+        PRIVATE.startMainMusic();
     };
 
     // Stops the main game engine loop
-    PUBLIC.stop = function() {
+    PUBLIC.stop = PUBLIC.pause = function() {
         if (!PRIVATE.running) {
             console.warn('Engine is not running - can\'t stop');
             return;
         }
         PRIVATE.running = false;
+
+        PRIVATE.displayMessage('PAUSED\n\nClick to resume', PUBLIC.start);
+
+        // Stop Music
+        PRIVATE.stopMainMusic();
     };
 
     // Returns the state of the engine (true: running; false: stopped)
