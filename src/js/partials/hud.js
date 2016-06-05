@@ -20,7 +20,7 @@
         PRIVATE.dom.modalText = PRIVATE.container.querySelector('#bb-message');
 
         PRIVATE.dom.modal.onclick = function () {
-            PRIVATE.dom.modal.style.visibility = 'hidden';
+            PRIVATE.dom.modal.setAttribute('hidden', ''); // Show with css selector
 
             if (typeof PRIVATE.dom.modal.onClickCallback === 'function') {
                 PRIVATE.dom.modal.onClickCallback();
@@ -79,7 +79,6 @@
         }
     };
     
-    
     // Message box
     PRIVATE.displayMessage = function (message, onFinish) {
         if (!PRIVATE.dom.modalText || !PRIVATE.dom.modal) {
@@ -91,7 +90,7 @@
         }
 
         PRIVATE.dom.modalText.innerText = message;
-        PRIVATE.dom.modal.style.visibility = "visible";
+        PRIVATE.dom.modal.removeAttribute('hidden'); // Show with css selector
         PRIVATE.dom.modal.onClickCallback = onFinish;
     };
 })();
