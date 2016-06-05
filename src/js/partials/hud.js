@@ -1,5 +1,5 @@
 (function() {
-    var hudUpdateTime = 300; // milli-seconds
+    var hudUpdateTime = 100; // milli-seconds
     var hudTimer = null;
     var baseBarWidth = 200;
     var healthWidthFactor = 10;
@@ -16,25 +16,36 @@
         PRIVATE.dom.healthCurrent = PRIVATE.container.querySelector('.bb-health-current');
         PRIVATE.dom.stamina = PRIVATE.container.querySelector('.bb-stamina');
         PRIVATE.dom.staminaCurrent = PRIVATE.container.querySelector('.bb-stamina-current');
+        PRIVATE.dom.modal = PRIVATE.container.querySelector('.bb-modal');
+        PRIVATE.dom.modalText = PRIVATE.container.querySelector('#bb-message');
+
+        PRIVATE.dom.modal.onclick = function () {
+            PRIVATE.dom.modal.style.visibility = 'hidden';
+
+            if (typeof PRIVATE.dom.modal.onClickCallback === 'function') {
+                PRIVATE.dom.modal.onClickCallback();
+            }
+            PRIVATE.dom.modal.onClickCallback = null;
+        };
     };
 
     // Update health bar
     PRIVATE.updateHealthBar = function(current, total) {
         var finalHealthWidth = baseBarWidth + total * healthWidthFactor;
         PRIVATE.dom.health.style.width = finalHealthWidth.toString() + 'px';
-        
+
         // Avoid exception
         if (total === 0) {
             return;
         }
         PRIVATE.dom.healthCurrent.style.width = (100.0 * current / total).toString() + '%';
     };
-    
+
     // Update stamina bar
     PRIVATE.updateStaminaBar = function(current, total) {
         var finalStaminaWidth = baseBarWidth + total * staminaWidthFactor;
         PRIVATE.dom.stamina.style.width = finalStaminaWidth.toString() + 'px';
-        
+
         // Avoid exception
         if (total === 0) {
             return;
@@ -66,5 +77,21 @@
         } else {
             console.log('HUD timer not set. Cannot stop it...');
         }
+    };
+    
+    
+    // Message box
+    PRIVATE.displayMessage = function (message, onFinish) {
+        if (!PRIVATE.dom.modalText || !PRIVATE.dom.modal) {
+            console.error('Could not display message: ' + message);
+            if (typeof onFinish === 'function') {
+                onFinish();
+            }
+            return;
+        }
+
+        PRIVATE.dom.modalText.innerText = message;
+        PRIVATE.dom.modal.style.visibility = "visible";
+        PRIVATE.dom.modal.onClickCallback = onFinish;
     };
 })();
