@@ -72,9 +72,8 @@ module.exports = function(grunt) {
         },
         shell: {
             publish: {
-                // OK, nobody has my private key
-                // TODO: receive the last value (destination) as grunt command-line argument (if possible)
-                command: 'scp -r -i ~/dev/aws/ec2-private.pem samples build ec2-user@ec2-52-21-171-112.compute-1.amazonaws.com:~/bigblock/'
+                // OK, auth data are on ssh config
+                command: 'scp -r samples build tiagopadua.com:~/bigblock/'
             }
         }
     });
