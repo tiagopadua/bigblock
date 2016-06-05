@@ -163,13 +163,14 @@
         vertical-align: middle;
         
         .bb-box {
-            width: 400px;
-            max-width: 80%;
+            min-width: 200px;
+            max-width: 90%;
             margin: auto;
-            padding: 30px;
+            padding: 30px 50px;
             box-sizing: border-box;
             vertical-align: middle;
             text-align: center;
+            display: table;
 
             background-color: rgba(25, 25, 23, .9);
             border: 2px dashed #ffcc00;

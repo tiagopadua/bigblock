@@ -17,7 +17,7 @@
         PRIVATE.dom.stamina = PRIVATE.container.querySelector('.bb-stamina');
         PRIVATE.dom.staminaCurrent = PRIVATE.container.querySelector('.bb-stamina-current');
         PRIVATE.dom.modal = PRIVATE.container.querySelector('.bb-modal');
-        PRIVATE.dom.modalText = PRIVATE.container.querySelector('#bb-message');
+        PRIVATE.dom.modalText = PRIVATE.container.querySelector('.bb-modal .bb-box');
 
         PRIVATE.dom.modal.onclick = function () {
             PRIVATE.dom.modal.setAttribute('hidden', ''); // Show with css selector
