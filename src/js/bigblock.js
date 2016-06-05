@@ -60,7 +60,7 @@
 
 
     // Loads all necessary data to start the loop
-    PUBLIC.load = function(container, autoStart, inputWidth, inputHeight) {
+    PUBLIC.load = function(container, inputWidth, inputHeight) {
         PRIVATE.width = inputWidth;
         PRIVATE.height = inputHeight;
         PRIVATE.container = container;
@@ -90,10 +90,6 @@
 
         // Create three.js stuff
         PRIVATE.setupThreeJS();
-
-        if (typeof(autoStart) !== 'boolean') {
-            autoStart = true; // Default is start automatically
-        }
 
         // Setup controls
         PRIVATE.control = new PRIVATE.PlayerControl();
@@ -138,16 +134,16 @@
                 // Mark things as loaded
                 PRIVATE.loaded = true;
                 PRIVATE.hideLoadingScreen();
-    
+
                 // Render first frame
                 requestAnimFrame(PRIVATE.mainLoop);
                 PRIVATE.updateHud();
 
                 console.info('Finished loading BigBlock');
-    
-                if (autoStart) {
+
+                PRIVATE.displayMessage('Click to play', function () {
                     PUBLIC.start();
-                }
+                });
             }).catch(function(error) {
                 console.error('Error loading; Aborting;', error);
             });
