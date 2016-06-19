@@ -16,19 +16,21 @@ function Level() {
 // Load everything for a level: meshes, lights, enemies
 Level.prototype.load = function() {
     // Helper for callback function
-    var _this = this;
+    var self = this;
 
-    function loadSingleEnemy(enemyX, enemyY, enemyZ) {
+    function loadSingleEnemy(enemyClass, enemyX, enemyY, enemyZ) {
         return new Promise(function(resolve, reject) {
-            var e = new FirstEnemy();
+            if (!PRIVATE.availableEnemies.hasOwnProperty(enemyClass) ||
+                typeof PRIVATE.availableEnemies[enemyClass] !== 'function') {
+                
+                return reject('Could not load enemy. Class not found: ' + enemyClass);
+            }
+            var e = new PRIVATE.availableEnemies[enemyClass]();
             e.load().then(function(resources) {
                 // Character passes the mesh on position 0
                 var mesh = resources[0];
                 mesh.position.set(enemyX, enemyY, enemyZ);
-                mesh.material.materials[0].color.r = 0.2 + Math.random() * 0.8;
-                mesh.material.materials[0].color.g = 0.2 + Math.random() * 0.8;
-                mesh.material.materials[0].color.b = 0.2 + Math.random() * 0.8;
-                _this.enemies.push(e);
+                self.enemies.push(e);
                 resolve(e);
             }).catch(function(error) {
                 console.error('Could not load enemy');
@@ -37,15 +39,8 @@ Level.prototype.load = function() {
         });
     }
 
-    var loadEnemiesPromise = Promise.all([
-        loadSingleEnemy(10, 0, -26),
-        loadSingleEnemy(15, 0, -30),
-        loadSingleEnemy(5, 0, -30),
-        loadSingleEnemy(12, 0, -20),
-        loadSingleEnemy(17, 0, -24)
-    ]);
-
     var loadLevelPromise = new Promise(function(resolve, reject) {
+        /*
         // Create ground
         var geometry = new THREE.PlaneBufferGeometry(100, 100, 100, 100);
         // Texture
@@ -63,9 +58,9 @@ Level.prototype.load = function() {
         floorMesh.rotation.x = Math.PI / 2;
         floorMesh.receiveShadow = true;
         _this.meshes.push(floorMesh);
-
+*/
         // Add ground triangles
-        _this.groundTriangles = [
+        self.groundTriangles = [
             new THREE.Triangle(new THREE.Vector3(-50, 0, -50),
                                 new THREE.Vector3(-50, 0, 50),
                                 new THREE.Vector3(50, 0, 50)),
@@ -75,7 +70,7 @@ Level.prototype.load = function() {
         ];
 
         // Create lights
-        _this.lights = [
+        self.lights = [
             new THREE.DirectionalLight(0xffffff, 1),
             new THREE.AmbientLight(0xa0a0a0),
             new THREE.SpotLight(0xff0000, 20, 60, Math.PI / 2),
@@ -84,25 +79,25 @@ Level.prototype.load = function() {
             new THREE.SpotLight(0x0000ff, 20, 60, Math.PI / 2)
         ];
     
-        _this.lights[0].position.set(100, 200, 100);
-        _this.lights[2].position.set( 60, 15,  60);
-        _this.lights[3].position.set( 60, 15, -60);
-        _this.lights[4].position.set(-60, 15, -60);
-        _this.lights[5].position.set(-60, 15,  60);
+        self.lights[0].position.set(100, 200, 100);
+        self.lights[2].position.set( 60, 15,  60);
+        self.lights[3].position.set( 60, 15, -60);
+        self.lights[4].position.set(-60, 15, -60);
+        self.lights[5].position.set(-60, 15,  60);
     
-        _this.lights[0].shadowMapWidth = 4096;
-        _this.lights[0].shadowMapHeight = 4096;
+        self.lights[0].shadowMapWidth = 4096;
+        self.lights[0].shadowMapHeight = 4096;
     
-        _this.lights[0].shadowCameraNear = 190;
-        _this.lights[0].shadowCameraFar = 300;
-        _this.lights[0].shadowCameraLeft = -50;//-2;
-        _this.lights[0].shadowCameraRight = 50;//2;
-        _this.lights[0].shadowCameraTop = 50;//5;
-        _this.lights[0].shadowCameraBottom = -50;//-2;
+        self.lights[0].shadowCameraNear = 190;
+        self.lights[0].shadowCameraFar = 300;
+        self.lights[0].shadowCameraLeft = -50;//-2;
+        self.lights[0].shadowCameraRight = 50;//2;
+        self.lights[0].shadowCameraTop = 50;//5;
+        self.lights[0].shadowCameraBottom = -50;//-2;
     
-        _this.lights[0].castShadow = true;
+        self.lights[0].castShadow = true;
         //this.lights[0].onlyShadow = true;
-        _this.lights[0].shadowDarkness = 0.8;
+        self.lights[0].shadowDarkness = 0.8;
 
         //_this.lights[0].target = PRIVATE.player.mesh;
         //this.lights[0].shadowCameraVisible = true;
@@ -121,11 +116,47 @@ Level.prototype.load = function() {
         });
     });
 
-    return Promise.all([
-        loadLevelPromise,
-        loadEnemiesPromise,
-        loadSoundsPromise
-    ]);
+    return loadJsonFile('levels/testLevel.json').then(function (jsonLevel) {
+        if (!jsonLevel ||
+            !jsonLevel.hasOwnProperty('models') ||
+            !jsonLevel.models ||
+            jsonLevel.models.length <= 0) {
+
+            return Promise.reject('Unable to load test level. Invalid format');
+        }
+
+        // Load Three.js model
+        var loader = new THREE.JSONLoader();
+        var loadedModel = loader.parse(jsonLevel.models[0]);
+        self.meshes.push(new THREE.Mesh(loadedModel.geometry, new THREE.MeshFaceMaterial(loadedModel.materials)));
+        
+        var loadEnemyPromises = [];
+        if (jsonLevel.hasOwnProperty('enemies') &&
+            jsonLevel.enemies instanceof Array) {
+            
+            jsonLevel.enemies.forEach(function (jsonEnemy) {
+                if (!jsonEnemy ||
+                    !jsonEnemy.class ||
+                    !jsonEnemy.position ||
+                    !(jsonEnemy.position instanceof Array) ||
+                    jsonEnemy.position.length < 3) {
+
+                    return;
+                }
+                loadEnemyPromises.push(loadSingleEnemy(
+                    jsonEnemy.class,
+                    jsonEnemy.position[0],
+                    jsonEnemy.position[1],
+                    jsonEnemy.position[2]));
+            });
+        }
+
+        return Promise.all([
+            loadLevelPromise,
+            Promise.all(loadEnemyPromises),
+            loadSoundsPromise
+        ]);
+    });
 };
 
 // Add everything to the scene
