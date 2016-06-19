@@ -108,7 +108,7 @@ Weapon.prototype.load = function() {
                 !('model' in parsedObject)) {
                 return reject('Invalid weapon file format:', _this.modelFile);
             }
-            
+
             try {
                 _this.name = parsedObject.name;
                 _this.collisionRays = [];

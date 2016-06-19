@@ -148,7 +148,7 @@ Level.prototype.addComponentsToScene = function(scene) {
     }
 
     // Global fog
-    scene.fog = new THREE.FogExp2(0x000000, 0.02);
+    scene.fog = new THREE.FogExp2(0x550000, 0.02);
 };
 
 // Intended to run every frame, to animate everything

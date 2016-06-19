@@ -10,8 +10,10 @@
 // This is intended to be a singleton - only 1 engine per page
 // The parameter PUBLIC is the only public object (window.BigBlock).
 // It is named this way to be explicit that you are making some thing accessible for end user
-(function bigBlockMain(PUBLIC) {
+(function bigBlockMain(context) {
     'use strict';
+    
+    var PUBLIC = context.BigBlock = context.BigBlock || {};
 
     // Just create an object to hold variables we do not want to let others take control
     var PRIVATE = {
@@ -61,6 +63,9 @@
 
     // Loads all necessary data to start the loop
     PUBLIC.load = function(container, inputWidth, inputHeight) {
+        if (PRIVATE.loaded) {
+            return console.warn('BigBlock is already loaded. Cannot load again.');
+        }
         PRIVATE.width = inputWidth;
         PRIVATE.height = inputHeight;
         PRIVATE.container = container;
@@ -234,4 +239,4 @@
         PRIVATE.renderer.render(PRIVATE.scene, PRIVATE.camera);
     };
 
-})(window.BigBlock = window.BigBlock || {});
+})(this);
