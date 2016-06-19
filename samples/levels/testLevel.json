@@ -6,7 +6,7 @@
         "id": 1,
         "class": "firstEnemy",
         "name": "Peon 1",
-        "position": [ 10, 0, -26 ],
+        "position": [ 30, 0, -26 ],
         "equipments": []
     },{
         "id": 2,
