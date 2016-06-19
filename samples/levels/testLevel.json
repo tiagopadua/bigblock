@@ -1,39 +1,47 @@
 {
-    // Unique identifier among levels
     "id": 1,
     "name": "Test level",
-    // These connections are actual links to other levels.
-    // The player must reach these points to go to next/previous level
     "connections": [],
     "enemies": [{
-        "id": 1, // Enemy's unique identifier
-        "class": "firstEnemy", // In-game code class to control the character
+        "id": 1,
+        "class": "firstEnemy",
         "name": "Peon 1",
-        "position": [ 80, 0, 0 ], // x, y, z
-        "equipments": [ 1 ] // Equipment's unique ID
+        "position": [ 80, 0, 0 ],
+        "equipments": []
     }],
     "ground": [],
     "models": [{
-        "vertices": [-50,0,-50, -50,0,50, 50,0,50, 50,0,-50],
-        "materials": [{
-            "opacity": 1,
-            "colorEmissive": [0,0,0],
-            "colorDiffuse": [0.8,0.8,0.8],
-            "DbgColor": 15658734,
-            "specularCoef": 20,
-            "depthWrite": false,
-            "transparent": true,
-            "wireframe": false,
-            "DbgIndex": 0,
-            "shading": "phong",
-            "colorSpecular": [0.2,0.2,0.2],
-            "depthTest": true,
-            "DbgName": "Material",
-            "blending": "NormalBlending",
-            "doubleSided": true,
-            "visible": true
+        "normals":[-0,0,1,0,0,-1,1,0,0,-0,1,-0,-1,-0,0,0,-1,-0],
+        "name":"CubeGeometry",
+        "faces":[35,0,1,2,3,0,0,0,0,0,35,4,7,6,5,0,1,1,1,1,35,0,4,5,1,0,2,2,2,2,35,1,5,6,2,0,3,3,3,3,35,2,6,7,3,0,4,4,4,4,35,4,0,3,7,0,5,5,5,5],
+        "vertices":[-8.21778,1.27424,9.91095,-8.21778,1.27424,15.6679,-13.9748,1.27424,15.6679,-13.9748,1.27424,9.91095,-8.21777,7.03123,9.91095,-8.21778,7.03123,15.6679,-13.9748,7.03123,15.6679,-13.9748,7.03123,9.91095],
+        "uvs":[],
+        "materials":[{
+            "specularCoef":50,
+            "colorEmissive":[0,0,0],
+            "colorSpecular":[0.5,0.5,0.5],
+            "transparent":false,
+            "colorDiffuse":[0.64,0.64,0.64],
+            "visible":true,
+            "shading":"phong",
+            "blending":"NormalBlending",
+            "opacity":1,
+            "depthWrite":true,
+            "DbgColor":15658734,
+            "DbgName":"Material",
+            "DbgIndex":0,
+            "wireframe":false,
+            "depthTest":true
         }],
-        "name": "level",
-        "normals": [0,1,0, 0,1,0]
-   }] // THREE.js JSON formatted models
+        "metadata":{
+            "materials":1,
+            "normals":6,
+            "faces":6,
+            "type":"Geometry",
+            "generator":"io_three",
+            "version":3,
+            "vertices":8,
+            "uvs":0
+        }
+    }]
 }
