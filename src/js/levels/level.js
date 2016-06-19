@@ -127,8 +127,12 @@ Level.prototype.load = function() {
 
         // Load Three.js model
         var loader = new THREE.JSONLoader();
-        var loadedModel = loader.parse(jsonLevel.models[0]);
-        self.meshes.push(new THREE.Mesh(loadedModel.geometry, new THREE.MeshFaceMaterial(loadedModel.materials)));
+        jsonLevel.models.forEach(function (groundModel) {
+            var parsedModel = loader.parse(groundModel);
+            var groundMesh = new THREE.Mesh(parsedModel.geometry, new THREE.MeshFaceMaterial(parsedModel.materials));
+            groundMesh.receiveShadow = true;
+            self.meshes.push(groundMesh);
+        });
         
         var loadEnemyPromises = [];
         if (jsonLevel.hasOwnProperty('enemies') &&
