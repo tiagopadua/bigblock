@@ -116,7 +116,7 @@
         // Load everything async
         var loadPromises = [ PRIVATE.player.load() ];
         PRIVATE.levels.forEach(function (lvl) {
-            loadPromises.push(lvl.load());
+            loadPromises.push(lvl.load('levels/testLevel.json'));
         });
         Promise.all(loadPromises).then(function() {
             PRIVATE.player.addComponentsToScene(PRIVATE.scene);

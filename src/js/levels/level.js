@@ -7,14 +7,13 @@
 function Level() {
     // Set level properties
     this.enemies = [];
-    this.meshes = [];
+    this.objectMeshes = [];
+    this.groundMeshes = [];
     this.lights = [];
-    // To check player Y coord, or if he fell from a cliff
-    this.groundTriangles = [];
 }
 
 // Load everything for a level: meshes, lights, enemies
-Level.prototype.load = function() {
+Level.prototype.load = function(levelFile) {
     // Helper for callback function
     var self = this;
 
@@ -59,16 +58,6 @@ Level.prototype.load = function() {
         floorMesh.receiveShadow = true;
         _this.meshes.push(floorMesh);
 */
-        // Add ground triangles
-        self.groundTriangles = [
-            new THREE.Triangle(new THREE.Vector3(-50, 0, -50),
-                                new THREE.Vector3(-50, 0, 50),
-                                new THREE.Vector3(50, 0, 50)),
-            new THREE.Triangle(new THREE.Vector3(-50, 0, -50),
-                                new THREE.Vector3(50, 0, -50),
-                                new THREE.Vector3(50, 0, 50))
-        ];
-
         // Create lights
         self.lights = [
             new THREE.DirectionalLight(0xffffff, 1),
@@ -116,22 +105,32 @@ Level.prototype.load = function() {
         });
     });
 
-    return loadJsonFile('levels/testLevel.json').then(function (jsonLevel) {
+    return loadJsonFile(levelFile).then(function (jsonLevel) {
         if (!jsonLevel ||
-            !jsonLevel.hasOwnProperty('models') ||
-            !jsonLevel.models ||
-            jsonLevel.models.length <= 0) {
+            !jsonLevel.grounds ||
+            jsonLevel.grounds.length <= 0) {
 
             return Promise.reject('Unable to load test level. Invalid format');
         }
 
+        // Global fog
+        if (jsonLevel.fog &&
+            typeof jsonLevel.fog.color === 'number' &&
+            typeof jsonLevel.fog.near === 'number' &&
+            typeof jsonLevel.fog.far === 'number') {
+
+            PRIVATE.scene.fog = new THREE.Fog(jsonLevel.fog.color,
+                                              jsonLevel.fog.near,
+                                              jsonLevel.fog.far);
+        }
+
         // Load Three.js model
         var loader = new THREE.JSONLoader();
-        jsonLevel.models.forEach(function (groundModel) {
+        jsonLevel.grounds.forEach(function (groundModel) {
             var parsedModel = loader.parse(groundModel);
             var groundMesh = new THREE.Mesh(parsedModel.geometry, new THREE.MeshFaceMaterial(parsedModel.materials));
             groundMesh.receiveShadow = true;
-            self.meshes.push(groundMesh);
+            self.groundMeshes.push(groundMesh);
         });
         
         var loadEnemyPromises = [];
@@ -165,25 +164,23 @@ Level.prototype.load = function() {
 
 // Add everything to the scene
 Level.prototype.addComponentsToScene = function(scene) {
-    var i;
-
     // Add meshes
-    for (i = 0; i < this.meshes.length; ++i) {
-        scene.add(this.meshes[i]);
-    }
+    this.groundMeshes.forEach(function (mesh) {
+        scene.add(mesh);
+    });
+    this.objectMeshes.forEach(function (mesh) {
+        scene.add(mesh);
+    });
 
     // Add all lights
-    for (i = 0; i < this.lights.length; ++i) {
-        scene.add(this.lights[i]);
-    }
+    this.lights.forEach(function (light) {
+        scene.add(light);
+    });
 
     // Add all enemies
-    for (i = 0; i < this.enemies.length; ++i) {
-        scene.add(this.enemies[i].mesh);
-    }
-
-    // Global fog
-    scene.fog = new THREE.FogExp2(0x550000, 0.02);
+    this.enemies.forEach(function (enemy) {
+        scene.add(enemy.mesh);
+    });
 };
 
 // Intended to run every frame, to animate everything
@@ -204,25 +201,4 @@ Level.prototype.killEnemy = function(enemy){
     PRIVATE.scene.remove(enemy.mesh);
     // Remove from our list
     this.enemies.splice(this.enemies.indexOf(enemy), 1);
-};
-
-// Checks if point is over the ground
-Level.prototype.isOverGround = function(point) {
-    var i;
-    // Consider only X and Z
-    var point2d = { x: point.x,
-                    y: point.z };
-    for (i = 0; i < this.groundTriangles.length; i++) {
-        var triangle = this.groundTriangles[i];
-        if (isPointInsideTriangle(point2d,
-                                  { x: triangle.a.x,
-                                    y: triangle.a.z },
-                                  { x: triangle.b.x,
-                                    y: triangle.b.z },
-                                  { x: triangle.c.x,
-                                    y: triangle.c.z })) {
-            return triangle;
-        }
-    }
-    return false; 
 };

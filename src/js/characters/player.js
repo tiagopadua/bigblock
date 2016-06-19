@@ -58,8 +58,11 @@ function Player() {
     // Focus target
     this.focus = null;
 
-    // Auxiliar variable to control fall event
-    this.lastOverGround = true;
+    // Auxiliar variables to control fall
+    this.groundRaycaster = new THREE.Raycaster(
+        new THREE.Vector3(0, 4, 0), // must be updated on each loop
+        new THREE.Vector3(0, -1, 0) // Pointing down
+    );
     
     // For camera movement 'smoothing'
     this.lerping = false;
@@ -318,31 +321,9 @@ Player.prototype.update = function(time) {
     // Make movement
     this.moveTarget.translateZ(frameWalkSpeed * PRIVATE.control.movement.y);
     this.moveTarget.translateX(frameWalkSpeed * PRIVATE.control.movement.x);
-
-    // Check if player is over ground
-    // TODO: implement fall to death
-    var groundTriangle = PRIVATE.currentLevel.isOverGround(this.mesh.position);
-    var isOverGroundNow = Boolean(groundTriangle);
-    if (isOverGroundNow !== this.lastOverGround) {
-        if (this.lastOverGround) {
-            console.log('CAIU');
-            this.lastOverGround = false;
-        } else {
-            console.log('VOLTOU');
-            this.lastOverGround = true;
-        }
-    }
-    // Set player position right over the ground triangles
-    var targetY = 4; // TODO: fall
-    if (isOverGroundNow) {
-        // The vector MUST be normalized
-        var ray = new THREE.Ray(this.mesh.position, new THREE.Vector3(0, -1, 0)); // Normalized vector pointing down
-        var intersect = ray.intersectTriangle(groundTriangle.a, groundTriangle.b, groundTriangle.c, false);
-        if (intersect) {
-            targetY = intersect.y;
-        }
-    }
-    this.moveTarget.position.y = targetY;
+    
+    // Checks if is falling
+    this.updateFallingStatus();
 
     // Set rotation
     if (!this.focus) {
@@ -351,6 +332,19 @@ Player.prototype.update = function(time) {
 
     // Set final position
     this.mesh.position.set(this.moveTarget.position.x, this.moveTarget.position.y, this.moveTarget.position.z);
+};
+
+Player.prototype.updateFallingStatus = function () {
+    this.groundRaycaster.set(
+        new THREE.Vector3(this.moveTarget.position.x, this.moveTarget.position.y + 4, this.moveTarget.position.z),
+        new THREE.Vector3(0, -1, 0)
+    );
+    var intersections = this.groundRaycaster.intersectObjects(PRIVATE.currentLevel.groundMeshes);
+    if (intersections.length > 0) {
+        this.moveTarget.position.y = intersections[0].point.y;
+    } else {
+        this.moveTarget.position.y = -1;
+    }
 };
 
 // Add some life to the player (or remove, the amount may be negative)
