@@ -7,6 +7,15 @@
  * Including the player, enemies and NPC's
  */
 
+// This list holds all the enemy classes available on the game.
+// Useful for loading enemies from JSON files
+PRIVATE.availableEnemies = {};
+
+// This list holds all the enemy classes available on the game.
+// Useful for loading enemies from JSON files
+PRIVATE.availableFriends = {};
+
+
 function Character() {
     // Set properties
 
@@ -49,16 +58,6 @@ function Character() {
     // Sounds needed to play
     this.requiredSounds = {};
 }
-
-
-// This list holds all the enemy classes available on the game.
-// Useful for loading enemies from JSON files
-Character.availableEnemies = {};
-
-// This list holds all the enemy classes available on the game.
-// Useful for loading enemies from JSON files
-Character.availableFriends = {};
-
 
 // Actually load the model file
 Character.prototype.load = function() {

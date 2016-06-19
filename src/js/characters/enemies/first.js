@@ -29,13 +29,8 @@ FirstEnemy.prototype.load = function () {
 // Update enemy actions
 FirstEnemy.prototype.update = function(time) {
     this.mesh.lookAt(PRIVATE.player.mesh.position);
-/*
-    if (this.glow) {
-        this.glow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors(PRIVATE.camera.position, this.glow.position);
-    }
-*/
 };
 
 
 // Add this enemy class to the character list
-Character.availableEnemies.firstEnemy = FirstEnemy;
+PRIVATE.availableEnemies.firstEnemy = FirstEnemy;
