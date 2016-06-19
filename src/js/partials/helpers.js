@@ -144,8 +144,15 @@ function loadJsonFile(url) {
                     loadingItem.setError();
                     return reject('Unable to load file', url, 'Status:', xReq.status);
                 }
+                var parsed;
+                try {
+                    parsed = JSON.parse(xReq.responseText);
+                } catch (err) {
+                    loadingItem.setError();
+                    return reject(err);
+                }
                 loadingItem.setDone();
-                return resolve(JSON.parse(xReq.responseText));
+                return resolve(parsed);
             }
         };
         // Actually make the request
